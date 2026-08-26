@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# 下载的数据文件（太大，不要提交）
+downloads/
+*.md.tmp
+
+# 本地环境
+.env
