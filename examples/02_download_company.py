@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-下载某家公司全部财报到本地 Markdown 文件
+Download all reports of a company to local Markdown files.
 
-用法：
+Usage:
     python examples/02_download_company.py YOUR_API_KEY 600519.SS ./downloads/600519
 """
 import os
@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from sdk.finreport import FinReport
+from sdk.datasinking import DataSinking
 
 if len(sys.argv) < 3:
     print(__doc__)
@@ -20,11 +20,11 @@ API_KEY = sys.argv[1]
 SYMBOL = sys.argv[2]
 OUT_DIR = sys.argv[3] if len(sys.argv) > 3 else f"./downloads/{SYMBOL.replace('.', '_')}"
 
-fr = FinReport(API_KEY)
+ds = DataSinking(API_KEY)
 
-# 全量拉取某只股票所有报告（含正文，自动分页 + batch）
-reports = fr.get_symbol_reports(symbol=SYMBOL, all=True)
-print(f"{SYMBOL} 共 {len(reports)} 篇报告")
+# Fetch all reports of the symbol (full content, auto-paginated + batched)
+reports = ds.get_symbol_reports(symbol=SYMBOL, all=True)
+print(f"{SYMBOL} has {len(reports)} reports")
 
 os.makedirs(OUT_DIR, exist_ok=True)
 for r in reports:
@@ -40,4 +40,4 @@ for r in reports:
     with open(path, "w", encoding="utf-8") as f:
         f.write(r["content"])
 
-print(f"已保存到 {OUT_DIR}/，文件名格式：股票代码_年份_类型_公告日期.md")
+print(f"Saved to {OUT_DIR}/, filename format: code_year_type_date.md")

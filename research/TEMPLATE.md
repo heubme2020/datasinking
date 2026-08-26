@@ -1,52 +1,51 @@
-# 文章标题
+# Title
 
-> 一句话摘要：这篇文章研究什么、得出什么结论。
+> One-sentence summary: what this note studies and what it concludes.
 
-- **日期**：2026-XX-XX
-- **数据**：DataSinking（A 股财报 Markdown API）
-- **相关论文**：（可选，标注你在复现/借鉴哪篇论文的呈现方式）
+- **Date**: 2026-XX-XX
+- **Data**: DataSinking (A-share financial reports Markdown API)
+- **Related paper**: (optional) note which paper's presentation you reproduce / adapt
 
 ---
 
-## 背景
+## Background
 
-为什么研究这个问题。可以复现某篇论文里的一个问题/图表，说明它与原论文的关系。
+Why this question matters. You may reproduce a question or a chart from an existing paper, and state the relationship to it.
 
-## 数据
+## Data
 
-数据来源、覆盖范围、怎么用 DataSinking 获取：
+Source, coverage, and how to fetch it with DataSinking:
 
 ```python
-from sdk.finreport import FinReport
-fr = FinReport("YOUR_KEY")
-# 拉取分析所需的数据
-reports = fr.get_symbol_reports(symbol="600519.SS", all=True)
+from sdk.datasinking import DataSinking
+ds = DataSinking("YOUR_KEY")
+reports = ds.get_symbol_reports(symbol="600519.SS", all=True)
 ```
 
-数据范围：覆盖沪深北三交易所、年报/半年报/季报/修订公告，Markdown 全文。
+Coverage: SSE / SZSE / BSE, annual / semiannual / quarterly / amendment reports, full Markdown.
 
-## 方法
+## Method
 
-分析步骤、指标定义、代码逻辑。可以贴关键代码块：
+Analysis steps, metric definitions, and code logic. Include key code blocks:
 
 ```python
-# 示例：从 markdown 正文提取关键财务指标
+# Example: extract a key financial metric from markdown content
 import re
 def extract_metric(content, pattern):
     m = re.search(pattern, content)
     return m.group(1) if m else None
 ```
 
-## 结果
+## Results
 
-图表的呈现（这里放生成的图，或描述图表）。配合文字解读。
+Charts (generated figures or descriptions) together with the interpretation.
 
-## 结论
+## Conclusion
 
-核心发现、局限、后续可以做什么。
+Key findings, limitations, and what could be done next.
 
 ---
 
-## 数据引用
+## Data citation
 
-> 本文数据来自 [DataSinking](https://datasink.ing)（A 股财报 Markdown API），原始财报源自[巨潮资讯网](http://www.cninfo.com.cn)。
+> Data in this note comes from [DataSinking](https://datasink.ing) (A-share financial reports Markdown API); the original reports originate from [cninfo.com.cn](http://www.cninfo.com.cn).

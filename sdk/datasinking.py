@@ -1,52 +1,52 @@
 # -*- coding: utf-8 -*-
 """
-FinReport API Python 客户端库
+DataSinking Python client.
 
-用法:
-    from finreport import FinReport
-    fr = FinReport("你的api_key")
-    fr.get_exchanges()
+Usage:
+    from sdk.datasinking import DataSinking
+    ds = DataSinking("YOUR_API_KEY")
+    ds.get_exchanges()
 """
 import time
 
 import requests
 
 
-class FinReport:
+class DataSinking:
     def __init__(self, api_key, base_url="https://api.datasink.ing"):
         self.base_url = base_url.rstrip("/")
         self.session = requests.Session()
         self.session.headers["X-API-Key"] = api_key
 
-    # ---- 内部工具 ----
+    # ---- internal helpers ----
     def _get(self, path, params=None, retries=5):
         for i in range(retries):
             try:
                 r = self.session.get(f"{self.base_url}{path}", params=params, timeout=60)
                 if r.status_code == 429:
-                    time.sleep(2)  # 限流，等待后重试
+                    time.sleep(2)  # rate limited, wait and retry
                     continue
                 r.raise_for_status()
                 return r.json()
             except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
                 time.sleep(1 + i)
-        raise RuntimeError("请求失败：多次重试后仍失败")
+        raise RuntimeError("Request failed after multiple retries")
 
     def _post(self, path, json=None, retries=5):
         for i in range(retries):
             try:
                 r = self.session.post(f"{self.base_url}{path}", json=json, timeout=60)
                 if r.status_code == 429:
-                    time.sleep(2)  # 限流，等待后重试
+                    time.sleep(2)  # rate limited, wait and retry
                     continue
                 r.raise_for_status()
                 return r.json()
             except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
                 time.sleep(1 + i)
-        raise RuntimeError("请求失败：多次重试后仍失败")
+        raise RuntimeError("Request failed after multiple retries")
 
     def _fetch_all(self, params):
-        """内部: 分页拿所有元数据(含 id, 不含正文), 每页 200 条"""
+        """Paginate through all metadata (id only, no content), 200 per page."""
         items = []
         page = 1
         while True:
@@ -58,7 +58,7 @@ class FinReport:
         return items
 
     def _batch_content(self, ids, batch_size=100):
-        """内部: 按 id 分批调用 batch 端点拉正文(含 content), 服务端并行处理"""
+        """Fetch full content (with markdown) in batches via the batch endpoint."""
         items = []
         for i in range(0, len(ids), batch_size):
             chunk = ids[i:i + batch_size]
@@ -66,35 +66,35 @@ class FinReport:
             items.extend(b["items"])
         return items
 
-    # ---- 元信息 ----
+    # ---- metadata ----
 
     def get_exchanges(self):
-        """列出有哪几个交易所, 如 ['bj', 'sse', 'szse']"""
+        """List available exchanges, e.g. ['bj', 'sse', 'szse']."""
         return self._get("/exchanges")["exchanges"]
 
     def get_symbols(self, exchange):
-        """列出某交易所下有哪些股票(含每只的 report 数量)"""
+        """List stocks for an exchange (with report counts)."""
         return self._get("/stocks", {"exchange": exchange})["items"]
 
-    # ---- 统一报告拉取(返回完整正文) ----
+    # ---- unified report fetching (returns full markdown content) ----
 
     def get_symbol_reports(self, symbol=None, doc_id=None, start=None, end=None,
                            limit=None, all=False):
-        """拉取某只股票的报告(统一入口, 均含完整 markdown 正文)
+        """Get a symbol's reports (full markdown content included).
 
-        用法:
-            get_symbol_reports(doc_id=1)                              # 拉指定单篇
-            get_symbol_reports(symbol='600519.SS', limit=5)           # 最近 5 篇
+        Usage:
+            get_symbol_reports(doc_id=1)                                # single document
+            get_symbol_reports(symbol='600519.SS', limit=5)             # latest 5
             get_symbol_reports(symbol='600519.SS',
-                               start='2023-01-01', end='2023-12-31')  # 指定时间范围(全量)
-            get_symbol_reports(symbol='600519.SS', all=True)          # 全量
+                               start='2023-01-01', end='2023-12-31')    # date range (all)
+            get_symbol_reports(symbol='600519.SS', all=True)            # all reports
 
-        start/end/all 都不设时, 默认返回最新 10 篇。返回的都是完整数据(含 content)。
+        When start/end/all are unset, defaults to the latest 10 reports.
         """
         if doc_id is not None:
             return self._get(f"/documents/{doc_id}")
         if not symbol:
-            raise ValueError("需要提供 symbol 或 doc_id")
+            raise ValueError("symbol or doc_id is required")
         params = {"symbol": symbol}
         if start:
             params["report_period_from"] = start
@@ -110,14 +110,14 @@ class FinReport:
 
     def get_exchange_reports(self, exchange, start=None, end=None,
                              limit=None, all=False):
-        """拉取某交易所的报告(统一入口, 均含完整 markdown 正文)
+        """Get an exchange's reports (full markdown content included).
 
-        用法:
-            get_exchange_reports('sse', limit=5)                              # 最近 5 篇
-            get_exchange_reports('sse', start='2023-01-01', end='2023-12-31')  # 时间范围(全量)
-            get_exchange_reports('sse', all=True)                              # 全量
+        Usage:
+            get_exchange_reports('sse', limit=5)                             # latest 5
+            get_exchange_reports('sse', start='2023-01-01', end='2023-12-31') # date range
+            get_exchange_reports('sse', all=True)                             # all reports
 
-        start/end/all 都不设时, 默认返回最新 10 篇。返回的都是完整数据(含 content)。
+        When start/end/all are unset, defaults to the latest 10 reports.
         """
         params = {"exchange": exchange}
         if start:
