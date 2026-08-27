@@ -8,7 +8,9 @@ Usage:
 Notes:
     - Pulls the full text of every report on the exchange. For SZSE that's
       130k+ documents / tens of GB — it runs for a while.
-    - Requires a paid (yearly) key: batch download is not available on the free plan.
+    - Free keys work too: the SDK auto-falls back to per-document fetching
+      (no batch). But at 1 req/s + a shared daily quota, a full exchange will
+      be very slow — a paid (yearly) key is strongly recommended.
 """
 import os
 import sys

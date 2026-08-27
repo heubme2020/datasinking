@@ -60,12 +60,26 @@ class DataSinking:
         return items
 
     def _batch_content(self, ids, batch_size=100):
-        """Fetch full content (with markdown) in batches via the batch endpoint."""
+        """Fetch full content (with markdown) in batches via the batch endpoint.
+
+        Falls back to per-document fetch when batch is unavailable (free plan -> 403).
+        """
         items = []
+        batch_ok = True
         for i in range(0, len(ids), batch_size):
             chunk = ids[i:i + batch_size]
-            b = self._post("/documents/batch", {"doc_ids": chunk})
-            items.extend(b["items"])
+            if batch_ok:
+                try:
+                    b = self._post("/documents/batch", {"doc_ids": chunk})
+                    items.extend(b["items"])
+                    continue
+                except requests.exceptions.HTTPError as e:
+                    if e.response is not None and e.response.status_code == 403:
+                        batch_ok = False
+                    else:
+                        raise
+            for did in chunk:
+                items.append(self._get(f"/documents/{did}"))
         return items
 
     # ---- metadata ----

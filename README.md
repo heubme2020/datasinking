@@ -54,7 +54,7 @@ for r in reports:
 
 Every example pulls from the live API and runs as-is.
 
-> `03_download_exchange.py` fetches every report on an exchange (e.g. all of Shenzhen — 130k+ documents). It uses batch download, so it requires a **paid (yearly)** key.
+> `03_download_exchange.py` fetches every report on an exchange (e.g. all of Shenzhen — 130k+ documents). Free keys work too, but fall back to slow per-document fetching (1 req/s + shared daily quota); a **paid (yearly)** key is strongly recommended for full-exchange downloads.
 
 ## Research (`research/`)
 
