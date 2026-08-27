@@ -50,8 +50,11 @@ for r in reports:
 |---|---|
 | `01_quickstart.py` | List exchanges / list stocks / list reports / fetch a document |
 | `02_download_company.py` | Download a company's full reports to local Markdown files |
+| `03_download_exchange.py` | Download an entire exchange's reports (all stocks) to local Markdown files |
 
 Every example pulls from the live API and runs as-is.
+
+> `03_download_exchange.py` fetches every report on an exchange (e.g. all of Shenzhen — 130k+ documents). It uses batch download, so it requires a **paid (yearly)** key.
 
 ## Research (`research/`)
 
