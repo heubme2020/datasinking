@@ -15,11 +15,12 @@ import requests
 class DataSinking:
     def __init__(self, api_key, base_url="https://api.datasink.ing"):
         self.base_url = base_url.rstrip("/")
+        self.api_key = api_key
         self.session = requests.Session()
-        self.session.headers["X-API-Key"] = api_key
 
     # ---- internal helpers ----
     def _get(self, path, params=None, retries=5):
+        params = {**(params or {}), "apikey": self.api_key}
         for i in range(retries):
             try:
                 r = self.session.get(f"{self.base_url}{path}", params=params, timeout=60)
@@ -33,9 +34,10 @@ class DataSinking:
         raise RuntimeError("Request failed after multiple retries")
 
     def _post(self, path, json=None, retries=5):
+        params = {"apikey": self.api_key}
         for i in range(retries):
             try:
-                r = self.session.post(f"{self.base_url}{path}", json=json, timeout=60)
+                r = self.session.post(f"{self.base_url}{path}", params=params, json=json, timeout=60)
                 if r.status_code == 429:
                     time.sleep(2)  # rate limited, wait and retry
                     continue
