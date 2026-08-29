@@ -8,6 +8,7 @@ import os
 import json
 import threading
 import webbrowser
+import requests
 from datetime import datetime
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
@@ -44,7 +45,6 @@ class App:
         try:
             with open(CONFIG_PATH, "w", encoding="utf-8") as f:
                 json.dump({"key": self.key_var.get().strip()}, f)
-            self._log("Key saved")
         except Exception:
             pass
 
@@ -59,7 +59,6 @@ class App:
         self.key_var = tk.StringVar(value=self.saved_key)
         ttk.Entry(key_frame, textvariable=self.key_var, width=60).pack(side="left", padx=6, pady=6)
         ttk.Button(key_frame, text="Get key", command=self._open_get_key).pack(side="left", padx=4)
-        ttk.Button(key_frame, text="Save", command=self._save_config).pack(side="left", padx=4)
         ttk.Button(key_frame, text="Connect", command=self._connect).pack(side="left", padx=4)
 
         # 2. select stock
@@ -135,8 +134,21 @@ class App:
         if not key:
             messagebox.showwarning("Notice", "Please enter your API key")
             return
-        self.ds = DataSinking(key)
-        self._log("Connected")
+        ds = DataSinking(key)
+        try:
+            ds.list_exchanges()  # 验证 key 是否有效
+        except requests.exceptions.HTTPError as e:
+            if e.response is not None and e.response.status_code == 401:
+                messagebox.showerror("Error", "Invalid API key — click 'Get key' to get one.")
+            else:
+                messagebox.showerror("Error", f"Connection failed: {e}")
+            return
+        except Exception as e:
+            messagebox.showerror("Error", f"Connection failed: {e}")
+            return
+        self.ds = ds
+        self._save_config()  # 验证通过后自动记住
+        self._log("Connected — key is valid")
 
     def _ensure_ds(self):
         if not self.ds:
