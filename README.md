@@ -24,6 +24,7 @@ datasinking/
 ├── research/     # Research notes / blog posts (reproducing paper-style presentation)
 ├── datasinking/  # Python client — pip install datasinking
 ├── llm-examples.md  # Ask an LLM — no code needed (3 end-to-end examples)
+├── api-examples.md  # 7 examples × 3 interfaces (curl / Python / LLM)
 └── README.md
 ```
 
