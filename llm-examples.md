@@ -6,17 +6,6 @@ The fastest way to use DataSinking is to **not write code at all**. Point any LL
 your API key, and ask for what you want in plain language. The model reads the API,
 calls it, and hands you the answer.
 
-**Prerequisite — get a key (no signup):**
-
-```bash
-curl -X POST -H "Content-Type: application/json" \
-  -d '{"email": "you@example.com"}' \
-  "https://api.datasink.ing/free-key"
-```
-
-A free key is emailed to you instantly. (Free = 1 req/s + a shared daily quota;
-batch download and higher limits require a yearly key.)
-
 Seven end-to-end examples below. Each shows **what you say**, the **API call the
 model makes**, the **key part of the response**, and the **answer you get back**.
 
