@@ -15,6 +15,7 @@ datasinking/
 ├── examples/     # Example scripts: pull data from the API and analyze it
 ├── research/     # Research notes / blog posts (reproducing paper-style presentation)
 ├── sdk/          # Python client library (ready to use)
+├── llm-examples.md  # Ask an LLM — no code needed (3 end-to-end examples)
 └── README.md
 ```
 
@@ -43,6 +44,13 @@ reports = ds.get_symbol_reports(symbol="600519.SS", limit=3)
 for r in reports:
     print(r["report_period"], r["title"], len(r["content"]), "chars")
 ```
+
+## Ask an LLM (no code)
+
+Don't want to write code? Point any LLM at [datasink.ing](https://datasink.ing),
+give it your API key, and ask in plain language. See
+[`llm-examples.md`](llm-examples.md) for three end-to-end examples — explore
+coverage, list a company's reports, and extract a figure with correct units.
 
 ## Examples (`examples/`)
 
