@@ -5,6 +5,7 @@ No-code tool: enter key -> pick exchange -> pick stock -> set filters -> downloa
 Requires: pip install datasinking
 """
 import os
+import sys
 import json
 import threading
 import webbrowser
@@ -238,8 +239,17 @@ class App:
             log(f"Download failed: {e}")
 
 
+def resource_path(rel):
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base, rel)
+
+
 def main():
     root = tk.Tk()
+    try:
+        root.iconbitmap(resource_path("graham.ico"))
+    except Exception:
+        pass
     App(root)
     root.mainloop()
 
