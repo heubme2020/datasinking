@@ -10,7 +10,7 @@ import sys
 from datetime import datetime
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from sdk.datasinking import DataSinking
+from datasinking import DataSinking
 
 if len(sys.argv) < 3:
     print(__doc__)
@@ -22,8 +22,8 @@ OUT_DIR = sys.argv[3] if len(sys.argv) > 3 else f"./downloads/{SYMBOL.replace('.
 
 ds = DataSinking(API_KEY)
 
-# Fetch all reports of the symbol (full content, auto-paginated + batched)
-reports = ds.get_symbol_reports(symbol=SYMBOL, all=True)
+# 拉某股票的全部报告(全文, limit=-1 = 全部)
+reports = ds.get_stock_reports(SYMBOL, limit=-1)
 print(f"{SYMBOL} has {len(reports)} reports")
 
 os.makedirs(OUT_DIR, exist_ok=True)

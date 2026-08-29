@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "datasinking"
+version = "0.1.0"
+description = "Python client for DataSinking — full-text China A-share financial reports as Markdown."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "DataSinking" }]
+keywords = ["a-share", "china", "financial reports", "markdown", "api", "stock"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Office/Business :: Financial",
+]
+dependencies = ["requests"]
+
+[project.urls]
+Homepage = "https://datasink.ing"
+Documentation = "https://datasink.ing/docs"
+Repository = "https://github.com/heubme2020/datasinking"
+
+[tool.setuptools]
+packages = ["datasinking"]

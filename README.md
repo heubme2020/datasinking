@@ -20,7 +20,7 @@ Examples, research and tutorials showing how to work with financial report data,
 datasinking/
 ├── examples/     # Example scripts: pull data from the API and analyze it
 ├── research/     # Research notes / blog posts (reproducing paper-style presentation)
-├── sdk/          # Python client library (ready to use)
+├── datasinking/  # Python client — pip install datasinking
 ├── llm-examples.md  # Ask an LLM — no code needed (3 end-to-end examples)
 └── README.md
 ```
@@ -38,16 +38,19 @@ curl "https://api.datasink.ing/exchanges?apikey=YOUR_KEY"
 curl "https://api.datasink.ing/documents?symbol=600519.SS&apikey=YOUR_KEY"
 ```
 
-3. Or use the Python SDK:
+3. Or use the Python client:
+
+```bash
+pip install datasinking
+```
 
 ```python
-from sdk.datasinking import DataSinking
+from datasinking import DataSinking
 
 ds = DataSinking("YOUR_KEY")
 
 # Latest 3 reports of Kweichow Moutai (full markdown content included)
-reports = ds.get_symbol_reports(symbol="600519.SS", limit=3)
-for r in reports:
+for r in ds.get_stock_reports("600519.SS", limit=3):
     print(r["report_period"], r["title"], len(r["content"]), "chars")
 ```
 
@@ -62,7 +65,7 @@ coverage, list a company's reports, and extract a figure with correct units.
 
 | File | What it does |
 |---|---|
-| `01_quickstart.py` | List exchanges / list stocks / list reports / fetch a document |
+| `01_quickstart.py` | The 5 core functions: list exchanges / stocks / reports / fetch a report / fetch a stock's reports |
 | `02_download_company.py` | Download a company's full reports to local Markdown files |
 | `03_download_exchange.py` | Download an entire exchange's reports (all stocks) to local Markdown files |
 
