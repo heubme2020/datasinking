@@ -31,17 +31,13 @@ datasinking/
 ## Quick start
 
 1. Get an API key at [datasink.ing](https://datasink.ing)
-2. Pull data (FMP-style `?apikey=`):
+2. One line (FMP-style `?apikey=`):
 
 ```bash
-# List exchanges
-curl "https://api.datasink.ing/exchanges?apikey=YOUR_KEY"
-
-# List all of Kweichow Moutai's reports
-curl "https://api.datasink.ing/documents?symbol=600519.SS&apikey=YOUR_KEY"
+curl "https://api.datasink.ing/documents?symbol=600519.SS&with_content=1&apikey=YOUR_KEY"
 ```
 
-3. Or use the Python client:
+Or in Python:
 
 ```bash
 pip install datasinking
@@ -51,11 +47,11 @@ pip install datasinking
 from datasinking import DataSinking
 
 ds = DataSinking("YOUR_KEY")
-
-# Latest 3 reports of Kweichow Moutai (full markdown content included)
 for r in ds.get_stock_reports("600519.SS", limit=3):
     print(r["report_period"], r["title"], len(r["content"]), "chars")
 ```
+
+All five functions (curl / Python / LLM): [`api-examples.md`](api-examples.md).
 
 ## Ask an LLM (no code)
 
