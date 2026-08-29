@@ -18,7 +18,6 @@ CONFIG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.j
 
 EXCHANGES = {"SSE (Shanghai)": "sse", "SZSE (Shenzhen)": "szse", "BSE (Beijing)": "bj"}
 DOC_TYPES = {"All": None, "Annual": "annual", "Semi-annual": "semiannual", "Q1": "q1", "Q3": "q3"}
-LIMITS = {"Latest 7": 7, "Latest 10": 10, "Latest 30": 30, "All": -1}
 
 
 class App:
@@ -95,8 +94,9 @@ class App:
         self.doc_type_var = tk.StringVar(value=list(DOC_TYPES.keys())[0])
         ttk.Combobox(row1, textvariable=self.doc_type_var, values=list(DOC_TYPES.keys()), state="readonly", width=18).pack(side="left", padx=4)
         ttk.Label(row1, text="Count:").pack(side="left", padx=(20, 0))
-        self.limit_var = tk.StringVar(value=list(LIMITS.keys())[0])
-        ttk.Combobox(row1, textvariable=self.limit_var, values=list(LIMITS.keys()), state="readonly", width=12).pack(side="left", padx=4)
+        self.limit_var = tk.StringVar(value="7")
+        ttk.Entry(row1, textvariable=self.limit_var, width=8).pack(side="left", padx=4)
+        ttk.Label(row1, text="(-1 = all)").pack(side="left", padx=4)
 
         row2 = ttk.Frame(cond_frame)
         row2.pack(fill="x", padx=6, pady=4)
@@ -183,7 +183,11 @@ class App:
         if not code or not self._ensure_ds():
             return
         doc_type = DOC_TYPES[self.doc_type_var.get()]
-        limit = LIMITS[self.limit_var.get()]
+        try:
+            limit = int(self.limit_var.get().strip())
+        except ValueError:
+            messagebox.showwarning("Notice", "Count must be an integer (e.g. 7, or -1 for all)")
+            return
         period_from = self.period_from_var.get().strip() or None
         period_to = self.period_to_var.get().strip() or None
         out_dir = self.out_dir_var.get().strip()
