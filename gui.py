@@ -7,6 +7,7 @@ Requires: pip install datasinking
 import os
 import json
 import threading
+import webbrowser
 from datetime import datetime
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
@@ -48,6 +49,9 @@ class App:
         except Exception:
             pass
 
+    def _open_get_key(self):
+        webbrowser.open("https://datasink.ing/pricing")
+
     # ---- UI ----
     def _build_ui(self):
         # 1. key
@@ -55,6 +59,7 @@ class App:
         key_frame.pack(fill="x", padx=10, pady=6)
         self.key_var = tk.StringVar(value=self.saved_key)
         ttk.Entry(key_frame, textvariable=self.key_var, width=60).pack(side="left", padx=6, pady=6)
+        ttk.Button(key_frame, text="Get key", command=self._open_get_key).pack(side="left", padx=4)
         ttk.Button(key_frame, text="Save", command=self._save_config).pack(side="left", padx=4)
         ttk.Button(key_frame, text="Connect", command=self._connect).pack(side="left", padx=4)
 
