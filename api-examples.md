@@ -1,52 +1,135 @@
 # API Examples
 
-Five functions cover everything — curl, Python, and an LLM all map to the same five.
+Seven examples — the five operations (the fifth has three variants). Each shows
+**curl**, **Python**, and **an LLM** side by side.
 
-## The five functions
+```bash
+pip install datasinking   # for the Python examples
+```
 
-| Function | What it does | curl |
-|---|---|---|
-| `list_exchanges()` | List exchanges | `GET /exchanges` |
-| `list_stocks(exchange)` | List stocks in an exchange | `GET /stocks?exchange=sse` |
-| `list_reports(symbol)` | List a stock's reports (metadata) | `GET /documents?symbol=600519.SS` |
-| `get_report(doc_id)` | Fetch one report (full text) | `GET /documents/42` |
-| `get_stock_reports(symbol, ...)` | Fetch a stock's reports (full text) | `GET /documents + with_content=1` |
+---
 
-Python (`pip install datasinking`):
+## 1. List exchanges
 
+**curl**
+```bash
+curl "https://api.datasink.ing/exchanges?apikey=YOUR_KEY"
+# → {"exchanges": ["bj", "sse", "szse"]}
+```
+
+**Python**
 ```python
 from datasinking import DataSinking
 ds = DataSinking("YOUR_API_KEY")
 
-ds.list_exchanges()                    # ['bj', 'sse', 'szse']
-ds.list_stocks("sse")                  # list of stocks
-ds.list_reports("600519.SS")           # metadata (no content)
-ds.get_report(42)                      # single report, full text
-ds.get_stock_reports("600519.SS")      # full text, latest 7 (default)
+ds.list_exchanges()          # → ['bj', 'sse', 'szse']
 ```
 
-## `get_stock_reports` — three filters
+**LLM** — point it at https://datasink.ing and ask:
+> "Which exchanges does this cover?"
 
-| Filter | Python | curl |
-|---|---|---|
-| Latest N (default 7) | `limit=7` | `?order=desc&size=7` |
-| By reporting period | `period_from`, `period_to` | `?report_period_from=&report_period_to=` |
-| All | `limit=-1` | paginate `page=1..N` |
+---
 
+## 2. List stocks in an exchange
+
+**curl**
+```bash
+curl "https://api.datasink.ing/stocks?exchange=sse&apikey=YOUR_KEY"
+# → {"exchange":"sse","total":2300,"items":[{"stock_code":"600000","stock_name":"浦发银行","report_count":30}, …]}
+```
+
+**Python**
 ```python
-ds.get_stock_reports("600519.SS", limit=7)                                    # latest 7
-ds.get_stock_reports("600519.SS", period_from="2023-01-01", period_to="2023-12-31")  # by period
-ds.get_stock_reports("600519.SS", limit=-1)                                   # all
+ds.list_stocks("sse")        # → list[dict] (stock_code / stock_name / report_count)
 ```
 
-## Ask an LLM instead
+**LLM**
+> "What stocks are on the Shanghai exchange?"
 
-Point any LLM at [datasink.ing](https://datasink.ing), give it your key, and ask in plain language:
+---
 
-- "Which exchanges does this cover?" → `list_exchanges`
-- "What stocks are on the Shanghai exchange?" → `list_stocks`
-- "List Moutai's annual reports." → `list_reports`
-- "Give me document 42." → `get_report`
-- "Moutai's 2023 revenue — don't get the unit wrong." → `get_stock_reports`
+## 3. List a stock's reports (metadata)
 
-Full end-to-end prompts: [`llm-examples.md`](llm-examples.md).
+**curl**
+```bash
+curl "https://api.datasink.ing/documents?symbol=600519.SS&doc_type=annual&apikey=YOUR_KEY"
+```
+
+**Python**
+```python
+ds.list_reports("600519.SS", doc_type="annual")   # → list[dict], metadata (no content)
+```
+
+**LLM**
+> "List Moutai's annual reports."
+
+---
+
+## 4. Fetch one report (full text)
+
+**curl**
+```bash
+curl "https://api.datasink.ing/documents/42?apikey=YOUR_KEY"
+```
+
+**Python**
+```python
+ds.get_report(42)            # → dict, single report (full content)
+```
+
+**LLM**
+> "Give me document 42."
+
+---
+
+## 5. Stock's reports — latest N (full text)
+
+**curl**
+```bash
+curl "https://api.datasink.ing/documents?symbol=600519.SS&order=desc&size=7&with_content=1&apikey=YOUR_KEY"
+```
+
+**Python**
+```python
+ds.get_stock_reports("600519.SS", limit=7)   # → list[dict], full content
+```
+
+**LLM**
+> "Moutai's latest 7 reports, full text."
+
+---
+
+## 6. Stock's reports — by reporting period (full text)
+
+`report_period` = the fiscal period (not the disclosure date).
+
+**curl**
+```bash
+curl "https://api.datasink.ing/documents?symbol=600519.SS&report_period_from=2023-01-01&report_period_to=2023-12-31&with_content=1&apikey=YOUR_KEY"
+```
+
+**Python**
+```python
+ds.get_stock_reports("600519.SS", period_from="2023-01-01", period_to="2023-12-31")
+```
+
+**LLM**
+> "Moutai's 2023 reports, by reporting period, full text."
+
+---
+
+## 7. Stock's reports — all (full text)
+
+**curl**
+```bash
+# 纯 curl 需手动翻 page 拉全; Python 的 limit=-1 会自动分页
+curl "https://api.datasink.ing/documents?symbol=600519.SS&page=1&size=200&with_content=1&apikey=YOUR_KEY"
+```
+
+**Python**
+```python
+ds.get_stock_reports("600519.SS", limit=-1)   # → all reports, full content
+```
+
+**LLM**
+> "All of Moutai's reports, full text."
