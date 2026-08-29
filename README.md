@@ -1,5 +1,7 @@
 # DataSinking
 
+[![PyPI version](https://img.shields.io/pypi/v/datasinking.svg)](https://pypi.org/project/datasinking/)
+
 **Full-text A-share financial reports, as clean Markdown.**
 
 [DataSinking](https://datasink.ing) is a **China stock market data API** that serves
