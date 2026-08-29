@@ -1,8 +1,14 @@
 # DataSinking
 
-**A-share financial reports, as clean Markdown.**
+**Full-text A-share financial reports, as clean Markdown.**
 
-[DataSinking](https://datasink.ing) provides full-text **Markdown** of China A-share (SSE / SZSE / BSE) financial reports through a simple REST API. Raw PDFs are sourced from [cninfo.com.cn](http://www.cninfo.com.cn) (the officially designated disclosure platform) and parsed into structured Markdown with YAML frontmatter, preserved headings, paragraphs and tables — ready for LLM reading and analysis.
+[DataSinking](https://datasink.ing) is a **China stock market data API** that serves
+**full-text A-share financial reports** — annual, semi-annual and quarterly — as clean
+**Markdown**. Download China A-share financial statements (balance sheet, income statement,
+cash flow) by FMP-style symbol (`600519.SS`) or filter by exchange / report period, through a
+simple REST API. Raw PDFs are sourced from [cninfo.com.cn](http://www.cninfo.com.cn) (the
+officially designated disclosure platform) and parsed into structured Markdown with YAML
+frontmatter, preserved headings, paragraphs and tables — ready for LLM reading and analysis.
 
 ---
 
@@ -80,7 +86,8 @@ Start from [`research/TEMPLATE.md`](research/TEMPLATE.md).
 |---|---|
 | Coverage | SSE / SZSE / BSE, 5,000+ A-share companies |
 | Document types | annual / semiannual / q1 / q3 / amendment |
-| Format | Markdown (with YAML frontmatter) |
+| Format | Full-text Markdown (with YAML frontmatter) |
+| API | REST — `GET /documents`, batch download, `with_content=1` for full text |
 | Symbols | FMP style: `600519.SS` / `000001.SZ` / `830799.BJ` |
 | Auth | `?apikey=` query parameter (FMP style) |
 
