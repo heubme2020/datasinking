@@ -8,46 +8,52 @@
     get_stock_reports(symbol, ..., limit=7)  拉某股票的报告(全文)
 
 返回类型约定: list_* 一律返回 list, get_report 返回单个 dict, get_stock_reports 返回 list。
-"""
-import time
 
-import requests
+零第三方依赖, 只用标准库 urllib。
+"""
+import json
+import time
+import urllib.request
+import urllib.error
+import urllib.parse
 
 
 class DataSinking:
     def __init__(self, api_key, base_url="https://api.datasink.ing"):
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key
-        self.session = requests.Session()
 
-    # ---- 内部方法 ----
-    def _get(self, path, params=None, retries=5):
-        params = {**(params or {}), "apikey": self.api_key}
+    # ---- 内部: HTTP ----
+    def _request(self, method, path, params=None, body=None, retries=5):
+        p = dict(params or {})
+        p["apikey"] = self.api_key
+        url = f"{self.base_url}{path}?{urllib.parse.urlencode(p)}"
+        data = None
+        headers = {"User-Agent": "Mozilla/5.0 (compatible; DataSinking/0.1.0)"}
+        if body is not None:
+            data = json.dumps(body).encode("utf-8")
+            headers["Content-Type"] = "application/json"
+        req = urllib.request.Request(url, data=data, headers=headers, method=method)
+        last = None
         for i in range(retries):
             try:
-                r = self.session.get(f"{self.base_url}{path}", params=params, timeout=60)
-                if r.status_code == 429:  # 限流, 稍等重试
+                with urllib.request.urlopen(req, timeout=60) as resp:
+                    return json.loads(resp.read().decode("utf-8"))
+            except urllib.error.HTTPError as e:
+                if e.code == 429:  # 限流, 稍等重试
                     time.sleep(2)
                     continue
-                r.raise_for_status()
-                return r.json()
-            except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
+                raise  # 其他 HTTP 错误(401/403/404...)直接抛给上层
+            except (urllib.error.URLError, TimeoutError, OSError) as e:
                 time.sleep(1 + i)
-        raise RuntimeError("Request failed after multiple retries")
+                last = e
+        raise RuntimeError(f"Request failed after retries: {last}")
 
-    def _post(self, path, json=None, retries=5):
-        params = {"apikey": self.api_key}
-        for i in range(retries):
-            try:
-                r = self.session.post(f"{self.base_url}{path}", params=params, json=json, timeout=60)
-                if r.status_code == 429:
-                    time.sleep(2)
-                    continue
-                r.raise_for_status()
-                return r.json()
-            except (requests.exceptions.SSLError, requests.exceptions.ConnectionError):
-                time.sleep(1 + i)
-        raise RuntimeError("Request failed after multiple retries")
+    def _get(self, path, params=None):
+        return self._request("GET", path, params)
+
+    def _post(self, path, body=None):
+        return self._request("POST", path, body=body)
 
     def _fetch_all_meta(self, params):
         """分页拉全 metadata(无 content), 200/页"""
@@ -72,8 +78,8 @@ class DataSinking:
                     b = self._post("/documents/batch", {"doc_ids": chunk})
                     items.extend(b["items"])
                     continue
-                except requests.exceptions.HTTPError as e:
-                    if e.response is not None and e.response.status_code == 403:
+                except urllib.error.HTTPError as e:
+                    if e.code == 403:
                         batch_ok = False
                     else:
                         raise

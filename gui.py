@@ -9,7 +9,7 @@ import sys
 import json
 import threading
 import webbrowser
-import requests
+import urllib.error
 from datetime import datetime
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
@@ -138,8 +138,8 @@ class App:
         ds = DataSinking(key)
         try:
             ds.list_exchanges()  # 验证 key 是否有效
-        except requests.exceptions.HTTPError as e:
-            if e.response is not None and e.response.status_code == 401:
+        except urllib.error.HTTPError as e:
+            if e.code == 401:
                 messagebox.showerror("Error", "Invalid API key — click 'Get key' to get one.")
             else:
                 messagebox.showerror("Error", f"Connection failed: {e}")
