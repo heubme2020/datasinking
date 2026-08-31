@@ -1,91 +1,91 @@
 # DataSinking MCP Server
 
-把 [DataSinking](https://datasink.ing) 的亚洲财报全文 API 暴露给 AI agent。通过 [Model Context Protocol (MCP)](https://modelcontextprotocol.io) 这个开放标准，任何支持 MCP 的 AI 客户端都能直接调用工具取财报，无需写代码。
+Expose the [DataSinking](https://datasink.ing) Asian financial-report API to AI agents. Through [Model Context Protocol (MCP)](https://modelcontextprotocol.io) — an open standard — any MCP-compatible AI client can call our tools to fetch financial reports, no code required.
 
-## 支持的客户端（不止 Claude）
+## Supported clients (not just Claude)
 
-MCP 是开放标准，以下 AI 客户端 / agent 都能接：
+MCP is an open standard, so all of these AI clients / agents can connect:
 
-- **Claude**（Desktop / Code，Anthropic）
+- **Claude** (Desktop / Code, Anthropic)
 - **Cursor**
-- **OpenAI Codex**（CLI / app）
-- **DeepSeek**（harness / CLI）
+- **OpenAI Codex** (CLI / app)
+- **DeepSeek** (harness / CLI)
 - **Windsurf**
-- 其他支持 MCP 的 agent / 框架
+- Other MCP-compatible agents / frameworks
 
-## 安装
+## Install
 
 ```bash
 pip install mcp requests
 ```
 
-> 需要一个 DataSinking API key（[datasink.ing](https://datasink.ing) 免费领取）。
+> You need a DataSinking API key ([datasink.ing](https://datasink.ing) — free).
 
-## 配置（通用）
+## Configure
 
-MCP 的核心配置结构在所有客户端里是一样的（`command` + `args` + `env`），只是各客户端把它写进各自的配置文件：
+The core MCP config structure is the same across clients (`command` + `args` + `env`); each client just writes it into its own config file:
 
 ```json
 {
   "mcpServers": {
     "datasinking": {
       "command": "python",
-      "args": ["/绝对路径/mcp_server.py"],
-      "env": { "DATASINK_API_KEY": "你的key" }
+      "args": ["/absolute/path/to/mcp_server.py"],
+      "env": { "DATASINK_API_KEY": "YOUR_KEY" }
     }
   }
 }
 ```
 
-各客户端添加方式：
+How to add it per client:
 
-| 客户端 | 添加方式 |
-|--------|---------|
-| **Claude Desktop** | `Settings → Developer → Edit Config`，编辑 `claude_desktop_config.json`（JSON 格式，同上） |
-| **Claude Code** | `claude mcp add datasinking -- python /绝对路径/mcp_server.py` |
-| **Cursor** | `Settings → MCP → Add new MCP server`（粘贴 JSON） |
-| **OpenAI Codex** | 编辑 `~/.codex/config.toml`，加 `[mcp_servers.datasinking]` 段（TOML 格式，字段同上） |
-| **DeepSeek** | 通过其 MCP 配置接入（JSON 同上） |
+| Client | How to add |
+|--------|------------|
+| **Claude Desktop** | `Settings → Developer → Edit Config`, edit `claude_desktop_config.json` (JSON, as above) |
+| **Claude Code** | `claude mcp add datasinking -- python /absolute/path/to/mcp_server.py` |
+| **Cursor** | `Settings → MCP → Add new MCP server` (paste the JSON) |
+| **OpenAI Codex** | Edit `~/.codex/config.toml`, add a `[mcp_servers.datasinking]` section (TOML, same fields) |
+| **DeepSeek** | Add via its MCP config (JSON, as above) |
 | **Windsurf** | `Settings → MCP` |
 
-配置好后，就能直接问：
+Once configured, ask in plain language:
 
-> "DataSinking 覆盖了哪些交易所？茅台 2025 年报的管理层讨论与分析讲了什么？"
+> "Which exchanges does DataSinking cover? What does Moutai's 2025 annual report say in its management discussion and analysis?"
 
-## 设置 API key 环境变量
+## Set the API key environment variable
 
-如果不在配置里写 `env` 字段（比如用 `claude mcp add` 加、或想全局设），需要先把 key 设进环境变量。三种 shell 的命令：
+If you don't put `env` in the config (e.g. you used `claude mcp add`, or want to set it globally), set the key first. Three shells:
 
-**Linux / macOS（bash / zsh）**：
+**Linux / macOS (bash / zsh)**:
 
 ```bash
-export DATASINK_API_KEY="你的key"
+export DATASINK_API_KEY="YOUR_KEY"
 ```
 
-**Windows PowerShell**：
+**Windows PowerShell**:
 
 ```powershell
-$env:DATASINK_API_KEY="你的key"
+$env:DATASINK_API_KEY="YOUR_KEY"
 ```
 
-**Windows CMD**：
+**Windows CMD**:
 
 ```cmd
-set DATASINK_API_KEY=你的key
+set DATASINK_API_KEY=YOUR_KEY
 ```
 
-## 工具清单
+## Tools
 
-| 工具 | 作用 | 对应 API |
-|------|------|---------|
-| `list_exchanges` | 列出覆盖的交易所 | `/exchanges` |
-| `list_stocks(exchange)` | 列某交易所的股票 | `/stocks` |
-| `list_reports(symbol, doc_type, size)` | 列某公司的报告（元数据） | `/documents` |
-| `get_report(document_id)` | 拿单篇报告全文 | `/documents/{id}` |
-| `list_sections(document_id)` | 列报告的章节标题 | `/documents/{id}/sections` |
-| `get_section(document_id, section)` | 只取某一章（省 token，适合 RAG） | `/documents/{id}?section=` |
+| Tool | What it does | API |
+|------|-------------|-----|
+| `list_exchanges` | List covered exchanges | `/exchanges` |
+| `list_stocks(exchange)` | List stocks on an exchange | `/stocks` |
+| `list_reports(symbol, doc_type, size)` | List a company's reports (metadata) | `/documents` |
+| `get_report(document_id)` | Get a report's full text | `/documents/{id}` |
+| `list_sections(document_id)` | List a report's section headings | `/documents/{id}/sections` |
+| `get_section(document_id, section)` | Get one section only (token-efficient, for RAG) | `/documents/{id}?section=` |
 
-## 提示
+## Tips
 
-- **symbol 用 FMP 风格**：`600519.SS`（茅台）、`005930.KS`（三星）、`7203.T`（丰田）。
-- **要省 token 用 `get_section`** 只取某章（如「管理层讨论与分析」），而不是 `get_report` 拿整篇。
+- **FMP-style symbols**: `600519.SS` (Moutai), `005930.KS` (Samsung), `7203.T` (Toyota).
+- **To save tokens**, use `get_section` to pull one section (e.g. "management discussion and analysis") instead of `get_report` for the whole report.
