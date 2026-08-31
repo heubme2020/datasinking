@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "datasinking"
-version = "0.1.0"
-description = "Python client for DataSinking — full-text China A-share financial reports as Markdown."
+version = "0.1.1"
+description = "Python client for DataSinking — full-text Asian financial reports (China, Korea, Japan) as Markdown."
 readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
@@ -17,7 +17,7 @@ classifiers = [
     "Operating System :: OS Independent",
     "Topic :: Office/Business :: Financial",
 ]
-dependencies = ["requests"]
+dependencies = []
 
 [project.urls]
 Homepage = "https://datasink.ing"
