@@ -22,18 +22,18 @@ model makes**, the **key part of the response**, and the **answer you get back**
 
 ```bash
 curl "https://api.datasink.ing/exchanges?apikey=YOUR_KEY"
-# → {"exchanges":["bj","sse","szse"]}
+# → {"exchanges":["bj","jpx","knx","koe","ksc","sse","szse"]}
 
 curl "https://api.datasink.ing/stocks?exchange=sse&apikey=YOUR_KEY"
-# → {"exchange":"sse","total":2304,
+# → {"exchange":"sse","total":2306,
 #    "items":[{"stock_code":"600000","stock_name":"浦发银行","report_count":103}, …]}
 ```
 
 **The answer you get:**
 
-> It covers China's three exchanges — Shanghai (sse), Shenzhen (szse) and
-> Beijing (bj) — with Korea and Japan rolling out. Each has full-text reports
-> as Markdown.
+> It covers China (SSE / SZSE / BSE), Korea (KOSPI / KOSDAQ / KONEX) and
+> Japan (TSE) — 7 exchanges, 9,700+ listed companies in total. Each has
+> full-text reports as Markdown.
 
 ---
 

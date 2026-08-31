@@ -14,7 +14,7 @@ pip install datasinking   # for the Python examples
 **curl**
 ```bash
 curl "https://api.datasink.ing/exchanges?apikey=YOUR_KEY"
-# → {"exchanges": ["bj", "sse", "szse"]}
+# → {"exchanges": ["bj", "jpx", "knx", "koe", "ksc", "sse", "szse"]}
 ```
 
 **Python**
@@ -22,7 +22,7 @@ curl "https://api.datasink.ing/exchanges?apikey=YOUR_KEY"
 from datasinking import DataSinking
 ds = DataSinking("YOUR_API_KEY")
 
-ds.list_exchanges()          # → ['bj', 'sse', 'szse']
+ds.list_exchanges()          # → ['bj', 'jpx', 'knx', 'koe', 'ksc', 'sse', 'szse']
 ```
 
 **LLM** — point it at https://datasink.ing and ask:
@@ -35,16 +35,21 @@ ds.list_exchanges()          # → ['bj', 'sse', 'szse']
 **curl**
 ```bash
 curl "https://api.datasink.ing/stocks?exchange=sse&apikey=YOUR_KEY"
-# → {"exchange":"sse","total":2300,"items":[{"stock_code":"600000","stock_name":"浦发银行","report_count":30}, …]}
+# → {"exchange":"sse","total":2306,"items":[{"stock_code":"600000","stock_name":"浦发银行","report_count":30}, …]}
+
+curl "https://api.datasink.ing/stocks?exchange=koe&apikey=YOUR_KEY"   # KOSDAQ (Korea)
+curl "https://api.datasink.ing/stocks?exchange=jpx&apikey=YOUR_KEY"   # Tokyo (Japan)
 ```
 
 **Python**
 ```python
 ds.list_stocks("sse")        # → list[dict] (stock_code / stock_name / report_count)
+ds.list_stocks("koe")        # Korea — KOSDAQ
+ds.list_stocks("jpx")        # Japan — Tokyo
 ```
 
 **LLM**
-> "What stocks are on the Shanghai exchange?"
+> "What stocks are on the Shanghai exchange? What about KOSDAQ?"
 
 ---
 
@@ -52,7 +57,9 @@ ds.list_stocks("sse")        # → list[dict] (stock_code / stock_name / report_
 
 **curl**
 ```bash
-curl "https://api.datasink.ing/documents?symbol=600519.SS&doc_type=annual&apikey=YOUR_KEY"
+curl "https://api.datasink.ing/documents?symbol=600519.SS&doc_type=annual&apikey=YOUR_KEY"   # Moutai (China)
+curl "https://api.datasink.ing/documents?symbol=005930.KS&doc_type=annual&apikey=YOUR_KEY"   # Samsung (Korea)
+curl "https://api.datasink.ing/documents?symbol=7203.T&doc_type=annual&apikey=YOUR_KEY"      # Toyota (Japan)
 ```
 
 **Python**
