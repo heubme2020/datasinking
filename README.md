@@ -22,6 +22,8 @@ datasinking/
 ├── examples/     # Example scripts: pull data from the API and analyze it
 ├── research/     # Research notes / blog posts (reproducing paper-style presentation)
 ├── datasinking/  # Python client — pip install datasinking
+├── mcp_server.py # MCP server — expose the API to AI agents (Claude / Cursor)
+├── mcp-server.md # How to configure the MCP server
 ├── llm-examples.md  # Ask an LLM — no code needed (3 end-to-end examples)
 ├── api-examples.md  # 7 examples × 3 interfaces (curl / Python / LLM)
 └── README.md
