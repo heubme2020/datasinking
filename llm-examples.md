@@ -31,8 +31,8 @@ curl "https://api.datasink.ing/stocks?exchange=sse&apikey=YOUR_KEY"
 
 **The answer you get:**
 
-> It covers all three mainland exchanges — Shanghai (sse), Shenzhen (szse) and
-> Beijing (bj) — 5,000+ A-share companies in total, each with full-text reports
+> It covers China's three exchanges — Shanghai (sse), Shenzhen (szse) and
+> Beijing (bj) — with Korea and Japan rolling out. Each has full-text reports
 > as Markdown.
 
 ---
@@ -201,3 +201,42 @@ curl "https://api.datasink.ing/documents?symbol=600519.SS&page=1&size=200&with_c
 
 > Moutai has 108 reports in total (annual, semi-annual, and quarterly) — here they
 > all are, full Markdown. (Pulled across pages; the SDK's `limit=-1` does this in one call.)
+
+---
+
+## Example 8 — Pull one section (for RAG)
+
+Building a RAG pipeline? Don't feed a whole 140k-character report into your vector DB —
+pull just the sections you need. Each report is structured into chapters, so you can
+fetch a single chapter and chunk/embed it directly.
+
+**You say:**
+
+> "I'm building a RAG app over financial reports. Give me only the MD&A section of Moutai's
+> 2025 annual report — don't waste tokens on the whole thing."
+
+**The model calls:**
+
+```bash
+# 1) List the chapters first
+curl "https://api.datasink.ing/documents/3/sections?apikey=YOUR_KEY"
+# → {"id":3,"symbol":"600519.SS","total":11,
+#    "sections":["重要提示","第一节释义","第二节公司简介和主要财务指标",
+#                "第三节管理层讨论与分析","第四节公司治理、环境和社会",
+#                "第五节重要事项","第六节股份变动及股东情况",
+#                "第七节债券相关情况","第八节财务报告"]}
+
+# 2) Pull just the MD&A chapter
+curl "https://api.datasink.ing/documents/3?section=管理层讨论与分析&apikey=YOUR_KEY"
+# → {"id":3,"symbol":"600519.SS","section":"第三节管理层讨论与分析",
+#    "content":"### 一、报告期内公司从事的业务情况\n公司主要业务是…"}
+```
+
+**The answer you get:**
+
+> Here's the MD&A chapter (第三节 管理层讨论与分析, ~23k chars) alone — sub-headings and
+> tables preserved, ready to chunk and embed. You got the analysis you need without
+> downloading the full 142k-char report.
+
+The same `sections` + `section=` pattern works across markets: Korea (`사업보고서`) and
+Japan (`有価証券報告書`) reports are also chapter-structured.

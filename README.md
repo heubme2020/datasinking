@@ -2,15 +2,14 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/datasinking.svg)](https://pypi.org/project/datasinking/)
 
-**Full-text A-share financial reports, as clean Markdown.**
+**Full-text financial reports across Asia, as clean Markdown.**
 
-[DataSinking](https://datasink.ing) is a **China stock market data API** that serves
-**full-text A-share financial reports** — annual, semi-annual and quarterly — as clean
-**Markdown**. Download China A-share financial statements (balance sheet, income statement,
-cash flow) by FMP-style symbol (`600519.SS`) or filter by exchange / report period, through a
-simple REST API. Raw PDFs are sourced from [cninfo.com.cn](http://www.cninfo.com.cn) (the
-officially designated disclosure platform) and parsed into structured Markdown with YAML
-frontmatter, preserved headings, paragraphs and tables — ready for LLM reading and analysis.
+[DataSinking](https://datasink.ing) serves **full-text financial reports** — annual, semi-annual
+and quarterly — from **China, Korea and Japan** as clean **Markdown**, ready for LLM reading
+and RAG. Query by FMP-style symbol (`600519.SS`, `005930.KS`, `7203.T`) or filter by exchange,
+report period, or **section** — pull just the MD&A / risk section instead of the whole report.
+Reports are sourced from official disclosure platforms and parsed into structured Markdown with
+YAML frontmatter, preserved headings, paragraphs and tables.
 
 ---
 
@@ -86,16 +85,16 @@ Start from [`research/TEMPLATE.md`](research/TEMPLATE.md).
 
 | | |
 |---|---|
-| Coverage | SSE / SZSE / BSE, 5,000+ A-share companies |
+| Coverage | China (SSE / SZSE / BSE) · Korea (KOSPI / KOSDAQ / KONEX) · Japan (TSE) |
 | Document types | annual / semiannual / q1 / q3 / amendment |
 | Format | Full-text Markdown (with YAML frontmatter) |
-| API | REST — `GET /documents`, batch download, `with_content=1` for full text |
-| Symbols | FMP style: `600519.SS` / `000001.SZ` / `830799.BJ` |
+| API | REST — `GET /documents`, batch download, `with_content=1` for full text, `?section=` + `/sections` for chapter-level access |
+| Symbols | FMP style: `600519.SS` / `005930.KS` / `7203.T` |
 | Auth | `?apikey=` query parameter (FMP style) |
 
 ## Data source
 
-All reports originate from [cninfo.com.cn](http://www.cninfo.com.cn), the officially designated information disclosure platform of China's listed companies.
+Reports are sourced from official regulatory disclosure platforms in each market and converted in-house to clean Markdown.
 
 ## License
 

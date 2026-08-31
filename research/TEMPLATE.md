@@ -3,7 +3,7 @@
 > One-sentence summary: what this note studies and what it concludes.
 
 - **Date**: 2026-XX-XX
-- **Data**: DataSinking (A-share financial reports Markdown API)
+- **Data**: DataSinking (Asian financial reports Markdown API)
 - **Related paper**: (optional) note which paper's presentation you reproduce / adapt
 
 ---
@@ -48,4 +48,4 @@ Key findings, limitations, and what could be done next.
 
 ## Data citation
 
-> Data in this note comes from [DataSinking](https://datasink.ing) (A-share financial reports Markdown API); the original reports originate from [cninfo.com.cn](http://www.cninfo.com.cn).
+> Data in this note comes from [DataSinking](https://datasink.ing) (Asian financial reports Markdown API); the original reports originate from official regulatory disclosure platforms.
