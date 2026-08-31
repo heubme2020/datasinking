@@ -240,3 +240,36 @@ curl "https://api.datasink.ing/documents/3?section=管理层讨论与分析&apik
 
 The same `sections` + `section=` pattern works across markets: Korea (`사업보고서`) and
 Japan (`有価証券報告書`) reports are also chapter-structured.
+
+---
+
+## Example 9 — Get the notes (附注) and a specific line item (在建工程)
+
+A common analyst ask: "give me the notes, and the construction-in-progress (在建工程)
+balance." The notes live inside the financial-report chapter — pull that chapter, then let
+the model zero in on the specific line item.
+
+**You say:**
+
+> "I need the financial statement notes for this company, and specifically the 在建工程
+> (construction-in-progress) balance."
+
+**The model calls:**
+
+```bash
+# 1) List the chapters, find the financial-report chapter
+curl "https://api.datasink.ing/documents/65062/sections?apikey=YOUR_KEY"
+# → ... "第八节财务报告" ...
+
+# 2) Pull just that chapter — it contains all the notes
+curl "https://api.datasink.ing/documents/65062?section=财务报告&apikey=YOUR_KEY"
+# → {"section":"第八节财务报告","content":"... 在建工程 | 七、22 | 121,858,867.39 | ..."}
+```
+
+**The answer you get:**
+
+> The notes are in the 财务报告 (financial report) chapter. Within it, the 在建工程
+> (construction-in-progress) note shows a balance of ¥121.86 million.
+
+Pulling the chapter (~160k chars) instead of the whole report (~240k chars) saves ~33% of
+tokens; the model then searches within that chapter for the exact note.
