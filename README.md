@@ -22,9 +22,9 @@ datasinking/
 ├── examples/     # Example scripts: pull data from the API and analyze it
 ├── research/     # Research notes / blog posts (reproducing paper-style presentation)
 ├── datasinking/  # Python client — pip install datasinking
-├── mcp_server.py # MCP server — expose the API to AI agents (Claude / Cursor)
+├── mcp_server.py # MCP server — expose the API to AI agents (Claude / Cursor / Codex / DeepSeek)
 ├── mcp-server.md # How to configure the MCP server
-├── llm-examples.md  # Ask an LLM — no code needed (3 end-to-end examples)
+├── llm-examples.md  # Ask an LLM — no code needed (8 end-to-end examples)
 ├── api-examples.md  # 7 examples × 3 interfaces (curl / Python / LLM)
 └── README.md
 ```
@@ -58,7 +58,7 @@ All five functions (curl / Python / LLM): [`api-examples.md`](api-examples.md).
 
 Don't want to write code? Point any LLM at [datasink.ing](https://datasink.ing),
 give it your API key, and ask in plain language. See
-[`llm-examples.md`](llm-examples.md) for three end-to-end examples — explore
+[`llm-examples.md`](llm-examples.md) for eight end-to-end examples — explore
 coverage, list a company's reports, and extract a figure with correct units.
 
 ## Examples (`examples/`)
@@ -71,7 +71,7 @@ coverage, list a company's reports, and extract a figure with correct units.
 
 Every example pulls from the live API and runs as-is.
 
-> `03_download_exchange.py` fetches every report on an exchange (e.g. all of Shenzhen — 130k+ documents). Free keys work too, but fall back to slow per-document fetching (1 req/s + shared daily quota); a **paid (yearly)** key is strongly recommended for full-exchange downloads.
+> `03_download_exchange.py` fetches every report on an exchange (e.g. all of Shenzhen — 150k+ documents). Free keys work too, but fall back to slow per-document fetching (1 req/s + shared daily quota); a **paid (yearly)** key is strongly recommended for full-exchange downloads.
 
 ## Research (`research/`)
 
