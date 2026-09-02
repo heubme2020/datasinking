@@ -13,10 +13,35 @@ MCP is an open standard, so all of these AI clients / agents can connect:
 - **Windsurf**
 - Other MCP-compatible agents / frameworks
 
+## Remote MCP (streamable HTTP)
+
+Prefer no local install? Use the hosted endpoint — point any MCP client at
+`https://api.datasink.ing/mcp`, authenticating with `?apikey=`, an
+`Authorization: Bearer` header, or an `X-API-Key` header:
+
+```json
+{
+  "mcpServers": {
+    "datasinking": {
+      "type": "http",
+      "url": "https://api.datasink.ing/mcp?apikey=YOUR_KEY"
+    }
+  }
+}
+```
+
+The six tools are the same as the local (stdio) server below.
+
 ## Install
 
+Either pip-install it, or run it one-shot with `uvx` (no install needed):
+
 ```bash
+# Option A — pip install, then run `datasinking-mcp`
 pip install "datasinking[mcp]"
+
+# Option B — no install, one-shot via uvx
+uvx --from "datasinking[mcp]" datasinking-mcp
 ```
 
 > You need a DataSinking API key ([datasink.ing](https://datasink.ing) — free).
@@ -31,6 +56,20 @@ The core MCP config structure is the same across clients (`command` + `args` + `
     "datasinking": {
       "command": "datasinking-mcp",
       "args": [],
+      "env": { "DATASINK_API_KEY": "YOUR_KEY" }
+    }
+  }
+}
+```
+
+To use `uvx` instead of a pip install, swap the `command`/`args`:
+
+```json
+{
+  "mcpServers": {
+    "datasinking": {
+      "command": "uvx",
+      "args": ["--from", "datasinking[mcp]", "datasinking-mcp"],
       "env": { "DATASINK_API_KEY": "YOUR_KEY" }
     }
   }

@@ -88,6 +88,7 @@ Start from [`research/TEMPLATE.md`](research/TEMPLATE.md).
 |---|---|
 | Coverage | China (SSE / SZSE / BSE) · Korea (KOSPI / KOSDAQ / KONEX) · Japan (TSE) |
 | Document types | annual / semiannual / q1 / q3 / amendment |
+| Update frequency | Daily — Korea/Japan via official DART/EDINET APIs (new filings within ~24h of publication) |
 | Format | Full-text Markdown (with YAML frontmatter) |
 | API | REST — `GET /documents`, batch download, `with_content=1` for full text, `?section=` + `/sections` for chapter-level access |
 | Symbols | FMP style: `600519.SS` / `005930.KS` / `7203.T` |
