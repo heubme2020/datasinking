@@ -16,7 +16,7 @@ MCP is an open standard, so all of these AI clients / agents can connect:
 ## Install
 
 ```bash
-pip install mcp requests
+pip install "datasinking[mcp]"
 ```
 
 > You need a DataSinking API key ([datasink.ing](https://datasink.ing) — free).
@@ -29,8 +29,8 @@ The core MCP config structure is the same across clients (`command` + `args` + `
 {
   "mcpServers": {
     "datasinking": {
-      "command": "python",
-      "args": ["/absolute/path/to/mcp_server.py"],
+      "command": "datasinking-mcp",
+      "args": [],
       "env": { "DATASINK_API_KEY": "YOUR_KEY" }
     }
   }
@@ -42,7 +42,7 @@ How to add it per client:
 | Client | How to add |
 |--------|------------|
 | **Claude Desktop** | `Settings → Developer → Edit Config`, edit `claude_desktop_config.json` (JSON, as above) |
-| **Claude Code** | `claude mcp add datasinking -- python /absolute/path/to/mcp_server.py` |
+| **Claude Code** | `claude mcp add datasinking -- datasinking-mcp` |
 | **Cursor** | `Settings → MCP → Add new MCP server` (paste the JSON) |
 | **OpenAI Codex** | Edit `~/.codex/config.toml`, add a `[mcp_servers.datasinking]` section (TOML, same fields) |
 | **DeepSeek** | Add via its MCP config (JSON, as above) |

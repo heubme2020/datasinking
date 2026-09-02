@@ -1,33 +1,32 @@
 # -*- coding: utf-8 -*-
-"""DataSinking MCP server —— 把亚洲财报全文 API 暴露给 AI agent (Claude / Cursor 等)。
+"""DataSinking MCP server (Model Context Protocol).
 
-MCP (Model Context Protocol) 让 AI agent 直接调用我们的工具来取财报。
+Expose the DataSinking API — full-text financial reports across Asia
+(China, Korea, Japan) as clean Markdown — to AI agents (Claude, Cursor,
+Codex, DeepSeek, Windsurf, …).
 
-用法:
-  1. pip install mcp requests
-  2. 设置环境变量 DATASINK_API_KEY（你的 API key）
-  3. python mcp_server.py          # stdio 模式
+Install the MCP extra::
 
-在 Claude Desktop / Claude Code 里配置（mcpServers）:
-  {
-    "mcpServers": {
-      "datasinking": {
-        "command": "python",
-        "args": ["/绝对路径/mcp_server.py"],
-        "env": { "DATASINK_API_KEY": "你的key" }
-      }
-    }
-  }
+    pip install "datasinking[mcp]"
+
+Then run::
+
+    datasinking-mcp
+
+or add to any MCP client with ``command: datasinking-mcp`` (stdio). Requires
+the environment variable ``DATASINK_API_KEY`` (get a free key at
+https://datasink.ing).
 """
 
 import os
+from typing import Optional
 
 import requests
 
-# 兼容 mcp v1 和 v2：v2 把 FastMCP 改名为 MCPServer
+# mcp v1 uses FastMCP; v2 renamed it to MCPServer. Support both.
 try:
     from mcp.server.fastmcp import FastMCP  # mcp v1
-except ImportError:
+except ImportError:  # pragma: no cover
     from mcp.server.mcpserver import MCPServer as FastMCP  # mcp v2
 
 BASE_URL = "https://api.datasink.ing"
@@ -43,10 +42,10 @@ mcp = FastMCP(
 )
 
 
-def _get(path, params=None):
-    """调 DataSinking API，自动带 apikey。"""
+def _get(path: str, params: Optional[dict] = None) -> dict:
+    """Call the DataSinking API, carrying the API key automatically."""
     if not API_KEY:
-        raise RuntimeError("缺少 DATASINK_API_KEY 环境变量")
+        raise RuntimeError("缺少 DATASINK_API_KEY 环境变量（去 datasink.ing 免费拿一个）")
     p = dict(params or {})
     p["apikey"] = API_KEY
     r = requests.get(f"{BASE_URL}{path}", params=p, timeout=90)
@@ -111,5 +110,10 @@ def get_section(document_id: int, section: str) -> dict:
     return _get(f"/documents/{document_id}", {"section": section})
 
 
-if __name__ == "__main__":
+def main() -> None:
+    """Entry point for the ``datasinking-mcp`` console script."""
     mcp.run()
+
+
+if __name__ == "__main__":
+    main()
