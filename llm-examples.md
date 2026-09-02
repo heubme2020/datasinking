@@ -273,3 +273,32 @@ curl "https://api.datasink.ing/documents/65062?section=财务报告&apikey=YOUR_
 
 Pulling the chapter (~160k chars) instead of the whole report (~240k chars) saves ~33% of
 tokens; the model then searches within that chapter for the exact note.
+
+---
+
+## Example 10 — Use it through MCP (no REST, no SDK)
+
+For AI agents that speak MCP (Claude, Cursor, Codex, Windsurf, …), point them at the
+hosted endpoint — no REST calls, no SDK, the agent calls the tools itself:
+
+```bash
+# List the available tools (JSON-RPC over the MCP streamable-HTTP endpoint)
+curl -s -X POST "https://api.datasink.ing/mcp?apikey=YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
+# → 6 tools: list_exchanges, list_stocks, list_reports, get_report, list_sections, get_section
+
+# Call one tool — list covered exchanges
+curl -s -X POST "https://api.datasink.ing/mcp?apikey=YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"list_exchanges","arguments":{}}}'
+# → {"content":[{"type":"text","text":"[\"bj\",\"jpx\",\"knx\",\"koe\",\"ksc\",\"sse\",\"szse\",\"twse\"]"}]}
+```
+
+Or configure an MCP client directly (Claude Desktop, etc.):
+
+```json
+{ "mcpServers": { "datasinking": { "type": "http", "url": "https://api.datasink.ing/mcp?apikey=YOUR_KEY" } } }
+```
+
+Prefer running it locally instead of the hosted endpoint? `uvx --from "datasinking[mcp]" datasinking-mcp` — see [`mcp-server.md`](mcp-server.md).
