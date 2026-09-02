@@ -16,8 +16,8 @@ MCP is an open standard, so all of these AI clients / agents can connect:
 ## Remote MCP (streamable HTTP)
 
 Prefer no local install? Use the hosted endpoint — point any MCP client at
-`https://api.datasink.ing/mcp`, authenticating with `?apikey=`, an
-`Authorization: Bearer` header, or an `X-API-Key` header:
+`https://api.datasink.ing/mcp`, authenticating with `?apikey=` or an
+`Authorization: Bearer` header:
 
 ```json
 {
