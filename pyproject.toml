@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "datasinking"
-version = "0.2.1"
+version = "0.2.2"
 description = "Python client for DataSinking — full-text Asian financial reports (China, Korea, Japan) as Markdown."
 readme = "README.md"
 requires-python = ">=3.8"

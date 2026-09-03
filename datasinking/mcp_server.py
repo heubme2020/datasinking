@@ -34,7 +34,9 @@ API_KEY = os.environ.get("DATASINK_API_KEY", "")
 
 mcp = FastMCP(
     "DataSinking",
-    version="0.2.1",
+    title="DataSinking — Full-text Asian Financial Reports",
+    description="Full-text Asian financial reports (China, Korea, Japan) as clean Markdown via API, with chapter-level access for RAG and AI agents.",
+    version="0.2.2",
     instructions=(
         "DataSinking serves full-text financial reports (annual / semi-annual / quarterly) "
         "from China, Korea and Japan as clean Markdown, ready for LLM reading and RAG. "

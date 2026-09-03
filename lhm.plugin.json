@@ -1,0 +1,127 @@
+{
+  "author": "heubme2020",
+  "authorUrl": "https://github.com/heubme2020",
+  "description": "Full-text Asian financial reports (China, Korea, Japan) as clean Markdown via API, with chapter-level access for RAG and AI agents.",
+  "homepage": "https://github.com/heubme2020/datasinking",
+  "identifier": "heubme2020-datasinking",
+  "name": "DataSinking — Full-text Asian Financial Reports",
+  "prompts": [],
+  "resources": [],
+  "tools": [
+    {
+      "name": "list_exchanges",
+      "description": "List the exchanges DataSinking covers and their report counts.\n\nReturns exchange codes (sse / szse / bj / ksc / koe / knx / jpx) with the number\nof reports available per exchange. Call this first to discover coverage.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "title": "list_exchangesArguments"
+      }
+    },
+    {
+      "name": "list_stocks",
+      "description": "List stocks on an exchange, including the report count per company.\n\nArgs:\n    exchange: Exchange code, e.g. sse / szse / bj / ksc / koe / knx / jpx\n    limit: Return the first N companies (default 20) to keep responses short.\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "exchange": {
+            "title": "Exchange",
+            "type": "string"
+          },
+          "limit": {
+            "default": 20,
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "exchange"
+        ],
+        "title": "list_stocksArguments"
+      }
+    },
+    {
+      "name": "list_reports",
+      "description": "List a company's reports — metadata only (id, title, period), no body text.\n\nArgs:\n    symbol: FMP-style symbol, e.g. 600519.SS / 005930.KS / 7203.T\n    doc_type: annual / semiannual / q1 / q3\n    size: Number of reports to return (default 10).\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "doc_type": {
+            "default": "annual",
+            "title": "Doc Type",
+            "type": "string"
+          },
+          "size": {
+            "default": 10,
+            "title": "Size",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "symbol"
+        ],
+        "title": "list_reportsArguments"
+      }
+    },
+    {
+      "name": "get_report",
+      "description": "Fetch a single report's full text (metadata + Markdown body).\n\nArgs:\n    document_id: Report id, from list_reports items[].id\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "title": "Document Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "document_id"
+        ],
+        "title": "get_reportArguments"
+      }
+    },
+    {
+      "name": "list_sections",
+      "description": "List every section heading in a report (feed the headings to get_section).\n\nArgs:\n    document_id: Report id\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "title": "Document Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "document_id"
+        ],
+        "title": "list_sectionsArguments"
+      }
+    },
+    {
+      "name": "get_section",
+      "description": "Fetch only one section of a report by keyword — cheaper than get_report for RAG.\n\nArgs:\n    document_id: Report id\n    section: Heading keyword, e.g. \"management discussion\" / \"MD&A\" / \"financial statements\" / \"notes\"\n",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "document_id": {
+            "title": "Document Id",
+            "type": "integer"
+          },
+          "section": {
+            "title": "Section",
+            "type": "string"
+          }
+        },
+        "required": [
+          "document_id",
+          "section"
+        ],
+        "title": "get_sectionArguments"
+      }
+    }
+  ],
+  "version": "0.2.2"
+}
