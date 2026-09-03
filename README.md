@@ -1,6 +1,9 @@
 # DataSinking
 
+<!-- mcp-name: io.github.heubme2020/datasinking -->
+
 [![PyPI version](https://img.shields.io/pypi/v/datasinking.svg)](https://pypi.org/project/datasinking/)
+[![MCP server](https://img.shields.io/badge/MCP-server-blue)](https://github.com/heubme2020/datasinking#mcp-server)
 
 **Full-text financial reports across Asia, as clean Markdown.**
 
@@ -12,6 +15,20 @@ Reports are sourced from official disclosure platforms and parsed into structure
 YAML frontmatter, preserved headings, paragraphs and tables.
 
 ---
+
+## MCP server
+
+Ship DataSinking to any AI agent (Claude Desktop / Cursor / Codex / Windsurf) as an
+[MCP](https://modelcontextprotocol.io) server — 6 tools: list exchanges, list stocks,
+list reports, fetch a report, list sections, fetch one section (token-friendly for RAG).
+
+```bash
+pip install "datasinking[mcp]"
+datasinking-mcp          # requires DATASINK_API_KEY (free at https://datasink.ing)
+```
+
+Or add to your client with `command: datasinking-mcp`. A remote streamable-HTTP endpoint
+is also live at `https://api.datasink.ing/mcp`. See [`mcp-server.md`](mcp-server.md).
 
 ## What this repo is
 
