@@ -34,10 +34,13 @@ API_KEY = os.environ.get("DATASINK_API_KEY", "")
 
 mcp = FastMCP(
     "DataSinking",
+    version="0.2.1",
     instructions=(
-        "DataSinking 提供亚洲（中国/韩国/日本）上市公司财报的全文 Markdown。"
-        "symbol 用 FMP 风格：600519.SS（茅台）、005930.KS（三星）、7203.T（丰田）。"
-        "要省 token 时用 get_section 只取某一章（如 MD&A），而不是 get_report 拿整篇。"
+        "DataSinking serves full-text financial reports (annual / semi-annual / quarterly) "
+        "from China, Korea and Japan as clean Markdown, ready for LLM reading and RAG. "
+        "Use FMP-style symbols: 600519.SS (Kweichow Moutai), 005930.KS (Samsung Electronics), "
+        "7203.T (Toyota). To save tokens, prefer get_section to pull one chapter (e.g. MD&A) "
+        "instead of get_report for the whole document."
     ),
 )
 
@@ -45,7 +48,9 @@ mcp = FastMCP(
 def _get(path: str, params: Optional[dict] = None) -> dict:
     """Call the DataSinking API, carrying the API key automatically."""
     if not API_KEY:
-        raise RuntimeError("缺少 DATASINK_API_KEY 环境变量（去 datasink.ing 免费拿一个）")
+        raise RuntimeError(
+            "Missing DATASINK_API_KEY environment variable (get a free key at https://datasink.ing)"
+        )
     p = dict(params or {})
     p["apikey"] = API_KEY
     r = requests.get(f"{BASE_URL}{path}", params=p, timeout=90)
@@ -55,17 +60,21 @@ def _get(path: str, params: Optional[dict] = None) -> dict:
 
 @mcp.tool()
 def list_exchanges() -> list:
-    """列出 DataSinking 覆盖的交易所代码（sse/szse/bj/ksc/koe/knx/jpx）。"""
+    """List the exchanges DataSinking covers and their report counts.
+
+    Returns exchange codes (sse / szse / bj / ksc / koe / knx / jpx) with the number
+    of reports available per exchange. Call this first to discover coverage.
+    """
     return _get("/exchanges").get("exchanges", [])
 
 
 @mcp.tool()
 def list_stocks(exchange: str, limit: int = 20) -> dict:
-    """列出某交易所的股票（含每家公司的报告数）。
+    """List stocks on an exchange, including the report count per company.
 
     Args:
-        exchange: 交易所代码，如 sse / szse / ksc / koe / jpx
-        limit: 返回前 N 家（默认 20，防止列表过长）
+        exchange: Exchange code, e.g. sse / szse / bj / ksc / koe / knx / jpx
+        limit: Return the first N companies (default 20) to keep responses short.
     """
     data = _get("/stocks", {"exchange": exchange})
     return {"exchange": exchange, "total": data.get("total", 0), "items": data.get("items", [])[:limit]}
@@ -73,39 +82,43 @@ def list_stocks(exchange: str, limit: int = 20) -> dict:
 
 @mcp.tool()
 def list_reports(symbol: str, doc_type: str = "annual", size: int = 10) -> dict:
-    """列出某公司的报告（元数据，不含正文）。
+    """List a company's reports — metadata only (id, title, period), no body text.
 
     Args:
-        symbol: FMP 风格代码，如 600519.SS / 005930.KS / 7203.T
+        symbol: FMP-style symbol, e.g. 600519.SS / 005930.KS / 7203.T
         doc_type: annual / semiannual / q1 / q3
-        size: 返回条数（默认 10）
+        size: Number of reports to return (default 10).
     """
     return _get("/documents", {"symbol": symbol, "doc_type": doc_type, "size": size})
 
 
 @mcp.tool()
 def get_report(document_id: int) -> dict:
-    """获取单篇报告的全文（元数据 + Markdown 正文）。
+    """Fetch a single report's full text (metadata + Markdown body).
 
     Args:
-        document_id: 报告 ID，从 list_reports 的 items[].id 拿
+        document_id: Report id, from list_reports items[].id
     """
     return _get(f"/documents/{document_id}")
 
 
 @mcp.tool()
 def list_sections(document_id: int) -> dict:
-    """列出某报告的所有章节标题（供 get_section 用）。"""
+    """List every section heading in a report (feed the headings to get_section).
+
+    Args:
+        document_id: Report id
+    """
     return _get(f"/documents/{document_id}/sections")
 
 
 @mcp.tool()
 def get_section(document_id: int, section: str) -> dict:
-    """只取报告的某一章（省 token，适合 RAG）。
+    """Fetch only one section of a report by keyword — cheaper than get_report for RAG.
 
     Args:
-        document_id: 报告 ID
-        section: 章节标题的关键词，如 "管理层讨论与分析" / "MD&A" / "财务报告"
+        document_id: Report id
+        section: Heading keyword, e.g. "management discussion" / "MD&A" / "financial statements" / "notes"
     """
     return _get(f"/documents/{document_id}", {"section": section})
 
