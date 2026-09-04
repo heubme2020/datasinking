@@ -30,6 +30,8 @@ datasinking-mcp          # requires DATASINK_API_KEY (free at https://datasink.i
 Or add to your client with `command: datasinking-mcp`. A remote streamable-HTTP endpoint
 is also live at `https://api.datasink.ing/mcp`. See [`mcp-server.md`](mcp-server.md).
 
+![DataSinking MCP in Claude](docs/images/mcp-demo.png)
+
 ## What this repo is
 
 Examples, research and tutorials showing how to work with financial report data, including reproducing the presentation styles found in financial-report research papers.
