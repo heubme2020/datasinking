@@ -89,7 +89,7 @@ coverage, list a company's reports, and extract a figure with correct units.
 
 Every example pulls from the live API and runs as-is.
 
-> `03_download_exchange.py` fetches every report on an exchange (e.g. all of Shenzhen — 150k+ documents). Free keys work too, but fall back to slow per-document fetching (1 req/s + shared daily quota); a **paid (yearly)** key is strongly recommended for full-exchange downloads.
+> `03_download_exchange.py` fetches every report on an exchange (e.g. all of Shenzhen — 150k+ documents). Quotas count **documents, not requests**, and apply over a rolling 31-day window as well as per day: a free key gets 3 req/s and 8,191 documents/day, inside a pool of 131,071/day and 524,287 per 31 days shared by all free users. A whole exchange will therefore take more than a day on a free key — a **paid (yearly)** key (31 req/s, 131,071 documents/day, 524,287 per 31 days) is strongly recommended.
 
 ## Research (`research/`)
 
@@ -105,7 +105,7 @@ Start from [`research/TEMPLATE.md`](research/TEMPLATE.md).
 
 | | |
 |---|---|
-| Coverage | China (SSE / SZSE / BSE) · Korea (KOSPI / KOSDAQ / KONEX) · Japan (TSE) |
+| Coverage | China (SSE / SZSE / BSE) · Korea (KOSPI / KOSDAQ / KONEX) · Japan (TSE) · Taiwan (TWSE / TPEx) |
 | Document types | annual / semiannual / q1 / q3 / amendment |
 | Update frequency | Daily — Korea/Japan via official DART/EDINET APIs (new filings within ~24h of publication) |
 | Format | Full-text Markdown (with YAML frontmatter) |
@@ -115,7 +115,16 @@ Start from [`research/TEMPLATE.md`](research/TEMPLATE.md).
 
 ## Data source
 
-Reports are sourced from official regulatory disclosure platforms in each market and converted in-house to clean Markdown.
+Reports are sourced from the official regulatory disclosure platform of each market and converted in-house to clean Markdown:
+
+| Market | Source | Platform |
+|---|---|---|
+| China A-shares (`.SS` `.SZ` `.BJ`) | 巨潮资讯网 cninfo | CSRC-designated disclosure platform |
+| Korea (`.KS` `.KQ` `.KN`) | DART | Financial Supervisory Service — opendart.fss.or.kr |
+| Japan (`.T`) | EDINET | Financial Services Agency — disclosure2.edinet-fsa.go.jp |
+| Taiwan (`.TW` `.TWO`) | 公開資訊觀測站 MOPS | Taiwan Stock Exchange — mops.twse.com.tw |
+
+Every document also carries a `source` field in the API response, so the attribution travels with the data. **Please keep it when you redistribute.**
 
 ## License
 

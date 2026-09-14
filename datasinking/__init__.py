@@ -5,8 +5,15 @@ Usage:
     from datasinking import DataSinking
     ds = DataSinking("YOUR_API_KEY")
     ds.list_exchanges()
-"""
-from .client import DataSinking
 
-__version__ = "0.1.0"
-__all__ = ["DataSinking"]
+额度用尽时抛 `QuotaExceeded`（区别于网络/限流错误）:
+    from datasinking import DataSinking, QuotaExceeded
+    try:
+        ds.get_stock_reports("600519.SS", limit=-1)
+    except QuotaExceeded as e:
+        print(e.code, e)   # e.g. quota_month / free_quota_global
+"""
+from ._version import __version__
+from .client import DataSinking, QuotaExceeded
+
+__all__ = ["DataSinking", "QuotaExceeded", "__version__"]

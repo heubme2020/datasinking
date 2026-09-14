@@ -4,8 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "datasinking"
-version = "0.2.2"
-description = "Python client for DataSinking — full-text Asian financial reports (China, Korea, Japan) as Markdown."
+# 版本号唯一来源 = datasinking/_version.py（client.py 的 User-Agent 也读它）。
+# 以前这里和包内 __version__ 各写各的，结果漂了半年（发 0.2.4 时才发现 __init__ 还停在 0.1.0）。
+dynamic = ["version"]
+description = "Python client for DataSinking — full-text Asian financial reports (China, Korea, Japan, Taiwan) as Markdown."
 readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "MIT" }
@@ -32,3 +34,6 @@ Repository = "https://github.com/heubme2020/datasinking"
 
 [tool.setuptools]
 packages = ["datasinking"]
+
+[tool.setuptools.dynamic]
+version = { attr = "datasinking._version.__version__" }
