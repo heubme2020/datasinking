@@ -1,0 +1,20 @@
+body {
+  font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 2.2em;
+  color: #1f2937;
+  line-height: 1.7;
+  font-size: 14px;
+}
+h1 { border-bottom: 2px solid #4f46e5; padding-bottom: 0.3em; color: #111827; }
+h2 { color: #4f46e5; margin-top: 1.6em; }
+h3 { color: #3730a3; }
+a { color: #4f46e5; text-decoration: none; }
+code { background: #f3f4f6; padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; font-family: "Consolas", "Courier New", monospace; }
+pre { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 1em; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+th, td { border: 1px solid #e2e8f0; padding: 0.5em 0.8em; text-align: left; }
+th { background: #f1f5f9; font-weight: 600; }
+blockquote { border-left: 3px solid #4f46e5; margin-left: 0; padding-left: 1em; color: #6b7280; }

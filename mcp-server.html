@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>mcp-server</title>
+  <style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+  <style type="text/css">body {
+font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+max-width: 820px;
+margin: 0 auto;
+padding: 2.2em;
+color: #1f2937;
+line-height: 1.7;
+font-size: 14px;
+}
+h1 { border-bottom: 2px solid #4f46e5; padding-bottom: 0.3em; color: #111827; }
+h2 { color: #4f46e5; margin-top: 1.6em; }
+h3 { color: #3730a3; }
+a { color: #4f46e5; text-decoration: none; }
+code { background: #f3f4f6; padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; font-family: "Consolas", "Courier New", monospace; }
+pre { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 1em; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+th, td { border: 1px solid #e2e8f0; padding: 0.5em 0.8em; text-align: left; }
+th { background: #f1f5f9; font-weight: 600; }
+blockquote { border-left: 3px solid #4f46e5; margin-left: 0; padding-left: 1em; color: #6b7280; }
+</style>
+</head>
+<body>
+<h1 id="datasinking-mcp-server">DataSinking MCP Server</h1>
+<p>把 <a href="https://datasink.ing">DataSinking</a> 的亚洲财报全文 API
+暴露给 AI agent。通过 <a href="https://modelcontextprotocol.io">Model
+Context Protocol (MCP)</a> 这个开放标准，任何支持 MCP 的 AI
+客户端都能直接调用工具取财报，无需写代码。</p>
+<h2 id="支持的客户端不止-claude">支持的客户端（不止 Claude）</h2>
+<p>MCP 是开放标准，以下 AI 客户端 / agent 都能接：</p>
+<ul>
+<li><strong>Claude</strong>（Desktop / Code，Anthropic）</li>
+<li><strong>Cursor</strong></li>
+<li><strong>OpenAI Codex</strong>（CLI / app）</li>
+<li><strong>DeepSeek</strong>（harness / CLI）</li>
+<li><strong>Windsurf</strong></li>
+<li>其他支持 MCP 的 agent / 框架</li>
+</ul>
+<h2 id="安装">安装</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install mcp requests</span></code></pre></div>
+<blockquote>
+<p>需要一个 DataSinking API key（<a href="https://datasink.ing">datasink.ing</a> 免费领取）。</p>
+</blockquote>
+<h2 id="配置通用">配置（通用）</h2>
+<p>MCP 的核心配置结构在所有客户端里是一样的（<code>command</code> +
+<code>args</code> +
+<code>env</code>），只是各客户端把它写进各自的配置文件：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;mcpServers&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;datasinking&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;python&quot;</span><span class="fu">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;args&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;/绝对路径/mcp_server.py&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;env&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;DATASINK_API_KEY&quot;</span><span class="fu">:</span> <span class="st">&quot;你的key&quot;</span> <span class="fu">}</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p>各客户端添加方式：</p>
+<table>
+<colgroup>
+<col style="width: 47%" />
+<col style="width: 52%" />
+</colgroup>
+<thead>
+<tr>
+<th>客户端</th>
+<th>添加方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Claude Desktop</strong></td>
+<td><code>Settings → Developer → Edit Config</code>，编辑
+<code>claude_desktop_config.json</code>（JSON 格式，同上）</td>
+</tr>
+<tr>
+<td><strong>Claude Code</strong></td>
+<td><code>claude mcp add datasinking -- python /绝对路径/mcp_server.py</code></td>
+</tr>
+<tr>
+<td><strong>Cursor</strong></td>
+<td><code>Settings → MCP → Add new MCP server</code>（粘贴 JSON）</td>
+</tr>
+<tr>
+<td><strong>OpenAI Codex</strong></td>
+<td>编辑 <code>~/.codex/config.toml</code>，加
+<code>[mcp_servers.datasinking]</code> 段（TOML 格式，字段同上）</td>
+</tr>
+<tr>
+<td><strong>DeepSeek</strong></td>
+<td>通过其 MCP 配置接入（JSON 同上）</td>
+</tr>
+<tr>
+<td><strong>Windsurf</strong></td>
+<td><code>Settings → MCP</code></td>
+</tr>
+</tbody>
+</table>
+<p>配置好后，就能直接问：</p>
+<blockquote>
+<p>“DataSinking 覆盖了哪些交易所？茅台 2025
+年报的管理层讨论与分析讲了什么？”</p>
+</blockquote>
+<h2 id="设置-api-key-环境变量">设置 API key 环境变量</h2>
+<p>如果不在配置里写 <code>env</code> 字段（比如用
+<code>claude mcp add</code> 加、或想全局设），需要先把 key
+设进环境变量。三种 shell 的命令：</p>
+<p><strong>Linux / macOS（bash / zsh）</strong>：</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">DATASINK_API_KEY</span><span class="op">=</span><span class="st">&quot;你的key&quot;</span></span></code></pre></div>
+<p><strong>Windows PowerShell</strong>：</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">DATASINK_API_KEY</span><span class="op">=</span><span class="st">&quot;你的key&quot;</span></span></code></pre></div>
+<p><strong>Windows CMD</strong>：</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode cmd"><code class="sourceCode dosbat"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="va">DATASINK_API_KEY</span>=你的key</span></code></pre></div>
+<h2 id="工具清单">工具清单</h2>
+<table>
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 28%" />
+<col style="width: 42%" />
+</colgroup>
+<thead>
+<tr>
+<th>工具</th>
+<th>作用</th>
+<th>对应 API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>list_exchanges</code></td>
+<td>列出覆盖的交易所</td>
+<td><code>/exchanges</code></td>
+</tr>
+<tr>
+<td><code>list_stocks(exchange)</code></td>
+<td>列某交易所的股票</td>
+<td><code>/stocks</code></td>
+</tr>
+<tr>
+<td><code>list_reports(symbol, doc_type, size)</code></td>
+<td>列某公司的报告（元数据）</td>
+<td><code>/documents</code></td>
+</tr>
+<tr>
+<td><code>get_report(document_id)</code></td>
+<td>拿单篇报告全文</td>
+<td><code>/documents/{id}</code></td>
+</tr>
+<tr>
+<td><code>list_sections(document_id)</code></td>
+<td>列报告的章节标题</td>
+<td><code>/documents/{id}/sections</code></td>
+</tr>
+<tr>
+<td><code>get_section(document_id, section)</code></td>
+<td>只取某一章（省 token，适合 RAG）</td>
+<td><code>/documents/{id}?section=</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="提示">提示</h2>
+<ul>
+<li><strong>symbol 用 FMP
+风格</strong>：<code>600519.SS</code>（茅台）、<code>005930.KS</code>（三星）、<code>7203.T</code>（丰田）。</li>
+<li><strong>要省 token 用 <code>get_section</code></strong>
+只取某章（如「管理层讨论与分析」），而不是 <code>get_report</code>
+拿整篇。</li>
+</ul>
+</body>
+</html>

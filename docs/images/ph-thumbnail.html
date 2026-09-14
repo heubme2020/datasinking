@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DataSinking PH Thumbnail (1200x630)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0f172a; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+  .card {
+    width: 1200px; height: 630px;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 55%, #1d4ed8 140%);
+    border-radius: 24px;
+    padding: 64px 72px;
+    display: flex; flex-direction: column; justify-content: center;
+    position: relative; overflow: hidden;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .card::after {
+    content: ""; position: absolute; right: -80px; top: -80px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(59,130,246,.35), transparent 70%);
+  }
+  .brand {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 28px;
+  }
+  .logo {
+    width: 46px; height: 46px; border-radius: 12px;
+    background: #3b82f6; display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 800; color: #fff;
+  }
+  .brand-name { font-size: 30px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+  .tagline {
+    font-size: 44px; font-weight: 800; line-height: 1.2; color: #f8fafc;
+    max-width: 950px; letter-spacing: -0.5px; margin-bottom: 24px;
+  }
+  .tagline .accent { color: #60a5fa; }
+  .sub {
+    font-size: 22px; color: #94a3b8; margin-bottom: 32px;
+  }
+  .code {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(15,23,42,.7); border: 1px solid #334155;
+    border-radius: 10px; padding: 12px 18px;
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    font-size: 20px; color: #93c5fd;
+  }
+  .badges { display: flex; gap: 10px; margin-top: 26px; }
+  .badge {
+    font-size: 16px; font-weight: 600; color: #cbd5e1;
+    background: rgba(255,255,255,.06); border: 1px solid #334155;
+    border-radius: 999px; padding: 8px 16px;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">
+      <div class="logo">D</div>
+      <div class="brand-name">DataSinking</div>
+    </div>
+    <div class="tagline">
+      Full-text financial reports — <span class="accent">China · Korea · Japan</span> — as clean Markdown, for RAG &amp; AI agents.
+    </div>
+    <div class="sub">No PDF scraping. No OCR. Chapter-level access.</div>
+    <div class="code">curl "api.datasink.ing/documents?symbol=600519.SS&amp;with_content=1"</div>
+    <div class="badges">
+      <span class="badge">Full-text Markdown</span>
+      <span class="badge">Chapter-level (MD&amp;A)</span>
+      <span class="badge">MCP server</span>
+      <span class="badge">Free tier</span>
+    </div>
+  </div>
+</body>
+</html>
