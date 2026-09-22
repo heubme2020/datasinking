@@ -33,6 +33,11 @@ try:
 except Exception:
     pass
 
+def _norm(s: str) -> str:
+    """比对前把空白归一 —— 排版换行不算差异，改词才算。"""
+    return re.sub(r"\s+", " ", s or "").strip()
+
+
 HERE = pathlib.Path(__file__).resolve().parent
 WORKER_TS = HERE.parent / "worker" / "src" / "index.ts"
 NPM_TOOLS = HERE / "npm" / "tools.js"
@@ -109,9 +114,58 @@ def npm_tools(tmp: pathlib.Path):
     return json.loads(r.stdout)
 
 
-def python_tool_names(src: str):
-    """只要工具名 —— 参数描述在 Python 里是 Annotated/Field，机械比对成本大于收益。"""
-    return re.findall(r"@mcp\.tool\(\)\s*\ndef\s+(\w+)\(", src)
+def _is_tool_decorator(d):
+    """`@mcp.tool` 和 `@mcp.tool()` 都要认 —— 后者是 Call，不是 Attribute。
+
+    踩过：只判 `isinstance(d, ast.Attribute)` 时，`@mcp.tool()` 一个都匹配不上，
+    于是 ① 被解析成「0 个工具」、比对**空跑一遍还报成功** —— 比不检查更危险。
+    """
+    import ast
+
+    if isinstance(d, ast.Call):
+        d = d.func
+    return isinstance(d, ast.Attribute) and d.attr == "tool"
+
+
+def python_descriptions(src: str):
+    """从 `mcp_server.py` 里取出 {工具名: (工具描述, {参数名: 参数描述})}。
+
+    参数描述只能是 `Annotated[T, Field(description="...")]`（docstring 的 Args 段在 mcp v2
+    根本不到客户端，见 mcp_server.py 顶部注释），所以这里只认 Field。
+    """
+    import ast
+
+    out = {}
+    for node in ast.parse(src).body:
+        if not isinstance(node, ast.FunctionDef):
+            continue
+        if not any(_is_tool_decorator(d) for d in node.decorator_list):
+            continue
+        params = {}
+        for a in node.args.args:
+            desc = ""
+            for sub in ast.walk(a.annotation) if a.annotation else []:
+                if isinstance(sub, ast.Call):
+                    for kw in sub.keywords:
+                        if kw.arg == "description" and isinstance(kw.value, ast.Constant):
+                            desc = kw.value.value
+            params[a.arg] = desc
+        out[node.name] = (ast.get_docstring(node) or "", params)
+    return out
+
+
+def python_tools_for_compare(src: str):
+    """把 ① 的取值整理成和 ②③ 同构的形状，好让同一段比对逻辑复用。"""
+    return [
+        {
+            "name": name,
+            "description": desc,
+            "inputSchema": {
+                "properties": {p: {"description": d} for p, d in params.items()}
+            },
+        }
+        for name, (desc, params) in python_descriptions(src).items()
+    ]
 
 
 def main():
@@ -123,7 +177,8 @@ def main():
         has_worker = WORKER_TS.exists()
         worker = worker_tools(tmp) if has_worker else npm
 
-    py_names = python_tool_names(PY_SERVER.read_text(encoding="utf-8"))
+    py = {t["name"]: t for t in python_tools_for_compare(PY_SERVER.read_text(encoding="utf-8"))}
+    py_names = list(py)
 
     w = {t["name"]: t for t in worker}
     n = {t["name"]: t for t in npm}
@@ -169,19 +224,31 @@ def main():
         if not (b.get("description") or "").strip():
             fails.append(f"{name}: ③ 没有工具描述")
 
-    # ---- 描述文字不一致只警告（措辞可以不同，但得知道它不同了）----
-    for name in sorted(set(w) & set(n)):
-        for label, x, y in [
-            ("工具描述", w[name].get("description"), n[name].get("description"))
-        ]:
-            if x and y and x.strip() != y.strip():
-                warns.append(f"{name} 的{label} ②③ 措辞不同")
-        pa = (w[name].get("inputSchema") or {}).get("properties") or {}
-        pb = (n[name].get("inputSchema") or {}).get("properties") or {}
-        for p in sorted(set(pa) & set(pb)):
-            x, y = pa[p].get("description"), pb[p].get("description")
-            if x and y and x.strip() != y.strip():
-                warns.append(f"{name}.{p} 的参数描述 ②③ 措辞不同")
+    # ---- 描述文字必须**逐字一致** ----
+    # 三条路（pip / 远程 / npx）交给模型的是同一批工具。措辞不一致 = 装哪条路决定了模型
+    # 看到的能力说明，没有正当理由不一致 —— 所以这是硬失败，不是警告。
+    # 2026-09-22 加这条时实测：①③ 已经完全一致（0 处差异）。
+    def _d(tool, param=None):
+        if param is None:
+            return _norm(tool.get("description"))
+        return _norm(((tool.get("inputSchema") or {}).get("properties") or {}).get(param, {}).get("description"))
+
+    def _all_same(label, vals, where):
+        uniq = set(v for v in vals.values() if v)
+        if len(uniq) > 1:
+            fails.append(
+                f"{where} 的{label}三份措辞不同：" +
+                " / ".join(f"{k}={v[:60]!r}" for k, v in vals.items())
+            )
+
+    for name in sorted(set(py) & set(w) & set(n)):
+        trio = [("①", py[name]), ("②", w[name]), ("③", n[name])]
+        _all_same("工具描述", {k: _d(t) for k, t in trio}, name)
+        params = set.intersection(*[
+            set((t.get("inputSchema") or {}).get("properties") or {}) for _, t in trio
+        ])
+        for p in sorted(params):
+            _all_same(f"参数 {p} 的描述", {k: _d(t, p) for k, t in trio}, name)
 
     for msg in fails:
         print(f"  ❌ {msg}")

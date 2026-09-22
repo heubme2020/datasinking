@@ -70,7 +70,7 @@ def _get(path: str, params: Optional[dict] = None) -> dict:
 
 @mcp.tool()
 def list_exchanges() -> list:
-    """List the exchanges DataSinking covers and their report counts.
+    """List the exchanges DataSinking covers.
 
     Returns exchange codes (sse / szse / bj / ksc / koe / knx / jpx / twse / tpex) with
     the number of reports available per exchange. Call this first to discover coverage.
@@ -82,13 +82,13 @@ def list_exchanges() -> list:
 @mcp.tool()
 def list_stocks(
     exchange: Annotated[
-        str, Field(description="Exchange code: sse / szse / bj / ksc / koe / knx / jpx / twse / tpex")
+        str, Field(description="Exchange code, e.g. sse / szse / bj / ksc / koe / knx / jpx / twse / tpex")
     ],
     limit: Annotated[
         int, Field(description="Return only the first N companies (default 20) to keep the response short.")
     ] = 20,
 ) -> dict:
-    """List stocks on an exchange, including the report count per company."""
+    """List the stocks on one exchange, including the report count per company."""
     data = _get("/stocks", {"exchange": exchange})
     return {"exchange": exchange, "total": data.get("total", 0), "items": data.get("items", [])[:limit]}
 
@@ -99,13 +99,13 @@ def list_reports(
         str, Field(description="FMP-style symbol, e.g. 600519.SS / 005930.KS / 7203.T / 2330.TW")
     ],
     doc_type: Annotated[
-        str, Field(description="annual / semiannual / q1 / q3")
+        str, Field(description="Report type to filter on. Defaults to annual.")
     ] = "annual",
     size: Annotated[int, Field(description="Number of reports to return (default 10).")] = 10,
 ) -> dict:
     """List a company's reports — metadata only (id, title, period), no body text.
 
-    Each item carries a ``source`` field naming the official disclosure platform;
+    Each item carries a `source` field naming the official disclosure platform;
     keep that attribution when you cite it.
     """
     return _get("/documents", {"symbol": symbol, "doc_type": doc_type, "size": size})
@@ -115,9 +115,9 @@ def list_reports(
 def get_report(
     document_id: Annotated[int, Field(description="Report id, from list_reports items[].id")],
 ) -> dict:
-    """Fetch a single report's full text (metadata + Markdown body).
+    """Fetch one report's full text (metadata + Markdown body).
 
-    The ``source`` field names the official disclosure platform; keep that attribution
+    The `source` field names the official disclosure platform; keep that attribution
     when you cite it. Expensive in tokens — prefer get_section when you only need one chapter.
     """
     return _get(f"/documents/{document_id}")
@@ -127,13 +127,13 @@ def get_report(
 def list_sections(
     document_id: Annotated[int, Field(description="Report id, from list_reports items[].id")],
 ) -> dict:
-    """List every section of a report with its size — call this before pulling anything.
+    """List every section of a report with its size, before you decide what to pull.
 
-    Returns ``sections`` (titles, in order) plus ``section_details``: the same list as
-    objects with ``title``, ``has_tables``, ``chars`` and ``estimated_tokens``.
+    Returns `sections` (titles, in order) plus `section_details` — same order, one entry
+    per section with `title`, `has_tables`, `chars` and `estimated_tokens`.
 
-    Use ``estimated_tokens`` to avoid pulling a chapter that would blow your context,
-    and ``has_tables`` to know whether a chapter needs special handling (tables are the
+    Use `estimated_tokens` to avoid pulling a chapter that would blow your context,
+    and `has_tables` to know whether the chapter needs special handling (tables are the
     part RAG pipelines usually get wrong). Then call get_section with a heading keyword —
     the headings are in the report's own language.
     """
@@ -157,7 +157,7 @@ def get_section(
         ),
     ],
 ) -> dict:
-    """Fetch only one section of a report by keyword — cheaper than get_report for RAG."""
+    """Fetch only one section of a report by keyword — much cheaper than get_report, best for RAG."""
     return _get(f"/documents/{document_id}", {"section": section})
 
 
