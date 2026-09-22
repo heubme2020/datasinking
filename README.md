@@ -79,7 +79,10 @@ Then use `command: datasinking-mcp` in your client.
 Both run the same six tools with the same schemas — `npm/` and `datasinking/mcp_server.py` are
 kept in lockstep by [`check_mcp_parity.py`](check_mcp_parity.py).
 
-Full per-client setup: [`mcp-server.md`](mcp-server.md).
+Full per-client setup: [`mcp-server.md`](mcp-server.md) (overview) ·
+[`docs/mcp/`](docs/mcp/) (one guide per client).
+Hosted endpoint is **POST-only and stateless** — `GET /mcp` returns 405, no session id, and every
+client needs a restart after a config change. That trips up most first connections.
 
 ![DataSinking MCP in Claude](docs/images/mcp-demo.png)
 
@@ -93,11 +96,25 @@ datasinking/
 ├── research/     # Research notes / blog posts (reproducing paper-style presentation)
 ├── datasinking/  # Python client + MCP server — pip install "datasinking[mcp]"
 ├── npm/          # The same MCP server on npm — npx -y datasinking-mcp (Node 18+)
-├── mcp-server.md # How to configure the MCP server (for AI agents: Claude / Cursor / Codex / DeepSeek)
+├── docs/mcp/     # Per-client MCP setup: Claude Code, Claude Desktop, Cursor, Codex, WorkBuddy
+├── mcp-server.md # MCP server overview — the two config shapes, tools, endpoint limits
 ├── llm-examples.md  # Ask an LLM — no code needed (8 end-to-end examples)
 ├── api-examples.md  # 7 examples × 3 interfaces (curl / Python / LLM)
 └── README.md
 ```
+
+Per-client MCP guides — one file each, with the exact config path, both scopes, verification and the
+errors that client actually produces:
+
+| Client | Guide |
+|---|---|
+| Claude Code | [`docs/mcp/claude-code.md`](docs/mcp/claude-code.md) |
+| Claude Desktop | [`docs/mcp/claude-desktop.md`](docs/mcp/claude-desktop.md) |
+| OpenAI Codex CLI | [`docs/mcp/codex.md`](docs/mcp/codex.md) |
+| WorkBuddy / CodeBuddy | [`docs/mcp/workbuddy.md`](docs/mcp/workbuddy.md) |
+| Cursor | [`docs/mcp/cursor.md`](docs/mcp/cursor.md) |
+| DeepSeek | [`docs/mcp/deepseek.md`](docs/mcp/deepseek.md) |
+| Windsurf | [`docs/mcp/windsurf.md`](docs/mcp/windsurf.md) |
 
 ## Quick start
 

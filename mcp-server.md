@@ -2,16 +2,23 @@
 
 Expose the [DataSinking](https://datasink.ing) Asian financial-report API to AI agents. Through [Model Context Protocol (MCP)](https://modelcontextprotocol.io) — an open standard — any MCP-compatible AI client can call our tools to fetch financial reports, no code required.
 
-## Supported clients (not just Claude)
+## Per-client setup guides
 
-MCP is an open standard, so all of these AI clients / agents can connect:
+Every client writes the same idea into a differently-shaped file, and the details that break are
+client-specific. Full guides — exact paths, both scopes, verification, and the errors each one
+actually produces:
 
-- **Claude** (Desktop / Code, Anthropic)
-- **Cursor**
-- **OpenAI Codex** (CLI / app)
-- **DeepSeek** (harness / CLI)
-- **Windsurf**
-- Other MCP-compatible agents / frameworks
+| Client | Guide | Config file |
+|---|---|---|
+| Claude Code | [`docs/mcp/claude-code.md`](docs/mcp/claude-code.md) | `~/.claude.json`, `.mcp.json` |
+| Claude Desktop | [`docs/mcp/claude-desktop.md`](docs/mcp/claude-desktop.md) | `claude_desktop_config.json` + Connectors UI |
+| OpenAI Codex CLI | [`docs/mcp/codex.md`](docs/mcp/codex.md) | `~/.codex/config.toml` |
+| WorkBuddy / CodeBuddy | [`docs/mcp/workbuddy.md`](docs/mcp/workbuddy.md) | `~/.workbuddy/mcp.json`, `~/.codebuddy/.mcp.json` |
+| Cursor | [`docs/mcp/cursor.md`](docs/mcp/cursor.md) | `.cursor/mcp.json` |
+| DeepSeek (Harness `dsh`) | [`docs/mcp/deepseek.md`](docs/mcp/deepseek.md) | `~/.dsh/cordis.patch.yml` (YAML) |
+| Windsurf / Devin (Cascade) | [`docs/mcp/windsurf.md`](docs/mcp/windsurf.md) | `~/.config/devin/mcp_config.json` |
+
+Any other MCP-compatible client / framework works too — the two config shapes below cover it.
 
 ## Remote MCP (streamable HTTP)
 
@@ -93,16 +100,22 @@ To use `npx` (Node) or `uvx` (Python, no install) instead of a pip install, swap
 }
 ```
 
-How to add it per client:
+⚠️ **The stdio JSON above is not portable.** Each client's file differs in ways that matter — Codex
+is TOML and has no `type` field but does have `bearer_token_env_var`; Cursor interpolates
+`${env:NAME}` while Claude Code uses `${NAME}`; Claude Desktop's file is stdio-only and takes no
+`url`. Follow the per-client guide rather than adapting this block by eye.
+
+How to add it per client (verify with the guide linked above):
 
 | Client | How to add |
 |--------|------------|
-| **Claude Desktop** | `Settings → Developer → Edit Config`, edit `claude_desktop_config.json` (JSON, as above) |
-| **Claude Code** | `claude mcp add datasinking -- datasinking-mcp` |
-| **Cursor** | `Settings → MCP → Add new MCP server` (paste the JSON) |
-| **OpenAI Codex** | Edit `~/.codex/config.toml`, add a `[mcp_servers.datasinking]` section (TOML, same fields) |
-| **DeepSeek** | Add via its MCP config (JSON, as above) |
-| **Windsurf** | `Settings → MCP` |
+| **Claude Code** | `claude mcp add --env DATASINK_API_KEY=YOUR_KEY --transport stdio datasinking -- npx -y datasinking-mcp` |
+| **Claude Desktop** | `Settings → Developer → Edit Config`; for the *hosted* endpoint use `Settings → Connectors` instead — the file is stdio-only |
+| **Cursor** | Edit `.cursor/mcp.json` (or `~/.cursor/mcp.json`) — the old "Settings → MCP" route is now **Customize** |
+| **OpenAI Codex** | `codex mcp add datasinking --url https://api.datasink.ing/mcp --bearer-token-env-var DATASINK_API_KEY` |
+| **WorkBuddy / CodeBuddy** | `插件 → MCP 服务器 → 配置 MCP`, or edit `~/.workbuddy/mcp.json` / `~/.codebuddy/.mcp.json` |
+| **DeepSeek (Harness `dsh`)** | YAML patch layer — see [`docs/mcp/deepseek.md`](docs/mcp/deepseek.md) |
+| **Windsurf / Devin** | **Actions → Open MCP config file** in the Cascade panel — see [`docs/mcp/windsurf.md`](docs/mcp/windsurf.md) |
 
 Once configured, ask in plain language:
 
@@ -110,7 +123,9 @@ Once configured, ask in plain language:
 
 ## Set the API key environment variable
 
-If you don't put `env` in the config (e.g. you used `claude mcp add`, or want to set it globally), set the key first. Three shells:
+Needed whenever your config *references* the key instead of containing it — Codex's
+`bearer_token_env_var`, or `${DATASINK_API_KEY}` interpolation in a remote server's `headers`. Set
+it **before** launching the client, or the header goes out empty. Three shells:
 
 **Linux / macOS (bash / zsh)**:
 
@@ -145,3 +160,32 @@ set DATASINK_API_KEY=YOUR_KEY
 
 - **FMP-style symbols**: `600519.SS` (Moutai), `005930.KS` (Samsung), `7203.T` (Toyota).
 - **To save tokens**, use `get_section` to pull one section (e.g. "management discussion and analysis") instead of `get_report` for the whole report.
+
+## Known limits of the hosted endpoint
+
+These are properties of the server, not of your client — they matter because most clients assume
+the opposite:
+
+- **`POST /mcp` only.** `GET /mcp` returns `405 Use POST /mcp for MCP streamable HTTP`. There is no
+  server-to-client SSE stream. A client that probes with `GET` before `POST` reports a connection
+  failure even though `POST` works.
+- **Stateless.** No `Mcp-Session-Id` is issued or required, so sessions don't survive a restart and
+  there is nothing to reset on the server side.
+- **Protocol version `2024-11-05`.** Newer clients negotiate down automatically; you don't need to
+  configure anything.
+- **Both auth forms work**: `Authorization: Bearer KEY` and `?apikey=KEY`. Prefer the header where
+  the client supports it — a key in a URL ends up in logs and screen shares.
+
+### Checking the endpoint without any client
+
+```bash
+curl -s -X POST https://api.datasink.ing/mcp \
+  -H "Authorization: Bearer YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+```
+
+Six tool definitions come back if the key is good. If it isn't, the body is the error:
+`{"detail":"Missing API key"}` (nothing sent) or `{"detail":"无效的 API key"}` (not recognised) —
+both HTTP 401. This one command separates "my client is misconfigured" from "my key is wrong".
