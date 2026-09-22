@@ -167,15 +167,25 @@ async function get(path, params) {
 
   const text = await res.text();
   if (!res.ok) {
-    // 服务端把「该怎么做」写在 detail 里（404 会带上真实标题），原样透给模型，
-    // 别吞成一句 "request failed" —— 模型据此重试才可能成功。
-    let detail = text;
+    // 服务端把「该怎么做」写在 body 里，两个字段各有用途，**都要带上**：
+    //   detail    —— 一句人话（「未找到章节「X」」）
+    //   available —— 那份报告的**全部真实标题**。get_section 的描述明确让模型
+    //                「retry with one of those」，所以这个列表必须跟着错误走。
+    //
+    // ⚠️ 这里原本的注释就写着「404 会带上真实标题，原样透给模型」，但代码只取了
+    //    `.detail` —— 真实标题在 `available` 里，于是那句承诺从未兑现
+    //    （2026-09-22 用真 key 实测确认）。注释和实现不一致，就是 bug 的藏身处。
+    let body = null;
     try {
-      detail = JSON.parse(text).detail ?? text;
+      body = JSON.parse(text);
     } catch {
       /* 不是 JSON 就原样用 */
     }
-    throw new DataSinkingError(`HTTP ${res.status}: ${String(detail).slice(0, 2000)}`);
+    const detail = body?.detail ?? text;
+    const available = Array.isArray(body?.available)
+      ? `\nAvailable sections: ${JSON.stringify(body.available)}`
+      : "";
+    throw new DataSinkingError(`HTTP ${res.status}: ${String(detail).slice(0, 2000)}${available}`);
   }
   try {
     return JSON.parse(text);

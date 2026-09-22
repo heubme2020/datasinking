@@ -18,6 +18,7 @@ the environment variable ``DATASINK_API_KEY`` (get a free key at
 https://datasink.ing).
 """
 
+import json
 import os
 from typing import Annotated, Optional
 
@@ -56,7 +57,18 @@ mcp = FastMCP(
 
 
 def _get(path: str, params: Optional[dict] = None) -> dict:
-    """Call the DataSinking API, carrying the API key automatically."""
+    """Call the DataSinking API, carrying the API key automatically.
+
+    出错时**把服务端 body 原文带出去**。它写的不是「失败了」，而是「该怎么办」：
+
+      ``detail``     一句人话（「未找到章节「X」」）
+      ``available``  那份报告的**全部真实标题**
+
+    ``get_section`` 的工具描述明确让模型「retry with one of those」，所以这个列表
+    必须跟着异常走。原来这里是一句 ``r.raise_for_status()``，body 整个丢掉 ——
+    模型只看到裸的 ``404 Client Error: Not Found for url: ...``，既不知道错在哪，
+    也没有可重试的标题（2026-09-22 用真 key 实测，三份实现里这份丢得最干净）。
+    """
     if not API_KEY:
         raise RuntimeError(
             "Missing DATASINK_API_KEY environment variable (get a free key at https://datasink.ing)"
@@ -64,7 +76,18 @@ def _get(path: str, params: Optional[dict] = None) -> dict:
     p = dict(params or {})
     p["apikey"] = API_KEY
     r = requests.get(f"{BASE_URL}{path}", params=p, timeout=90)
-    r.raise_for_status()
+    if not r.ok:
+        try:
+            body = r.json()
+        except ValueError:
+            body = None
+        if not isinstance(body, dict):
+            body = {}
+        msg = f"HTTP {r.status_code}: {body.get('detail') or r.text[:2000]}"
+        available = body.get("available")
+        if isinstance(available, list):
+            msg += "\nAvailable sections: " + json.dumps(available, ensure_ascii=False)
+        raise RuntimeError(msg)
     return r.json()
 
 

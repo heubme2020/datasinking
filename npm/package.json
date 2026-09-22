@@ -1,7 +1,7 @@
 {
   "name": "datasinking-mcp",
   "mcpName": "io.github.heubme2020/datasinking",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "MCP server for DataSinking — full-text Asian financial reports (China, Korea, Japan, Taiwan) as clean Markdown, for Claude, Cursor and other AI agents.",
   "type": "module",
   "bin": {

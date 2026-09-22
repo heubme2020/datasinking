@@ -168,7 +168,62 @@ def python_tools_for_compare(src: str):
     ]
 
 
+def lhm_staleness() -> list:
+    """检查 `lhm.plugin.json`（LobeHub 清单）有没有**事实性**过期。
+
+    这份文件是 `lhm plugin init --stdio "python -m datasinking.mcp_server"` **生成**的
+    （见 PROMOTION.md §2），所以它的措辞本来就和 ①②③ 那三份不同源 —— 不比对措辞，
+    只查**数字和覆盖范围**这种没有解释余地的地方。
+
+    为什么必须查：2026-09-22 用真 key 调线上工具，`list_exchanges` 返回 9 个交易所
+    （含 twse / tpex），而这份文件写的是 7 个、顶层描述还写着 "China, Korea, Japan"
+    —— **对外宣布我们不覆盖台湾**。它是发布到公开目录的那一份，却不在任何检查范围内，
+    因为它是生成物、又没进 ①②③ 的比对。
+
+    修法是重新生成（不是手改，手改会被下次 update 覆盖）::
+
+        npm i -g @lobehub/market-cli
+        lhm plugin init --stdio "python -m datasinking.mcp_server"
+        lhm plugin update
+    """
+    p = HERE / "lhm.plugin.json"
+    if not p.exists():
+        return []
+    out = []
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except Exception as e:
+        return [f"lhm.plugin.json 解析失败：{e}"]
+
+    # ① 交易所清单必须齐全 —— 从 ①（pip 实现）的 list_exchanges 描述里取权威清单
+    py_src = PY_SERVER.read_text(encoding="utf-8")
+    py_tools = {t["name"]: t for t in python_tools_for_compare(py_src)}
+    canonical = py_tools.get("list_exchanges", {}).get("description", "")
+    codes = re.findall(r"\b(sse|szse|bj|ksc|koe|knx|jpx|twse|tpex)\b", canonical)
+    lhm_exch = next((t.get("description", "") for t in data.get("tools", [])
+                     if t.get("name") == "list_exchanges"), "")
+    missing = [c for c in dict.fromkeys(codes) if c not in lhm_exch]
+    if missing:
+        out.append(
+            f"lhm.plugin.json 的 list_exchanges 描述漏了交易所 {missing} "
+            f"（权威清单来自 ① 的实现）—— 这份是发布到 LobeHub 的清单，重新生成它"
+        )
+
+    # ② 顶层描述必须提到 Taiwan —— 「不覆盖台湾」是事实错误，不是措辞差异
+    desc = data.get("description", "")
+    if "Taiwan" not in desc and "台湾" not in desc:
+        out.append("lhm.plugin.json 顶层 description 没提 Taiwan（对外少说了一个市场）")
+    return out
+
+
 def main():
+    import argparse
+
+    ap = argparse.ArgumentParser(description="比对 MCP 三份平行实现的工具定义")
+    ap.add_argument("--skip-lhm", action="store_true",
+                    help="跳过 lhm.plugin.json（LobeHub 清单，生成物）的事实性检查")
+    args = ap.parse_args()
+
     fails, warns = [], []
 
     with tempfile.TemporaryDirectory() as d:
@@ -250,7 +305,18 @@ def main():
         for p in sorted(params):
             _all_same(f"参数 {p} 的描述", {k: _d(t, p) for k, t in trio}, name)
 
+    # ---- LobeHub 清单（生成物）的事实性检查 ----
+    # 默认是**硬失败**：它对外少说一个市场（台湾）和两个交易所，属于「公开元数据说假话」，
+    # 和 ①②③ 措辞不一致不是一个量级。修法是重新生成，不是手改。
+    # 想先跳过（例如正忙着发版）：`python check_mcp_parity.py --skip-lhm`
+    #
+    # 单独成一个列表而不是并进 fails：两类问题的**修法完全不同**（这里是重新生成
+    # LobeHub 清单，那边是三份源码同步改），混在一起会让总结给出错误的建议。
+    lhm_fails = [] if args.skip_lhm else lhm_staleness()
+
     for msg in fails:
+        print(f"  ❌ {msg}")
+    for msg in lhm_fails:
         print(f"  ❌ {msg}")
     if warns:
         print()
@@ -259,7 +325,13 @@ def main():
 
     if fails:
         print(f"\n{len(fails)} 项不一致。三份实现必须同步改 —— 见本文件顶部注释。")
+    if lhm_fails:
+        print(f"\n{len(lhm_fails)} 项 LobeHub 清单过期。**别手改** lhm.plugin.json ——"
+              f"它是 `lhm plugin init` 生成的，手改会被下次 update 覆盖；"
+              f"重新生成它（步骤见 lhm_staleness() 的 docstring）。")
+    if fails or lhm_fails:
         sys.exit(1)
+
     tail = f"（有 {len(warns)} 处措辞差异）" if warns else ""
     print(f"\n{'三份' if has_worker else '两份（缺 worker/）'}实现一致 ✅{tail}")
 
