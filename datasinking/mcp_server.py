@@ -33,6 +33,25 @@ try:
 except ImportError:  # pragma: no cover
     from mcp.server.mcpserver import MCPServer as FastMCP  # mcp v2
 
+# ⚠️ **工具里必须抛 ToolError，不能抛 RuntimeError。**
+#
+# mcp v2（实测 2.2.0）对两者的处理完全不同：
+#     抛 RuntimeError  → 客户端收到 isError:true，但文本是**通用句**
+#                         「Error executing tool <名字>」，**消息内容被剥掉**，只进 stderr
+#     抛 ToolError     → 客户端收到 isError:true，文本带上你的原话
+#                         「Error executing tool <名字>: <你的消息>」
+#
+# 这不是细节：get_section 的描述让模型「用真实标题重试」，标题列表就在消息里；
+# 缺 API key 的提示也只在这里。用 RuntimeError 的话，模型看到的是一个**没有任何线索**的
+# 失败 —— 2026-09-22 用真 key 走 uvx 发布版实测确认（`Error executing tool get_section`，32 字符）。
+try:
+    from mcp.server.fastmcp.exceptions import ToolError  # mcp v1
+except ImportError:  # pragma: no cover
+    try:
+        from mcp.server.mcpserver.exceptions import ToolError  # mcp v2
+    except ImportError:  # 极老的 mcp 没有这个类：退回普通异常（消息会丢，但不至于起不来）
+        ToolError = RuntimeError  # type: ignore[assignment,misc]
+
 # ⚠️ 参数描述必须写成 `Annotated[T, Field(description=...)]`，**不能只靠 docstring 的 Args 段**。
 #    mcp v2（MCPServer）不再解析 docstring 的 Args —— 实测把整段 Args 当散文塞进工具描述，
 #    参数级 description 全是空的（2026-09-22 用真实 stdio 握手验证）。v1 两种都认，所以这样写两边通用。
@@ -70,7 +89,7 @@ def _get(path: str, params: Optional[dict] = None) -> dict:
     也没有可重试的标题（2026-09-22 用真 key 实测，三份实现里这份丢得最干净）。
     """
     if not API_KEY:
-        raise RuntimeError(
+        raise ToolError(
             "Missing DATASINK_API_KEY environment variable (get a free key at https://datasink.ing)"
         )
     p = dict(params or {})
@@ -87,7 +106,8 @@ def _get(path: str, params: Optional[dict] = None) -> dict:
         available = body.get("available")
         if isinstance(available, list):
             msg += "\nAvailable sections: " + json.dumps(available, ensure_ascii=False)
-        raise RuntimeError(msg)
+        # ToolError 而非 RuntimeError —— 否则 mcp v2 把 msg 剥成通用句，见文件顶部注释
+        raise ToolError(msg)
     return r.json()
 
 
