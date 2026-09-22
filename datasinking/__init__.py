@@ -11,7 +11,7 @@ Usage:
     try:
         ds.get_stock_reports("600519.SS", limit=-1)
     except QuotaExceeded as e:
-        print(e.code, e)   # e.g. quota_month / free_quota_global
+        print(e.code, e)   # e.g. quota_7d / free_quota_key / free_quota_global
 """
 from ._version import __version__
 from .client import DataSinking, QuotaExceeded

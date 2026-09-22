@@ -89,7 +89,7 @@ coverage, list a company's reports, and extract a figure with correct units.
 
 Every example pulls from the live API and runs as-is.
 
-> `03_download_exchange.py` fetches every report on an exchange (e.g. all of Shenzhen — 150k+ documents). Quotas count **documents, not requests**, and apply over a rolling 31-day window as well as per day: a free key gets 3 req/s and 8,191 documents/day, inside a pool of 131,071/day and 524,287 per 31 days shared by all free users. A whole exchange will therefore take more than a day on a free key — a **paid (yearly)** key (31 req/s, 131,071 documents/day, 524,287 per 31 days) is strongly recommended.
+> `03_download_exchange.py` fetches every report on an exchange (e.g. all of Shenzhen — 150k+ documents). Quotas count **documents, not requests**, over a rolling 7-day window: a free key gets 3 req/s and 8,191 documents per 7 days, inside a pool of 524,287 per 7 days shared by all free users and website visitors. A whole exchange will therefore take well over a week on a free key — a **paid (yearly)** key (31 req/s, 524,287 documents per 7 days) is strongly recommended.
 
 ## Research (`research/`)
 

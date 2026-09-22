@@ -5,7 +5,7 @@
 getpass 不回声, 脚本也不落盘, 跑完即忘。
 
 用法(在你的终端里跑, 不是在对话里):
-    cd C:/Users/admin/Desktop/datasinking/github-repo
+    cd <仓库根>/github-repo
     python upload_pypi.py
 
 token 去 https://pypi.org/manage/account/token/ 建, scope 选

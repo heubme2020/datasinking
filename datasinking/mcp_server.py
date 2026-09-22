@@ -19,9 +19,10 @@ https://datasink.ing).
 """
 
 import os
-from typing import Optional
+from typing import Annotated, Optional
 
 import requests
+from pydantic import Field
 
 from ._version import __version__  # 版本号唯一来源（原来是硬编码，漂到了 0.2.3）
 
@@ -30,6 +31,11 @@ try:
     from mcp.server.fastmcp import FastMCP  # mcp v1
 except ImportError:  # pragma: no cover
     from mcp.server.mcpserver import MCPServer as FastMCP  # mcp v2
+
+# ⚠️ 参数描述必须写成 `Annotated[T, Field(description=...)]`，**不能只靠 docstring 的 Args 段**。
+#    mcp v2（MCPServer）不再解析 docstring 的 Args —— 实测把整段 Args 当散文塞进工具描述，
+#    参数级 description 全是空的（2026-09-22 用真实 stdio 握手验证）。v1 两种都认，所以这样写两边通用。
+
 
 BASE_URL = "https://api.datasink.ing"
 API_KEY = os.environ.get("DATASINK_API_KEY", "")
@@ -66,64 +72,87 @@ def _get(path: str, params: Optional[dict] = None) -> dict:
 def list_exchanges() -> list:
     """List the exchanges DataSinking covers and their report counts.
 
-    Returns exchange codes (sse / szse / bj / ksc / koe / knx / jpx) with the number
-    of reports available per exchange. Call this first to discover coverage.
+    Returns exchange codes (sse / szse / bj / ksc / koe / knx / jpx / twse / tpex) with
+    the number of reports available per exchange. Call this first to discover coverage.
+    Sources: A-shares = cninfo.com.cn, Korea = DART, Japan = EDINET, Taiwan = MOPS.
     """
     return _get("/exchanges").get("exchanges", [])
 
 
 @mcp.tool()
-def list_stocks(exchange: str, limit: int = 20) -> dict:
-    """List stocks on an exchange, including the report count per company.
-
-    Args:
-        exchange: Exchange code, e.g. sse / szse / bj / ksc / koe / knx / jpx
-        limit: Return the first N companies (default 20) to keep responses short.
-    """
+def list_stocks(
+    exchange: Annotated[
+        str, Field(description="Exchange code: sse / szse / bj / ksc / koe / knx / jpx / twse / tpex")
+    ],
+    limit: Annotated[
+        int, Field(description="Return only the first N companies (default 20) to keep the response short.")
+    ] = 20,
+) -> dict:
+    """List stocks on an exchange, including the report count per company."""
     data = _get("/stocks", {"exchange": exchange})
     return {"exchange": exchange, "total": data.get("total", 0), "items": data.get("items", [])[:limit]}
 
 
 @mcp.tool()
-def list_reports(symbol: str, doc_type: str = "annual", size: int = 10) -> dict:
+def list_reports(
+    symbol: Annotated[
+        str, Field(description="FMP-style symbol, e.g. 600519.SS / 005930.KS / 7203.T / 2330.TW")
+    ],
+    doc_type: Annotated[
+        str, Field(description="annual / semiannual / q1 / q3")
+    ] = "annual",
+    size: Annotated[int, Field(description="Number of reports to return (default 10).")] = 10,
+) -> dict:
     """List a company's reports — metadata only (id, title, period), no body text.
 
-    Args:
-        symbol: FMP-style symbol, e.g. 600519.SS / 005930.KS / 7203.T
-        doc_type: annual / semiannual / q1 / q3
-        size: Number of reports to return (default 10).
+    Each item carries a ``source`` field naming the official disclosure platform;
+    keep that attribution when you cite it.
     """
     return _get("/documents", {"symbol": symbol, "doc_type": doc_type, "size": size})
 
 
 @mcp.tool()
-def get_report(document_id: int) -> dict:
+def get_report(
+    document_id: Annotated[int, Field(description="Report id, from list_reports items[].id")],
+) -> dict:
     """Fetch a single report's full text (metadata + Markdown body).
 
-    Args:
-        document_id: Report id, from list_reports items[].id
+    The ``source`` field names the official disclosure platform; keep that attribution
+    when you cite it. Expensive in tokens — prefer get_section when you only need one chapter.
     """
     return _get(f"/documents/{document_id}")
 
 
 @mcp.tool()
-def list_sections(document_id: int) -> dict:
+def list_sections(
+    document_id: Annotated[int, Field(description="Report id, from list_reports items[].id")],
+) -> dict:
     """List every section heading in a report (feed the headings to get_section).
 
-    Args:
-        document_id: Report id
+    Call this before get_section to see the exact headings — the headings are in the
+    report's own language.
     """
     return _get(f"/documents/{document_id}/sections")
 
 
 @mcp.tool()
-def get_section(document_id: int, section: str) -> dict:
-    """Fetch only one section of a report by keyword — cheaper than get_report for RAG.
-
-    Args:
-        document_id: Report id
-        section: Heading keyword, e.g. "management discussion" / "MD&A" / "financial statements" / "notes"
-    """
+def get_section(
+    document_id: Annotated[int, Field(description="Report id, from list_reports items[].id")],
+    section: Annotated[
+        str,
+        Field(
+            description=(
+                "Heading keyword, matched as a substring against the report's OWN headings, "
+                "so pass it in the report's language. A-share reports have Chinese headings "
+                "(e.g. 第三节管理层讨论与分析) — use 管理层讨论与分析 / 财务报告 there. "
+                "For English-language filings, \"MD&A\" / \"financial statements\" / \"notes\" work. "
+                "If nothing matches, the API returns 404 with the real headings — retry with one "
+                "of those, or call list_sections first."
+            )
+        ),
+    ],
+) -> dict:
+    """Fetch only one section of a report by keyword — cheaper than get_report for RAG."""
     return _get(f"/documents/{document_id}", {"section": section})
 
 

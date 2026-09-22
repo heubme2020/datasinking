@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.heubme2020/datasinking",
   "title": "DataSinking",
-  "description": "Full-text Asian financial reports (China, Korea, Japan) as clean Markdown — 6 tools for RAG agents.",
-  "version": "0.2.7",
+  "description": "Full-text Asian financial reports (China, Korea, Japan, Taiwan) as clean Markdown for RAG agents.",
+  "version": "0.2.8",
   "websiteUrl": "https://datasink.ing",
   "repository": {
     "url": "https://github.com/heubme2020/datasinking",
@@ -13,8 +13,22 @@
     {
       "registryType": "pypi",
       "identifier": "datasinking",
-      "version": "0.2.7",
+      "version": "0.2.8",
       "transport": { "type": "stdio" }
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.datasink.ing/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Your DataSinking API key as a Bearer token — the literal string \"Bearer \" followed by your 32-character key: \"Bearer <your-key>\". Get a free key at https://datasink.ing.",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
     }
   ]
 }

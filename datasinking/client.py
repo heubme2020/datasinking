@@ -24,14 +24,13 @@ class QuotaExceeded(RuntimeError):
     """额度用尽（HTTP 429 + 服务端返回的 `code`）。
 
     和「限流」不是一回事：限流等几秒就好（客户端自己会重试），
-    额度类要等**日/月窗口滚动**才有用 —— 重试没有意义，所以直接抛出来，不再重试。
+    额度类要等**7 天窗口滚动**才有用 —— 重试没有意义，所以直接抛出来，不再重试。
 
-    常见 code：
-      quota_day          年费 key 当日额度用尽（UTC 次日 00:00 恢复）
-      quota_month        年费 key 最近 31 天额度用尽
-      free_quota_key     免费 key 当日额度用尽
-      free_quota_global  免费共享池 当日额度用尽（所有免费用户合计）
-      free_quota_month   免费共享池 最近 31 天额度用尽（所有免费用户合计）
+    常见 code（2026-09-21 起配额统一成「每 7 天 rolling」，日/月两层已取消）：
+      quota_7d           年费 key 的 7 天额度用尽（每 7 天 524,287 篇）
+      free_quota_key     免费 key 的 7 天额度用尽（每 7 天 8,191 篇）
+      free_quota_global  免费共享池的 7 天额度用尽
+                         （所有免费 key + 网页访客合计每 7 天 524,287 篇）
     """
 
     def __init__(self, code=None, detail=None):
@@ -81,8 +80,8 @@ class DataSinking:
                     raise  # 401/403/404/400… 直接抛给上层
                 code, detail = _error_info(e)
                 if code:
-                    # 额度类 429：要等日/月窗口滚动，重试没有意义 —— 立刻抛，并带上服务端的原因。
-                    # （以前这里不分青红皂白 sleep(2) 重试，月度额度打满时会空转，
+                    # 额度类 429：要等 7 天窗口滚动，重试没有意义 —— 立刻抛，并带上服务端的原因。
+                    # （以前这里不分青红皂白 sleep(2) 重试，额度打满时会空转，
                     #   最后还抛出一句 "Request failed after retries: None" —— last 变量
                     #   只在网络异常分支被赋值，429 分支根本不赋值。）
                     raise QuotaExceeded(code, detail)
