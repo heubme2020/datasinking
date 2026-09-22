@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 """把 `datasinking/_version.py` 的版本号同步到各 MCP manifest。
 
-**为什么需要**：版本号有 4 个落点 ——
+**为什么需要**：版本号有 5 个落点 ——
   ① `datasinking/_version.py`   唯一来源（pyproject 用 `dynamic` 从它读，
                                 client.py 的 UA 和 mcp_server.py 也读它）
   ② `lhm.plugin.json`           给 LobeHub 之类的 MCP 目录读
   ③ `server.json`               给官方 MCP registry 读
   ④ `../worker/src/index.ts`    远程 MCP 端点 initialize 时回的 serverInfo.version
+  ⑤ `npm/package.json`          给 npm 上的 datasinking-mcp 发版（`npx` 那条路）
 
-②③④ 都是**字面量**，没法像 pyproject 那样动态引用，只能跟着改：
+②③④⑤ 都是**字面量**，没法像 pyproject 那样动态引用，只能跟着改：
 - ②③ 是外部注册表读的 JSON，改不到就发不出去；
-- ④ 跑在 Workers 的 V8 里，**根本读不到 Python 包的 `__version__`**，没有自动同步的可能。
+- ④ 跑在 Workers 的 V8 里，**根本读不到 Python 包的 `__version__`**，没有自动同步的可能；
+- ⑤ 是另一个语言的包，npm 也不认 Python 的 pyproject。
 
 漂移史：
 - 2026-09-14：包已经到 0.2.4~0.2.7，②③ 还停在 0.2.3。
@@ -33,7 +35,7 @@ except Exception:
 
 HERE = pathlib.Path(__file__).resolve().parent
 VERSION_FILE = HERE / "datasinking" / "_version.py"
-JSON_FILES = ["lhm.plugin.json", "server.json"]
+JSON_FILES = ["lhm.plugin.json", "server.json", "npm/package.json"]
 # Worker 远程 MCP 端点（见 index.ts 顶部关于「两个平行实现」的注释）
 WORKER_TS = HERE.parent / "worker" / "src" / "index.ts"
 WORKER_RE = re.compile(r'^const MCP_SERVER_VERSION = "([^"]+)";', re.M)

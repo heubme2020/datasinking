@@ -50,7 +50,24 @@ output but can't redact a URL.
 
 ### Local — run it yourself
 
-If you'd rather keep everything on your own machine:
+If you'd rather keep everything on your own machine, there are two identical builds — pick
+whichever runtime you already have:
+
+**Node 18+ (no Python needed):**
+
+```json
+{
+  "mcpServers": {
+    "datasinking": {
+      "command": "npx",
+      "args": ["-y", "datasinking-mcp"],
+      "env": { "DATASINK_API_KEY": "YOUR_KEY" }
+    }
+  }
+}
+```
+
+**Python 3.8+:**
 
 ```bash
 pip install "datasinking[mcp]"
@@ -58,6 +75,9 @@ datasinking-mcp          # requires DATASINK_API_KEY (free at https://datasink.i
 ```
 
 Then use `command: datasinking-mcp` in your client.
+
+Both run the same six tools with the same schemas — `npm/` and `datasinking/mcp_server.py` are
+kept in lockstep by [`check_mcp_parity.py`](check_mcp_parity.py).
 
 Full per-client setup: [`mcp-server.md`](mcp-server.md).
 
@@ -72,6 +92,7 @@ datasinking/
 ├── examples/     # Example scripts: pull data from the API and analyze it
 ├── research/     # Research notes / blog posts (reproducing paper-style presentation)
 ├── datasinking/  # Python client + MCP server — pip install "datasinking[mcp]"
+├── npm/          # The same MCP server on npm — npx -y datasinking-mcp (Node 18+)
 ├── mcp-server.md # How to configure the MCP server (for AI agents: Claude / Cursor / Codex / DeepSeek)
 ├── llm-examples.md  # Ask an LLM — no code needed (8 end-to-end examples)
 ├── api-examples.md  # 7 examples × 3 interfaces (curl / Python / LLM)

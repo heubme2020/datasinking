@@ -16,3 +16,8 @@ downloads/
 
 # 本地环境
 .env
+
+# Node（npm/ 是 datasinking-mcp 那个 npm 包）
+node_modules/
+npm-debug.log*
+*.tgz

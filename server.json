@@ -14,7 +14,31 @@
       "registryType": "pypi",
       "identifier": "datasinking",
       "version": "0.2.9",
-      "transport": { "type": "stdio" }
+      "runtimeHint": "uvx",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "DATASINK_API_KEY",
+          "description": "Your DataSinking API key. Free key at https://datasink.ing",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    },
+    {
+      "registryType": "npm",
+      "identifier": "datasinking-mcp",
+      "version": "0.2.9",
+      "runtimeHint": "npx",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "DATASINK_API_KEY",
+          "description": "Your DataSinking API key. Free key at https://datasink.ing",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
     }
   ],
   "remotes": [

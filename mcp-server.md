@@ -34,14 +34,18 @@ The six tools are the same as the local (stdio) server below.
 
 ## Install
 
-Either pip-install it, or run it one-shot with `uvx` (no install needed):
+Three ways, same six tools. Pick whichever runtime you already have — nothing needs to be
+installed ahead of time for `uvx` or `npx`:
 
 ```bash
-# Option A — pip install, then run `datasinking-mcp`
-pip install "datasinking[mcp]"
+# Option A — Node 18+ (no Python needed)
+npx -y datasinking-mcp
 
-# Option B — no install, one-shot via uvx
+# Option B — one-shot via uvx (no install needed)
 uvx --from "datasinking[mcp]" datasinking-mcp
+
+# Option C — pip install, then run `datasinking-mcp`
+pip install "datasinking[mcp]"
 ```
 
 > You need a DataSinking API key ([datasink.ing](https://datasink.ing) — free).
@@ -62,7 +66,20 @@ The core MCP config structure is the same across clients (`command` + `args` + `
 }
 ```
 
-To use `uvx` instead of a pip install, swap the `command`/`args`:
+To use `npx` (Node) or `uvx` (Python, no install) instead of a pip install, swap the
+`command`/`args`:
+
+```json
+{
+  "mcpServers": {
+    "datasinking": {
+      "command": "npx",
+      "args": ["-y", "datasinking-mcp"],
+      "env": { "DATASINK_API_KEY": "YOUR_KEY" }
+    }
+  }
+}
+```
 
 ```json
 {

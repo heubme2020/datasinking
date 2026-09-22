@@ -1,0 +1,58 @@
+{
+  "name": "datasinking-mcp",
+  "version": "0.2.9",
+  "description": "MCP server for DataSinking — full-text Asian financial reports (China, Korea, Japan, Taiwan) as clean Markdown, for Claude, Cursor and other AI agents.",
+  "type": "module",
+  "bin": {
+    "datasinking-mcp": "index.js"
+  },
+  "main": "tools.js",
+  "exports": {
+    ".": "./tools.js"
+  },
+  "files": [
+    "index.js",
+    "tools.js",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "smoke": "node test/smoke.mjs",
+    "prepublishOnly": "node test/smoke.mjs"
+  },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "finance",
+    "financial-reports",
+    "financial-data",
+    "a-share",
+    "korea-stock",
+    "japan-stock",
+    "taiwan-stock",
+    "edinet",
+    "dart",
+    "mops",
+    "cninfo",
+    "markdown",
+    "rag",
+    "llm"
+  ],
+  "license": "MIT",
+  "author": "DataSinking",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heubme2020/datasinking.git",
+    "directory": "npm"
+  },
+  "homepage": "https://datasink.ing",
+  "bugs": {
+    "url": "https://github.com/heubme2020/datasinking/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0"
+  }
+}
