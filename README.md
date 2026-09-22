@@ -8,27 +8,58 @@
 **Full-text financial reports across Asia, as clean Markdown.**
 
 [DataSinking](https://datasink.ing) serves **full-text financial reports** — annual, semi-annual
-and quarterly — from **China, Korea and Japan** as clean **Markdown**, ready for LLM reading
-and RAG. Query by FMP-style symbol (`600519.SS`, `005930.KS`, `7203.T`) or filter by exchange,
-report period, or **section** — pull just the MD&A / risk section instead of the whole report.
-Reports are sourced from official disclosure platforms and parsed into structured Markdown with
-YAML frontmatter, preserved headings, paragraphs and tables.
+and quarterly — from **China, Korea, Japan and Taiwan** as clean **Markdown**, ready for LLM reading
+and RAG. Query by FMP-style symbol (`600519.SS`, `005930.KS`, `7203.T`, `2330.TW`) or filter by
+exchange, report period, or **section** — pull just the MD&A / risk section instead of the whole
+report. Reports are sourced from official disclosure platforms and parsed into structured Markdown
+with YAML frontmatter, preserved headings, paragraphs and tables.
 
 ---
 
 ## MCP server
 
-Ship DataSinking to any AI agent (Claude Desktop / Cursor / Codex / Windsurf) as an
+Ship DataSinking to any AI agent (Claude / Cursor / Codex / Windsurf) as an
 [MCP](https://modelcontextprotocol.io) server — 6 tools: list exchanges, list stocks,
 list reports, fetch a report, list sections, fetch one section (token-friendly for RAG).
+
+### Hosted — nothing to install
+
+Point any MCP client at our endpoint and you're done. No package, no Python, no local server:
+
+```json
+{
+  "mcpServers": {
+    "datasinking": {
+      "type": "http",
+      "url": "https://api.datasink.ing/mcp?apikey=YOUR_KEY"
+    }
+  }
+}
+```
+
+Claude Code, in one line:
+
+```bash
+claude mcp add --transport http datasinking https://api.datasink.ing/mcp \
+  --header "Authorization: Bearer YOUR_KEY"
+```
+
+Your key rides inside the URL, so treat that config as a secret. Clients that support custom
+headers can send `Authorization: Bearer YOUR_KEY` instead — Claude Code redacts headers in its
+output but can't redact a URL.
+
+### Local — run it yourself
+
+If you'd rather keep everything on your own machine:
 
 ```bash
 pip install "datasinking[mcp]"
 datasinking-mcp          # requires DATASINK_API_KEY (free at https://datasink.ing)
 ```
 
-Or add to your client with `command: datasinking-mcp`. A remote streamable-HTTP endpoint
-is also live at `https://api.datasink.ing/mcp`. See [`mcp-server.md`](mcp-server.md).
+Then use `command: datasinking-mcp` in your client.
+
+Full per-client setup: [`mcp-server.md`](mcp-server.md).
 
 ![DataSinking MCP in Claude](docs/images/mcp-demo.png)
 

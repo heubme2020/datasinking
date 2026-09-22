@@ -2,7 +2,7 @@
 """DataSinking MCP server (Model Context Protocol).
 
 Expose the DataSinking API — full-text financial reports across Asia
-(China, Korea, Japan) as clean Markdown — to AI agents (Claude, Cursor,
+(China, Korea, Japan, Taiwan) as clean Markdown — to AI agents (Claude, Cursor,
 Codex, DeepSeek, Windsurf, …).
 
 Install the MCP extra::
@@ -127,10 +127,15 @@ def get_report(
 def list_sections(
     document_id: Annotated[int, Field(description="Report id, from list_reports items[].id")],
 ) -> dict:
-    """List every section heading in a report (feed the headings to get_section).
+    """List every section of a report with its size — call this before pulling anything.
 
-    Call this before get_section to see the exact headings — the headings are in the
-    report's own language.
+    Returns ``sections`` (titles, in order) plus ``section_details``: the same list as
+    objects with ``title``, ``has_tables``, ``chars`` and ``estimated_tokens``.
+
+    Use ``estimated_tokens`` to avoid pulling a chapter that would blow your context,
+    and ``has_tables`` to know whether a chapter needs special handling (tables are the
+    part RAG pipelines usually get wrong). Then call get_section with a heading keyword —
+    the headings are in the report's own language.
     """
     return _get(f"/documents/{document_id}/sections")
 
