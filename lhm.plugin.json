@@ -1,8 +1,5 @@
 {
-  "author": "heubme2020",
-  "authorUrl": "https://github.com/heubme2020",
-  "description": "Full-text Asian financial reports (China, Korea, Japan) as clean Markdown via API, with chapter-level access for RAG and AI agents.",
-  "homepage": "https://github.com/heubme2020/datasinking",
+  "description": "Full-text Asian financial reports (China, Korea, Japan, Taiwan) as clean Markdown via API, with chapter-level access for RAG and AI agents.",
   "identifier": "heubme2020-datasinking",
   "name": "DataSinking — Full-text Asian Financial Reports",
   "prompts": [],
@@ -10,7 +7,7 @@
   "tools": [
     {
       "name": "list_exchanges",
-      "description": "List the exchanges DataSinking covers and their report counts.\n\nReturns exchange codes (sse / szse / bj / ksc / koe / knx / jpx) with the number\nof reports available per exchange. Call this first to discover coverage.\n",
+      "description": "List the exchanges DataSinking covers.\n\nReturns exchange codes (sse / szse / bj / ksc / koe / knx / jpx / twse / tpex) with\nthe number of reports available per exchange. Call this first to discover coverage.\nSources: A-shares = cninfo.com.cn, Korea = DART, Japan = EDINET, Taiwan = MOPS.\n",
       "inputSchema": {
         "type": "object",
         "properties": {},
@@ -19,16 +16,18 @@
     },
     {
       "name": "list_stocks",
-      "description": "List stocks on an exchange, including the report count per company.\n\nArgs:\n    exchange: Exchange code, e.g. sse / szse / bj / ksc / koe / knx / jpx\n    limit: Return the first N companies (default 20) to keep responses short.\n",
+      "description": "List the stocks on one exchange, including the report count per company.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "exchange": {
+            "description": "Exchange code, e.g. sse / szse / bj / ksc / koe / knx / jpx / twse / tpex",
             "title": "Exchange",
             "type": "string"
           },
           "limit": {
             "default": 20,
+            "description": "Return only the first N companies (default 20) to keep the response short.",
             "title": "Limit",
             "type": "integer"
           }
@@ -41,21 +40,24 @@
     },
     {
       "name": "list_reports",
-      "description": "List a company's reports — metadata only (id, title, period), no body text.\n\nArgs:\n    symbol: FMP-style symbol, e.g. 600519.SS / 005930.KS / 7203.T\n    doc_type: annual / semiannual / q1 / q3\n    size: Number of reports to return (default 10).\n",
+      "description": "List a company's reports — metadata only (id, title, period), no body text.\n\nEach item carries a `source` field naming the official disclosure platform;\nkeep that attribution when you cite it.\n",
       "inputSchema": {
         "type": "object",
         "properties": {
           "symbol": {
+            "description": "FMP-style symbol, e.g. 600519.SS / 005930.KS / 7203.T / 2330.TW",
             "title": "Symbol",
             "type": "string"
           },
           "doc_type": {
             "default": "annual",
+            "description": "Report type to filter on. Defaults to annual.",
             "title": "Doc Type",
             "type": "string"
           },
           "size": {
             "default": 10,
+            "description": "Number of reports to return (default 10).",
             "title": "Size",
             "type": "integer"
           }
@@ -68,11 +70,12 @@
     },
     {
       "name": "get_report",
-      "description": "Fetch a single report's full text (metadata + Markdown body).\n\nArgs:\n    document_id: Report id, from list_reports items[].id\n",
+      "description": "Fetch one report's full text (metadata + Markdown body).\n\nThe `source` field names the official disclosure platform; keep that attribution\nwhen you cite it. Expensive in tokens — prefer get_section when you only need one chapter.\n",
       "inputSchema": {
         "type": "object",
         "properties": {
           "document_id": {
+            "description": "Report id, from list_reports items[].id",
             "title": "Document Id",
             "type": "integer"
           }
@@ -85,11 +88,12 @@
     },
     {
       "name": "list_sections",
-      "description": "List every section heading in a report (feed the headings to get_section).\n\nArgs:\n    document_id: Report id\n",
+      "description": "List every section of a report with its size, before you decide what to pull.\n\nReturns `sections` (titles, in order) plus `section_details` — same order, one entry\nper section with `title`, `has_tables`, `chars` and `estimated_tokens`.\n\nUse `estimated_tokens` to avoid pulling a chapter that would blow your context,\nand `has_tables` to know whether the chapter needs special handling (tables are the\npart RAG pipelines usually get wrong). Then call get_section with a heading keyword —\nthe headings are in the report's own language.\n",
       "inputSchema": {
         "type": "object",
         "properties": {
           "document_id": {
+            "description": "Report id, from list_reports items[].id",
             "title": "Document Id",
             "type": "integer"
           }
@@ -102,15 +106,17 @@
     },
     {
       "name": "get_section",
-      "description": "Fetch only one section of a report by keyword — cheaper than get_report for RAG.\n\nArgs:\n    document_id: Report id\n    section: Heading keyword, e.g. \"management discussion\" / \"MD&A\" / \"financial statements\" / \"notes\"\n",
+      "description": "Fetch only one section of a report by keyword — much cheaper than get_report, best for RAG.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "document_id": {
+            "description": "Report id, from list_reports items[].id",
             "title": "Document Id",
             "type": "integer"
           },
           "section": {
+            "description": "Heading keyword, matched as a substring against the report's OWN headings, so pass it in the report's language. A-share reports have Chinese headings (e.g. 第三节管理层讨论与分析) — use 管理层讨论与分析 / 财务报告 there. For English-language filings, \"MD&A\" / \"financial statements\" / \"notes\" work. If nothing matches, the API returns 404 with the real headings — retry with one of those, or call list_sections first.",
             "title": "Section",
             "type": "string"
           }
@@ -123,5 +129,8 @@
       }
     }
   ],
-  "version": "0.2.12"
+  "version": "0.2.12",
+  "author": "heubme2020",
+  "authorUrl": "https://github.com/heubme2020",
+  "homepage": "https://github.com/heubme2020/datasinking"
 }
