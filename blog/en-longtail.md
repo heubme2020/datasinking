@@ -41,9 +41,9 @@ For RAG you rarely want the whole 300-page report:
 
 ```bash
 # list the sections first
-curl "https://api.datasink.ing/documents/12345/sections?apikey=YOUR_KEY"
-# fetch only the MD&A
-curl "https://api.datasink.ing/documents/12345?section=MD&A&apikey=YOUR_KEY"
+curl "https://api.datasink.ing/documents/3/sections?apikey=YOUR_KEY"
+# fetch only the MD&A chapter (the %-string is 管理层讨论与分析, URL-encoded)
+curl "https://api.datasink.ing/documents/3?section=%E7%AE%A1%E7%90%86%E5%B1%82%E8%AE%A8%E8%AE%BA%E4%B8%8E%E5%88%86%E6%9E%90&apikey=YOUR_KEY"
 ```
 
 Chapter-level access is the part most financial APIs miss — and it's the most useful

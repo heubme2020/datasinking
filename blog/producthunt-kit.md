@@ -57,7 +57,7 @@ DataSinking gives you full-text financial reports from China, Korea & Japan as c
 Markdown, over a simple REST API (or an MCP server for AI agents):
 
 - Full text, not just numbers — the MD&A, risk factors and notes that RAG needs.
-- Chapter-level access (?section=MD&A) so you pull one section instead of 300 pages.
+- Chapter-level access (?section=) so you pull one section instead of 300 pages.
 - FMP-style symbols: 600519.SS (Moutai), 005930.KS (Samsung), 7203.T (Toyota).
 - Free key by email, no signup.
 

@@ -36,9 +36,9 @@ RAG 场景通常用不着整份几百页，按章节取就行：
 
 ```bash
 # 先列出章节
-curl "https://api.datasink.ing/documents/12345/sections?apikey=你的key"
+curl "https://api.datasink.ing/documents/3/sections?apikey=你的key"
 # 只取「管理层讨论与分析」
-curl "https://api.datasink.ing/documents/12345?section=MD&A&apikey=你的key"
+curl "https://api.datasink.ing/documents/3?section=%E7%AE%A1%E7%90%86%E5%B1%82%E8%AE%A8%E8%AE%BA%E4%B8%8E%E5%88%86%E6%9E%90&apikey=你的key"
 ```
 
 「章节级访问」是多数接口没有的——这也是喂大模型最实用的点。

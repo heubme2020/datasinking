@@ -226,8 +226,8 @@ curl "https://api.datasink.ing/documents/3/sections?apikey=YOUR_KEY"
 #                "第五节重要事项","第六节股份变动及股东情况",
 #                "第七节债券相关情况","第八节财务报告"]}
 
-# 2) Pull just the MD&A chapter
-curl "https://api.datasink.ing/documents/3?section=管理层讨论与分析&apikey=YOUR_KEY"
+# 2) Pull just the MD&A chapter (non-ASCII titles must be URL-encoded) (non-ASCII titles must be URL-encoded)
+curl "https://api.datasink.ing/documents/3?section=%E7%AE%A1%E7%90%86%E5%B1%82%E8%AE%A8%E8%AE%BA%E4%B8%8E%E5%88%86%E6%9E%90&apikey=YOUR_KEY"
 # → {"id":3,"symbol":"600519.SS","section":"第三节管理层讨论与分析",
 #    "content":"### 一、报告期内公司从事的业务情况\n公司主要业务是…"}
 ```
@@ -239,7 +239,8 @@ curl "https://api.datasink.ing/documents/3?section=管理层讨论与分析&apik
 > downloading the full 142k-char report.
 
 The same `sections` + `section=` pattern works across markets: Korea (`사업보고서`) and
-Japan (`有価証券報告書`) reports are also chapter-structured.
+Japan (`有価証券報告書`) reports are also chapter-structured. **Pass these URL-encoded** —
+a raw non-ASCII value is rejected at the edge with HTTP 400 before it reaches the API.
 
 ---
 
@@ -262,7 +263,7 @@ curl "https://api.datasink.ing/documents/65062/sections?apikey=YOUR_KEY"
 # → ... "第八节财务报告" ...
 
 # 2) Pull just that chapter — it contains all the notes
-curl "https://api.datasink.ing/documents/65062?section=财务报告&apikey=YOUR_KEY"
+curl "https://api.datasink.ing/documents/65062?section=%E8%B4%A2%E5%8A%A1%E6%8A%A5%E5%91%8A&apikey=YOUR_KEY"
 # → {"section":"第八节财务报告","content":"... 在建工程 | 七、22 | 121,858,867.39 | ..."}
 ```
 

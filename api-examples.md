@@ -22,7 +22,7 @@ curl "https://api.datasink.ing/exchanges?apikey=YOUR_KEY"
 from datasinking import DataSinking
 ds = DataSinking("YOUR_API_KEY")
 
-ds.list_exchanges()          # → ['bj', 'jpx', 'knx', 'koe', 'ksc', 'sse', 'szse']
+ds.list_exchanges()          # → ['bj','jpx','knx','koe','ksc','sse','szse','tpex','twse']
 ```
 
 **LLM** — point it at https://datasink.ing and ask:

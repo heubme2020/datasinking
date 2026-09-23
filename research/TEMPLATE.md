@@ -17,9 +17,9 @@ Why this question matters. You may reproduce a question or a chart from an exist
 Source, coverage, and how to fetch it with DataSinking:
 
 ```python
-from sdk.datasinking import DataSinking
+from datasinking import DataSinking
 ds = DataSinking("YOUR_KEY")
-reports = ds.get_symbol_reports(symbol="600519.SS", all=True)
+reports = ds.get_stock_reports("600519.SS", limit=-1)   # limit=-1 → every report, full text
 ```
 
 Coverage: SSE / SZSE / BSE, annual / semiannual / quarterly / amendment reports, full Markdown.

@@ -67,9 +67,8 @@ what it will cost in context, so it pulls one chapter instead of the whole docum
 ```
 
 `section` is substring-matched against the report's **own** headings, so pass it in the report's
-language: `管理层讨论与分析` for A-shares, `MD&A` for English-language filings, `事業の概況` for
-Japanese. If nothing matches, the API returns 404 together with the real headings — retry with
-one of those.
+language: `管理层讨论与分析` for A-shares, `事業の概況` for Japanese. If nothing matches, the API
+returns 404 together with the real headings — retry with one of those.
 
 ## Data sources
 
