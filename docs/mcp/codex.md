@@ -55,7 +55,10 @@ url = "https://api.datasink.ing/mcp?apikey=YOUR_KEY"
 These are the shapes you'll find in blog posts that **do not work** on current Codex:
 
 1. **There is no `type` field.** Transport is inferred — a `url` means streamable HTTP, a `command` means stdio. The widely copied `type = "streamable-http"` line is not part of the schema.
-2. **`bearer_token` inline is explicitly rejected.** Codex errors with `mcp_servers.<name> uses unsupported 'bearer_token'; set bearer_token_env_var`. Use the env var, or `http_headers`.
+2. **`bearer_token` inline is explicitly rejected.** Codex refuses to load the config at all:
+   `bearer_token is not supported for streamable_http` / `in mcp_servers.<name>` (verified on
+   codex-cli `0.156.1`; older builds phrased it `uses unsupported 'bearer_token'; set bearer_token_env_var`).
+   Use `bearer_token_env_var`, or `http_headers`.
 3. **The field is `http_headers`, not `headers`.** An old `[mcp_servers.X.headers]` block is silently dead.
 
 Also: don't add `experimental_use_rmcp_client`. It gated streamable HTTP on older builds (≈v0.46.0) and is gone from the current config schema — adding it is at best noise. On a very old Codex build you may still need it; check `codex --version` if the URL form is rejected outright.
@@ -101,7 +104,7 @@ Summarize the MD&A section of Samsung's latest annual report.
 | Symptom | Cause |
 |---|---|
 | Server listed but every call fails | Key missing from the environment Codex launched with. `codex mcp get datasinking` shows what it thinks the config is. |
-| `unsupported 'bearer_token'` | Replace it with `bearer_token_env_var`. |
+| `bearer_token is not supported for streamable_http` | Replace it with `bearer_token_env_var`. |
 | `http_headers` ignored | You wrote `headers`. The key is `http_headers`. |
 | URL form rejected | Very old Codex build — add `experimental_use_rmcp_client = true`. |
 | Key rejected | `POST /mcp` returns 401 `{"detail":"Missing API key"}` with no key, or `{"detail":"无效的 API key"}` with a bad one. |
