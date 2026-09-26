@@ -1,258 +1,454 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
+  <meta name="generator" content="pandoc 3.11" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>mcp-server</title>
   <style>
-
-code{white-space: pre-wrap;}
-span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
-div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-
-ul.task-list[class]{list-style: none;}
-ul.task-list li input[type="checkbox"] {
-font-size: inherit;
-width: 0.8em;
-margin: 0 0.8em 0.2em -1.6em;
-vertical-align: middle;
-}
-.display.math{display: block; text-align: center; margin: 0.5rem auto;}
-
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-{ counter-reset: source-line 0; }
-pre.numberSource code > span
-{ position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-{ content: counter(source-line);
-position: relative; left: -1em; text-align: right; vertical-align: baseline;
-border: none; display: inline-block;
--webkit-touch-callout: none; -webkit-user-select: none;
--khtml-user-select: none; -moz-user-select: none;
--ms-user-select: none; user-select: none;
-padding: 0 4px; width: 4em;
-color: #aaaaaa;
-}
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
-div.sourceCode
-{ }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } 
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.at { color: #7d9029; } 
-code span.bn { color: #40a070; } 
-code span.bu { color: #008000; } 
-code span.cf { color: #007020; font-weight: bold; } 
-code span.ch { color: #4070a0; } 
-code span.cn { color: #880000; } 
-code span.co { color: #60a0b0; font-style: italic; } 
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.do { color: #ba2121; font-style: italic; } 
-code span.dt { color: #902000; } 
-code span.dv { color: #40a070; } 
-code span.er { color: #ff0000; font-weight: bold; } 
-code span.ex { } 
-code span.fl { color: #40a070; } 
-code span.fu { color: #06287e; } 
-code span.im { color: #008000; font-weight: bold; } 
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
-code span.kw { color: #007020; font-weight: bold; } 
-code span.op { color: #666666; } 
-code span.ot { color: #007020; } 
-code span.pp { color: #bc7a00; } 
-code span.sc { color: #4070a0; } 
-code span.ss { color: #bb6688; } 
-code span.st { color: #4070a0; } 
-code span.va { color: #19177c; } 
-code span.vs { color: #4070a0; } 
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
-</style>
-  <style type="text/css">body {
-font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
-max-width: 820px;
-margin: 0 auto;
-padding: 2.2em;
-color: #1f2937;
-line-height: 1.7;
-font-size: 14px;
-}
-h1 { border-bottom: 2px solid #4f46e5; padding-bottom: 0.3em; color: #111827; }
-h2 { color: #4f46e5; margin-top: 1.6em; }
-h3 { color: #3730a3; }
-a { color: #4f46e5; text-decoration: none; }
-code { background: #f3f4f6; padding: 0.15em 0.4em; border-radius: 4px; font-size: 0.9em; font-family: "Consolas", "Courier New", monospace; }
-pre { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 1em; overflow-x: auto; }
-pre code { background: none; padding: 0; }
-table { border-collapse: collapse; width: 100%; margin: 1em 0; }
-th, td { border: 1px solid #e2e8f0; padding: 0.5em 0.8em; text-align: left; }
-th { background: #f1f5f9; font-weight: 600; }
-blockquote { border-left: 3px solid #4f46e5; margin-left: 0; padding-left: 1em; color: #6b7280; }
-</style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
 </head>
 <body>
 <h1 id="datasinking-mcp-server">DataSinking MCP Server</h1>
-<p>把 <a href="https://datasink.ing">DataSinking</a> 的亚洲财报全文 API
-暴露给 AI agent。通过 <a href="https://modelcontextprotocol.io">Model
-Context Protocol (MCP)</a> 这个开放标准，任何支持 MCP 的 AI
-客户端都能直接调用工具取财报，无需写代码。</p>
-<h2 id="支持的客户端不止-claude">支持的客户端（不止 Claude）</h2>
-<p>MCP 是开放标准，以下 AI 客户端 / agent 都能接：</p>
-<ul>
-<li><strong>Claude</strong>（Desktop / Code，Anthropic）</li>
-<li><strong>Cursor</strong></li>
-<li><strong>OpenAI Codex</strong>（CLI / app）</li>
-<li><strong>DeepSeek</strong>（harness / CLI）</li>
-<li><strong>Windsurf</strong></li>
-<li>其他支持 MCP 的 agent / 框架</li>
-</ul>
-<h2 id="安装">安装</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install mcp requests</span></code></pre></div>
-<blockquote>
-<p>需要一个 DataSinking API key（<a href="https://datasink.ing">datasink.ing</a> 免费领取）。</p>
-</blockquote>
-<h2 id="配置通用">配置（通用）</h2>
-<p>MCP 的核心配置结构在所有客户端里是一样的（<code>command</code> +
-<code>args</code> +
-<code>env</code>），只是各客户端把它写进各自的配置文件：</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;mcpServers&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;datasinking&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;python&quot;</span><span class="fu">,</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;args&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;/绝对路径/mcp_server.py&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;env&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;DATASINK_API_KEY&quot;</span><span class="fu">:</span> <span class="st">&quot;你的key&quot;</span> <span class="fu">}</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
-<p>各客户端添加方式：</p>
+<p>Expose the <a href="https://datasink.ing">DataSinking</a> Asian
+financial-report API to AI agents over <a
+href="https://modelcontextprotocol.io">Model Context Protocol (MCP)</a>
+— no code required.</p>
+<h2 id="the-endpoint">The endpoint</h2>
+<pre><code>https://api.datasink.ing/mcp
+
+Authorization: Bearer YOUR_KEY       # or: https://api.datasink.ing/mcp?apikey=YOUR_KEY</code></pre>
+<p>Nothing to install. Prefer the header over <code>?apikey=</code>
+where your client supports one — a key in a URL ends up in logs and
+screen shares.</p>
+<h3 id="how-to-add-it-per-client">How to add it, per client</h3>
 <table>
 <colgroup>
-<col style="width: 47%" />
-<col style="width: 52%" />
+<col style="width: 50%" />
+<col style="width: 50%" />
 </colgroup>
 <thead>
 <tr>
-<th>客户端</th>
-<th>添加方式</th>
+<th>Client</th>
+<th>How</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Claude Desktop</strong></td>
-<td><code>Settings → Developer → Edit Config</code>，编辑
-<code>claude_desktop_config.json</code>（JSON 格式，同上）</td>
+<td><strong>Claude Code</strong></td>
+<td><code>claude mcp add --transport http datasinking https://api.datasink.ing/mcp --header "Authorization: Bearer YOUR_KEY"</code></td>
 </tr>
 <tr>
-<td><strong>Claude Code</strong></td>
-<td><code>claude mcp add datasinking -- python /绝对路径/mcp_server.py</code></td>
+<td><strong>Claude Desktop</strong></td>
+<td><code>Settings → Connectors → Add custom connector</code>, then
+paste the URL <strong>with <code>?apikey=YOUR_KEY</code> already on
+it</strong>. A bare URL fails: the connector tries OAuth and this server
+has none</td>
 </tr>
 <tr>
 <td><strong>Cursor</strong></td>
-<td><code>Settings → MCP → Add new MCP server</code>（粘贴 JSON）</td>
+<td><code>.cursor/mcp.json</code> (or <code>~/.cursor/mcp.json</code>) —
+a remote entry takes <code>"url"</code> + <code>"headers"</code>,
+interpolating <code>${env:DATASINK_API_KEY}</code></td>
 </tr>
 <tr>
-<td><strong>OpenAI Codex</strong></td>
-<td>编辑 <code>~/.codex/config.toml</code>，加
-<code>[mcp_servers.datasinking]</code> 段（TOML 格式，字段同上）</td>
+<td><strong>OpenAI Codex CLI</strong></td>
+<td><code>codex mcp add datasinking --url https://api.datasink.ing/mcp --bearer-token-env-var DATASINK_API_KEY</code></td>
 </tr>
 <tr>
-<td><strong>DeepSeek</strong></td>
-<td>通过其 MCP 配置接入（JSON 同上）</td>
+<td><strong>WorkBuddy / CodeBuddy</strong></td>
+<td><code>插件 → MCP 服务器 → 配置 MCP</code>, or edit
+<code>~/.workbuddy/mcp.json</code> /
+<code>~/.codebuddy/.mcp.json</code></td>
 </tr>
 <tr>
-<td><strong>Windsurf</strong></td>
-<td><code>Settings → MCP</code></td>
+<td><strong>Doubao Work / 豆包工作</strong></td>
+<td><code>技能 · 连接器 · 伙伴 → 新建自定义连接器</code> — HTTP
+transport, header <code>Authorization: Bearer YOUR_KEY</code>. No config
+file; desktop client only</td>
+</tr>
+<tr>
+<td><strong>Devin Desktop</strong></td>
+<td><code>%AppData%\devin\mcp_config.json</code> on Windows,
+<code>~/.config/devin/mcp_config.json</code> on macOS/Linux — the remote
+field is <code>serverUrl</code>, not <code>url</code></td>
+</tr>
+<tr>
+<td><strong>DeepSeek Harness (<code>dsh</code>)</strong></td>
+<td>YAML patch layer at
+<code>~/.dsh/profiles/&lt;name&gt;/cordis.patch.yml</code>, with the
+<code>@deepseek-ai/dsh-mcp-client</code> plugin</td>
 </tr>
 </tbody>
 </table>
-<p>配置好后，就能直接问：</p>
-<blockquote>
-<p>“DataSinking 覆盖了哪些交易所？茅台 2025
-年报的管理层讨论与分析讲了什么？”</p>
-</blockquote>
-<h2 id="设置-api-key-环境变量">设置 API key 环境变量</h2>
-<p>如果不在配置里写 <code>env</code> 字段（比如用
-<code>claude mcp add</code> 加、或想全局设），需要先把 key
-设进环境变量。三种 shell 的命令：</p>
-<p><strong>Linux / macOS（bash / zsh）</strong>：</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">DATASINK_API_KEY</span><span class="op">=</span><span class="st">&quot;你的key&quot;</span></span></code></pre></div>
-<p><strong>Windows PowerShell</strong>：</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">DATASINK_API_KEY</span><span class="op">=</span><span class="st">&quot;你的key&quot;</span></span></code></pre></div>
-<p><strong>Windows CMD</strong>：</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode cmd"><code class="sourceCode dosbat"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="va">DATASINK_API_KEY</span>=你的key</span></code></pre></div>
-<h2 id="工具清单">工具清单</h2>
+<p>Each of these has a full guide — exact file, both scopes,
+verification, and the errors that client actually produces: <a
+href="docs/mcp/"><code>docs/mcp/</code></a>.</p>
+<h2 id="tools">Tools</h2>
 <table>
 <colgroup>
-<col style="width: 28%" />
-<col style="width: 28%" />
-<col style="width: 42%" />
+<col style="width: 25%" />
+<col style="width: 54%" />
+<col style="width: 20%" />
 </colgroup>
 <thead>
 <tr>
-<th>工具</th>
-<th>作用</th>
-<th>对应 API</th>
+<th>Tool</th>
+<th>What it does</th>
+<th>API</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>list_exchanges</code></td>
-<td>列出覆盖的交易所</td>
+<td>List covered exchanges</td>
 <td><code>/exchanges</code></td>
 </tr>
 <tr>
 <td><code>list_stocks(exchange)</code></td>
-<td>列某交易所的股票</td>
+<td>List stocks on an exchange</td>
 <td><code>/stocks</code></td>
 </tr>
 <tr>
 <td><code>list_reports(symbol, doc_type, size)</code></td>
-<td>列某公司的报告（元数据）</td>
+<td>List a company’s reports (metadata)</td>
 <td><code>/documents</code></td>
 </tr>
 <tr>
 <td><code>get_report(document_id)</code></td>
-<td>拿单篇报告全文</td>
+<td>Get a report’s full text</td>
 <td><code>/documents/{id}</code></td>
 </tr>
 <tr>
 <td><code>list_sections(document_id)</code></td>
-<td>列报告的章节标题</td>
+<td>List a report’s section headings</td>
 <td><code>/documents/{id}/sections</code></td>
 </tr>
 <tr>
 <td><code>get_section(document_id, section)</code></td>
-<td>只取某一章（省 token，适合 RAG）</td>
+<td>Get one section only</td>
 <td><code>/documents/{id}?section=</code></td>
 </tr>
 </tbody>
 </table>
-<h2 id="提示">提示</h2>
+<p>Symbols are FMP-style: <code>600519.SS</code> (Moutai),
+<code>005930.KS</code> (Samsung), <code>7203.T</code> (Toyota).</p>
+<p><strong>To save tokens</strong>, use <code>get_section</code> for one
+chapter — e.g. “management discussion and analysis” — instead of
+<code>get_report</code> for the whole document.</p>
+<h2 id="running-it-locally-instead">Running it locally instead</h2>
+<p>The same six tools, on your own machine, if you’d rather not send the
+key to a hosted endpoint:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> <span class="at">-y</span> datasinking-mcp                    <span class="co"># Node 18+</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uvx</span> <span class="at">--from</span> <span class="st">&quot;datasinking[mcp]&quot;</span> datasinking-mcp    <span class="co"># Python, no install</span></span></code></pre></div>
+<p>The config shape is <code>command</code> + <code>args</code> +
+<code>env</code>:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;mcpServers&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;datasinking&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;command&quot;</span><span class="fu">:</span> <span class="st">&quot;npx&quot;</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;args&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;-y&quot;</span><span class="ot">,</span> <span class="st">&quot;datasinking-mcp&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;env&quot;</span><span class="fu">:</span> <span class="fu">{</span> <span class="dt">&quot;DATASINK_API_KEY&quot;</span><span class="fu">:</span> <span class="st">&quot;YOUR_KEY&quot;</span> <span class="fu">}</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p><strong>This JSON is a shape, not a drop-in.</strong> Every client’s
+file differs in ways that break: Codex is TOML with no <code>type</code>
+field, Cursor interpolates <code>${env:NAME}</code> while Claude Code
+uses <code>${NAME}</code>, and Claude Desktop’s file takes no
+<code>url</code>. Put it in the right file via that client’s guide.</p>
+<p>Whenever a config <em>references</em> the key instead of containing
+it — Codex’s <code>bearer_token_env_var</code>, or
+<code>${DATASINK_API_KEY}</code> in a remote server’s
+<code>headers</code> — set the variable <strong>before</strong>
+launching, or the header goes out empty:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">DATASINK_API_KEY</span><span class="op">=</span><span class="st">&quot;YOUR_KEY&quot;</span>          <span class="co"># Linux / macOS</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="va">$env</span><span class="op">:</span><span class="va">DATASINK_API_KEY</span><span class="op">=</span><span class="st">&quot;YOUR_KEY&quot;</span>            <span class="co"># Windows PowerShell</span></span></code></pre></div>
+<h2 id="if-it-wont-connect">If it won’t connect</h2>
+<p>Two properties of the hosted server cause most failures:</p>
 <ul>
-<li><strong>symbol 用 FMP
-风格</strong>：<code>600519.SS</code>（茅台）、<code>005930.KS</code>（三星）、<code>7203.T</code>（丰田）。</li>
-<li><strong>要省 token 用 <code>get_section</code></strong>
-只取某章（如「管理层讨论与分析」），而不是 <code>get_report</code>
-拿整篇。</li>
+<li><strong><code>POST /mcp</code> only.</strong> There is no
+server-to-client SSE stream. With a valid key <code>GET /mcp</code>
+returns <code>405 Use POST /mcp for MCP streamable HTTP</code> — but
+<em>without</em> one it returns <code>401</code> first, so a
+<code>401</code> from a client you configured correctly usually means it
+probed with <code>GET</code>.</li>
+<li><strong>Stateless.</strong> No <code>Mcp-Session-Id</code> is issued
+or required, so nothing survives a restart and there is nothing to reset
+server-side.</li>
 </ul>
+<p>Test the endpoint without any client involved:</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-s</span> <span class="at">-X</span> POST https://api.datasink.ing/mcp <span class="dt">\</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Authorization: Bearer YOUR_KEY&quot;</span> <span class="dt">\</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Content-Type: application/json&quot;</span> <span class="dt">\</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&quot;Accept: application/json, text/event-stream&quot;</span> <span class="dt">\</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:1,&quot;method&quot;:&quot;tools/list&quot;}&#39;</span></span></code></pre></div>
+<p>Six tool definitions come back if the key is good. If it isn’t, the
+body is the error — both HTTP 401:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Response</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{"detail":"Missing API key"}</code></td>
+<td>Nothing was sent — the env var wasn’t set before the client
+launched</td>
+</tr>
+<tr>
+<td><code>{"detail":"无效的 API key"}</code></td>
+<td>The key isn’t recognised — check for a stray space or a missing
+<code>Bearer</code></td>
+</tr>
+</tbody>
+</table>
+<p>This one command separates “my client is misconfigured” from “my key
+is wrong”.</p>
+<h2 id="keep-the-attribution">Keep the attribution</h2>
+<p>Every response carries a <code>source</code> field naming the
+official platform (cninfo.com.cn, EDINET, DART, MOPS). Keep it when you
+cite or redistribute the data.</p>
 </body>
 </html>

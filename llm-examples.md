@@ -279,7 +279,7 @@ tokens; the model then searches within that chapter for the exact note.
 
 ## Example 10 — Use it through MCP (no REST, no SDK)
 
-For AI agents that speak MCP (Claude, Cursor, Codex, Windsurf, …), point them at the
+For AI agents that speak MCP (Claude, Cursor, Codex, Devin Desktop, …), point them at the
 hosted endpoint — no REST calls, no SDK, the agent calls the tools itself:
 
 ```bash

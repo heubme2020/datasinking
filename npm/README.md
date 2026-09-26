@@ -32,7 +32,7 @@ documents per month), then add this to your MCP client:
 }
 ```
 
-Works with Claude Desktop, Claude Code, Cursor, Windsurf, Codex, and anything else that speaks
+Works with Claude Desktop, Claude Code, Cursor, Devin Desktop, Codex, and anything else that speaks
 MCP over stdio.
 
 > Prefer the remote endpoint? DataSinking also serves MCP over streamable HTTP at

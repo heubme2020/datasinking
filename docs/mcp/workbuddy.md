@@ -13,7 +13,7 @@ Connect Tencent's coding agents to the DataSinking MCP server.
 
 ## WorkBuddy (desktop app)
 
-**Config file** — either scope works:
+**Config file:**
 
 | Scope | Path |
 |---|---|
@@ -52,37 +52,21 @@ Requires Node 18+. Prefer Python? Swap in `uvx`:
 
 **Restart WorkBuddy** after editing the file — it reads MCP config at launch.
 
-### About the hosted endpoint
-
-WorkBuddy's documented MCP config is **stdio only**. The hosted `https://api.datasink.ing/mcp` endpoint may work with the HTTP form below (it shares CodeBuddy's engine), but it is **not documented by Tencent and not verified by us** — if it doesn't connect, fall back to the `npx` config above, which needs no install either way.
-
-```json
-{
-  "mcpServers": {
-    "datasinking": {
-      "type": "http",
-      "url": "https://api.datasink.ing/mcp",
-      "headers": { "Authorization": "Bearer YOUR_KEY" }
-    }
-  }
-}
-```
-
 ---
 
 ## CodeBuddy Code (CLI)
 
-**Config file**, in order of precedence:
+**Config file:**
 
-| Scope | Path (first match wins) |
+| Scope | Path |
 |---|---|
-| User | `~/.codebuddy/.mcp.json` ← recommended · `~/.codebuddy/mcp.json` (deprecated) · `~/.codebuddy.json` (legacy) |
-| Project | `<project root>/.mcp.json` ← recommended · `<project root>/mcp.json` (deprecated) |
+| User | `~/.codebuddy/.mcp.json` · `~/.codebuddy/mcp.json` (deprecated) · `~/.codebuddy.json` (legacy) |
+| Project | `<project root>/.mcp.json` · `<project root>/mcp.json` (deprecated) |
 | Local | `~/.codebuddy.json#/projects/<workspace path>` |
 
-Overall precedence is **local > project > user**. Project-scoped servers need approval on first connection.
+Precedence is **local > project > user**; within a scope, the first path listed wins. Project-scoped servers need approval on first connection.
 
-**Hosted — streamable HTTP.** This one *is* documented, so prefer it:
+**Hosted — streamable HTTP:**
 
 ```json
 {
@@ -99,7 +83,7 @@ Overall precedence is **local > project > user**. Project-scoped servers need ap
 
 `${VAR}` and `${VAR:-default}` expand in `command`, `args`, `env`, `url` and `headers`. Variable names must match `[A-Z_][A-Z0-9_]*` — **lowercase names are not expanded**, silently.
 
-`type` is technically inferred (`command` → stdio, `url` → http) but Tencent's docs recommend writing it explicitly. Supported transports: **STDIO / SSE / HTTP**.
+`type` is inferred from your fields (`command` → stdio, `url` → http), but write it explicitly. Supported transports: **STDIO / SSE / HTTP**.
 
 **From the CLI:**
 
@@ -150,15 +134,15 @@ What does TSMC's latest annual report say in the management discussion and analy
 
 | Symptom | Cause |
 |---|---|
-| Red dot / 配置异常 | JSON syntax error, or the command isn't on `PATH`. Run the `command` by hand first — `npx -y datasinking-mcp` should print `datasinking-mcp 0.2.10 ready`. |
-| Config ignored | Wrong scope. `local > project > user` — a project-level file overrides your user-level one. |
-| Config ignored, again | You're in WorkBuddy but edited `~/.codebuddy/`. See the note at the top. |
-| Still ignored after fixing | Restart the app. MCP config is read at launch. |
+| Red dot / 配置异常 | JSON syntax error, or the command isn't on `PATH`. Run the `command` by hand first — `npx -y datasinking-mcp` prints `datasinking-mcp <version> ready`. |
+| Config ignored, and you edited `~/.codebuddy/.mcp.json` | Wrong product's file. The WorkBuddy desktop app reads only `~/.workbuddy/mcp.json`; the CodeBuddy CLI reads only `~/.codebuddy/.mcp.json`. See the note at the top. |
+| Config ignored, and both products' files look right | Wrong scope. A project-level file overrides your user-level one: `local > project > user`. |
+| Config ignored after changing the file in `~/.workbuddy/mcp.json` | App not restarted. WorkBuddy reads MCP config at launch — quit and reopen it. |
 | `${datasink_key}` doesn't expand | Lowercase variable names are not expanded. Use `DATASINK_API_KEY`. |
 | Key rejected | `POST /mcp` returns 401 `{"detail":"Missing API key"}` with no key, or `{"detail":"无效的 API key"}` with a bad one. |
 
 ## Keep the attribution
 
-Every response carries a `source` field naming the official platform (cninfo.com.cn, EDINET, DART, MOPS). Keep it when you cite or redistribute the data.
+Keep the `source` field on every response — it names the official platform (cninfo.com.cn, EDINET, DART, MOPS) the data came from.
 
 → All clients: [`mcp-server.md`](../../mcp-server.md)

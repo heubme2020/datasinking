@@ -3,7 +3,7 @@
 
 Expose the DataSinking API — full-text financial reports across Asia
 (China, Korea, Japan, Taiwan) as clean Markdown — to AI agents (Claude, Cursor,
-Codex, DeepSeek, Windsurf, …).
+Codex, DeepSeek, Devin Desktop, …).
 
 Install the MCP extra::
 

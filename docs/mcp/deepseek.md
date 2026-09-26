@@ -2,18 +2,10 @@
 
 Connect the **DeepSeek Harness** (`dsh`) to the DataSinking MCP server.
 
-> **Not to be confused with two other things called "DeepSeek agent docs":**
->
-> - `api-docs.deepseek.com/.../agent_integrations/claude_code` is about pointing *Claude Code at
->   DeepSeek as a model backend* (`ANTHROPIC_BASE_URL`). It has nothing to do with MCP servers.
-> - `deepseek-ai/awesome-deepseek-agent` is a curated list of **third-party** tools. DeepSeek is not
->   the client there — it's the model they talk to.
->
-> The harness is a separate thing, and it *is* a real MCP client.
+> **Not the same as DeepSeek's model-endpoint docs** (`ANTHROPIC_BASE_URL`) or the third-party
+> `awesome-deepseek-agent` list — neither of those configures an MCP server.
 
-⚠️ **`dsh` is a developer preview.** `@deepseek-ai/dsh` is published as a release candidate
-(`0.1.5-rc.2` at the time of writing). Expect the config surface to move; the shape below is
-verified against the published config catalog and the harness's own README.
+**`dsh` is a developer preview.**
 
 ---
 
@@ -23,11 +15,16 @@ verified against the published config catalog and the harness's own README.
 
 | Scope | Path |
 |---|---|
-| One profile | `$DSH_HOME/profiles/<name>/cordis.patch.yml` |
-| Every profile on this machine | `$DSH_HOME/cordis.patch.yml` |
+| One profile — **edit this one** | `~/.dsh/profiles/<name>/cordis.patch.yml` |
+| Every profile on this machine | `~/.dsh/cordis.patch.yml` |
 
-`DSH_HOME` defaults to `~/.dsh`, so on macOS and Linux that's `~/.dsh/cordis.patch.yml`, and on
-Windows `%USERPROFILE%\.dsh\cordis.patch.yml`.
+On Windows that's `%USERPROFILE%\.dsh\profiles\<name>\cordis.patch.yml`.
+
+Install the MCP client plugin once per profile:
+
+```bash
+dsh plugin --profile <name> add @deepseek-ai/dsh-mcp-client
+```
 
 There is **no project-scope config file.** Project scope means passing a `--patch` overlay at
 launch, which can point at any file on disk.
@@ -49,8 +46,8 @@ launch, which can point at any file on disk.
 ```
 
 `!!js` is this config system's JavaScript tag — the backtick template is evaluated at load, so the
-key is read from the environment rather than written into the file. If you'd rather keep it simple,
-the `?apikey=` form on the URL works on its own and you can drop the `headers` block.
+key is read from the environment rather than written into the file. The `?apikey=` form on the URL
+works on its own; if you use it, drop the `headers` block.
 
 ## Local — stdio
 
@@ -76,10 +73,9 @@ For Python instead of Node: `command: uvx`, `args: ['--from', 'datasinking[mcp]'
 > shell — it must be listed explicitly under `config.env`, as above. Explicit entries merge on top
 > of the scrub and survive.
 
-Useful defaults on the same block: `toolCallTimeoutMs` (60000), `failOnStartupError` (false),
-`reconnect.enabled` (true). With `failOnStartupError` left at its default, **a failed MCP connection
-does not stop the harness from starting** — it just starts with no tools and logs an error. That
-silent-start behaviour is worth knowing before you conclude the config was ignored.
+`failOnStartupError` on the same block defaults to `false`, so **a failed MCP connection does not
+stop the harness from starting** — it starts with no tools and logs an error. That is why a broken
+config looks like an ignored config.
 
 ## Run
 
@@ -88,20 +84,20 @@ npx @deepseek-ai/dsh web                                   # default http://127.
 npx @deepseek-ai/dsh web --patch ./mcp-datasinking.yml     # with an MCP overlay
 ```
 
-There is **no `dsh mcp add` command.** Registration means writing the YAML row into a patch layer,
-or passing `--patch` at launch. `--dump-config` / `--dump-default-config` print the composed tree
-without booting the harness, which is the fastest way to check your patch actually merged.
+There is **no `dsh mcp add` command.** Registration means installing the plugin and writing the YAML
+row into a patch layer, or passing `--patch` at launch. `--dump-config` / `--dump-default-config`
+print the composed tree without booting the harness, which is the fastest way to check your patch
+actually merged.
 
 ## Verify
 
-Tools appear in the model's tool list namespaced as `mcp__<serverName>__<tool>` — e.g.
+Tools appear in the model's tool list namespaced as `mcp__<serverName>__<rawName>` — e.g.
 `mcp__datasinking__get_report`, `mcp__datasinking__list_exchanges`.
 
 - Tool discovery is **asynchronous**. Wait for the `mcp__...` tools to appear before sending your
   first prompt, or the model will answer as if it has no tools.
-- A **new session is enough** to pick up a config change; restarting the host is not required.
-  Editing an entry reloads that server's connection in place.
-- Crashed MCP children auto-reconnect with backoff (500 ms doubling to 30 s, 10 attempts).
+- **No restart required.** A new session is enough to pick up a config change; editing an entry
+  reloads that server's connection in place.
 
 ## Troubleshooting
 
@@ -114,7 +110,7 @@ Tools appear in the model's tool list namespaced as `mcp__<serverName>__<tool>` 
 
 ## Keep the attribution
 
-Every response carries a `source` field naming the official platform (cninfo.com.cn, EDINET, DART,
-MOPS). Keep it when you cite or redistribute the data.
+Keep the `source` field on every response — it names the official platform (cninfo.com.cn, EDINET,
+DART, MOPS) the data came from.
 
 → All clients: [`mcp-server.md`](../../mcp-server.md)

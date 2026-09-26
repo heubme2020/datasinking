@@ -20,7 +20,7 @@ Cursor speaks streamable HTTP natively — **no `mcp-remote` bridge**, no local 
 }
 ```
 
-**Restart Cursor** after editing — Cursor's docs are explicit that local file changes need a restart.
+**Restart Cursor after editing.**
 
 Write the key inline instead if you'd rather not manage an env var:
 
@@ -36,8 +36,8 @@ Write the key inline instead if you'd rather not manage an env var:
 
 ### Two Cursor-specific details
 
-1. **Interpolation is `${env:NAME}`, not `${NAME}`.** Cursor's own variable syntax differs from Claude Code's, and mixing them up leaves you with a literal string in the `Authorization` header. Cursor also provides `${userHome}`, `${workspaceFolder}`, `${workspaceFolderBasename}` and `${pathSeparator}`. All are valid in `command`, `args`, `env`, `url` and `headers`.
-2. **A remote entry needs no `type` field** (unlike Claude Code, where omitting it is a hard error). `type: "stdio"` *is* required for stdio entries.
+1. **Interpolation is `${env:NAME}`, not `${NAME}`.** Getting it wrong leaves a literal string in the `Authorization` header. Valid in `command`, `args`, `env`, `url` and `headers`.
+2. **A remote entry needs no `type` field.** `type: "stdio"` *is* required for stdio entries.
 
 ## Local — stdio
 
@@ -54,11 +54,9 @@ Write the key inline instead if you'd rather not manage an env var:
 }
 ```
 
-`envFile` is available for stdio servers only — a remote server that carries `envFile` is rejected.
-
 ## Verify
 
-**Output panel (`Cmd+Shift+U` / `Ctrl+Shift+U`) → dropdown → "MCP Logs"** is where connection errors actually surface. Per-server on/off toggles live under **Customize** — worth knowing, because a server that's toggled off looks identical to one that failed.
+**Output panel (`Cmd+Shift+U` / `Ctrl+Shift+U`) → dropdown → "MCP Logs"** is where connection errors actually surface. Per-server on/off toggles live under **Customize** — a server that's toggled off looks identical to one that failed.
 
 There is no CLI for registering MCP servers in Cursor.
 
@@ -84,6 +82,6 @@ Find the revenue figure in Moutai's latest annual report — and get the unit ri
 
 ## Keep the attribution
 
-Every response carries a `source` field naming the official platform (cninfo.com.cn, EDINET, DART, MOPS). Keep it when you cite or redistribute the data.
+Every response carries a `source` field naming the official disclosure platform — keep it when you cite or redistribute the data.
 
 → All clients: [`mcp-server.md`](../../mcp-server.md)

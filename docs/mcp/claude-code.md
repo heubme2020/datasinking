@@ -21,7 +21,7 @@ In a session, `/mcp` shows the same thing, and the six `datasinking` tools appea
 
 ## Where the config actually goes
 
-`claude mcp add` defaults to `--scope local`. Pick deliberately:
+`claude mcp add` defaults to `--scope local`:
 
 | `--scope` | Stored in | Use when |
 |---|---|---|
@@ -73,7 +73,7 @@ If you'd rather edit the file (or you're writing `.mcp.json` for a team):
 }
 ```
 
-- **`"type": "http"` is not optional.** An entry with a `url` but no `type` is read as stdio and skipped with: `MCP server "datasinking" has a "url" but no "type"`. `"streamable-http"` is accepted as an alias; `sse` and `ws` also exist.
+- **`"type": "http"` is not optional.** An entry with a `url` but no `type` is read as stdio and skipped with: `MCP server "datasinking" has a "url" but no "type"`. `"streamable-http"` is accepted as an alias.
 - `${VAR}` and `${VAR:-default}` expand inside `command`, `args`, `env`, `url` and `headers`.
 - **Gotcha:** a short allowlist of credential names (`ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, `AWS_BEARER_TOKEN_BEDROCK`, `HTTPS_PROXY`, `NPM_TOKEN`, …) is deliberately blanked inside a *remote* server's `url`/`headers` — even with a `:-default`. `DATASINK_API_KEY` and `API_KEY` are unaffected, so use one of those.
 
@@ -92,7 +92,7 @@ List Moutai's annual reports.
 What does Toyota's latest annual report say about risks?
 ```
 
-`list_exchanges` is the natural first call — it's how the model discovers that `sse`, `jpx`, `koe` and friends exist.
+`list_exchanges` is the natural first call — it's how the model discovers which exchange codes are covered.
 
 ## Troubleshooting
 
@@ -121,8 +121,7 @@ Error detail: {"detail":"无效的 API key"}
 | Header arrives blank | You used an allowlisted env var name for a remote server. Rename it to `DATASINK_API_KEY`. |
 | Need wire-level logs | `claude --debug='mcp'` |
 
-Ground truth is one command away, if you want to check the endpoint yourself without Claude Code
-in the picture:
+Check the endpoint directly:
 
 ```bash
 curl -s -X POST https://api.datasink.ing/mcp \
@@ -134,6 +133,6 @@ curl -s -X POST https://api.datasink.ing/mcp \
 
 ## Keep the attribution
 
-Every response carries a `source` field naming the official platform (cninfo.com.cn, EDINET, DART, MOPS). Keep it when you cite or redistribute the data.
+Every response carries a `source` field naming the official disclosure platform — keep it when you cite or redistribute the data.
 
 → All clients: [`mcp-server.md`](../../mcp-server.md) · Tools reference: there too.

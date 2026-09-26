@@ -18,20 +18,21 @@ with YAML frontmatter, preserved headings, paragraphs and tables.
 
 ## MCP server
 
-Ship DataSinking to any AI agent (Claude / Cursor / Codex / Windsurf) as an
+Ship DataSinking to any AI agent (Claude / Cursor / Codex / Devin Desktop) as an
 [MCP](https://modelcontextprotocol.io) server — 6 tools: list exchanges, list stocks,
 list reports, fetch a report, list sections, fetch one section (token-friendly for RAG).
 
 ### Hosted — nothing to install
 
-Point any MCP client at our endpoint and you're done. No package, no Python, no local server:
+One URL, no package, no Python, no local server. Most clients take this shape:
 
 ```json
 {
   "mcpServers": {
     "datasinking": {
       "type": "http",
-      "url": "https://api.datasink.ing/mcp?apikey=YOUR_KEY"
+      "url": "https://api.datasink.ing/mcp",
+      "headers": { "Authorization": "Bearer YOUR_KEY" }
     }
   }
 }
@@ -44,9 +45,12 @@ claude mcp add --transport http datasinking https://api.datasink.ing/mcp \
   --header "Authorization: Bearer YOUR_KEY"
 ```
 
-Your key rides inside the URL, so treat that config as a secret. Clients that support custom
-headers can send `Authorization: Bearer YOUR_KEY` instead — Claude Code redacts headers in its
-output but can't redact a URL.
+A client that can't set a header can put the key in the URL instead —
+`https://api.datasink.ing/mcp?apikey=YOUR_KEY` — but only do that when you must: a key in a URL
+ends up in logs and screen shares, and no client can redact it.
+
+Two clients don't fit the shape above: Codex's config is TOML, and Devin Desktop's remote field is
+`serverUrl`, not `url`. Per-client files: [`docs/mcp/`](docs/mcp/).
 
 ### Local — run it yourself
 
@@ -81,8 +85,9 @@ kept in lockstep by [`check_mcp_parity.py`](check_mcp_parity.py).
 
 Full per-client setup: [`mcp-server.md`](mcp-server.md) (overview) ·
 [`docs/mcp/`](docs/mcp/) (one guide per client).
-Hosted endpoint is **POST-only and stateless** — `GET /mcp` returns 405, no session id, and every
-client needs a restart after a config change. That trips up most first connections.
+
+The hosted endpoint is **POST-only and stateless** — `GET /mcp` returns 405, and no session id is
+issued. Most clients read MCP config at launch, so restart one after changing its config.
 
 ![DataSinking MCP in Claude](docs/images/mcp-demo.png)
 
@@ -96,8 +101,8 @@ datasinking/
 ├── research/     # Research notes / blog posts (reproducing paper-style presentation)
 ├── datasinking/  # Python client + MCP server — pip install "datasinking[mcp]"
 ├── npm/          # The same MCP server on npm — npx -y datasinking-mcp (Node 18+)
-├── docs/mcp/     # Per-client MCP setup: Claude Code, Claude Desktop, Cursor, Codex, WorkBuddy
-├── mcp-server.md # MCP server overview — the two config shapes, tools, endpoint limits
+├── docs/mcp/     # Per-client MCP setup — Claude Code, Desktop, Cursor, Codex, WorkBuddy, Devin…
+├── mcp-server.md # MCP server overview — endpoint, per-client table, tools, troubleshooting
 ├── llm-examples.md  # Ask an LLM — no code needed (8 end-to-end examples)
 ├── api-examples.md  # 7 examples × 3 interfaces (curl / Python / LLM)
 └── README.md
@@ -112,9 +117,10 @@ errors that client actually produces:
 | Claude Desktop | [`docs/mcp/claude-desktop.md`](docs/mcp/claude-desktop.md) |
 | OpenAI Codex CLI | [`docs/mcp/codex.md`](docs/mcp/codex.md) |
 | WorkBuddy / CodeBuddy | [`docs/mcp/workbuddy.md`](docs/mcp/workbuddy.md) |
+| Doubao Work / 豆包工作 | [`docs/mcp/doubao.md`](docs/mcp/doubao.md) |
 | Cursor | [`docs/mcp/cursor.md`](docs/mcp/cursor.md) |
-| DeepSeek | [`docs/mcp/deepseek.md`](docs/mcp/deepseek.md) |
-| Windsurf | [`docs/mcp/windsurf.md`](docs/mcp/windsurf.md) |
+| DeepSeek Harness (`dsh`) | [`docs/mcp/deepseek.md`](docs/mcp/deepseek.md) |
+| Devin Desktop | [`docs/mcp/windsurf.md`](docs/mcp/windsurf.md) |
 
 ## Quick start
 
