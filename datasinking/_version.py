@@ -8,4 +8,4 @@ pyproject.toml 用 `dynamic = ["version"]` 从这里读，`client.py` 的 User-A
 写着旧版本）。现在只有这一处需要改。
 """
 
-__version__ = "0.2.12"
+__version__ = "0.2.13"
