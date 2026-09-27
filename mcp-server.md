@@ -26,6 +26,9 @@ URL ends up in logs and screen shares.
 | **Doubao Work / 豆包工作** | `技能 · 连接器 · 伙伴 → 新建自定义连接器` — HTTP transport, header `Authorization: Bearer YOUR_KEY`. No config file; desktop client only |
 | **Devin Desktop** | `%AppData%\devin\mcp_config.json` on Windows, `~/.config/devin/mcp_config.json` on macOS/Linux — the remote field is `serverUrl`, not `url` |
 | **DeepSeek Harness (`dsh`)** | YAML patch layer at `~/.dsh/profiles/<name>/cordis.patch.yml`, with the `@deepseek-ai/dsh-mcp-client` plugin |
+| **OpenCode** | `~/.config/opencode/opencode.json` — top-level `mcp` key (**not** `mcpServers`), `"type": "remote"`, and set `"oauth": false` |
+| **Qoder** | CLI: `~/.qoder/settings.json` → `mcpServers`, `"type": "http"`. The **IDE** is configured in Settings → MCP instead — the two don't share a file |
+| **Reasonix** | `[[plugins]]` in `reasonix.toml` with `type = "http"`, or `reasonix mcp install io.github.heubme2020/datasinking` from the official registry |
 
 Each of these has a full guide — exact file, both scopes, verification, and the errors that client
 actually produces: [`docs/mcp/`](docs/mcp/).

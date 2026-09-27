@@ -121,6 +121,9 @@ errors that client actually produces:
 | Cursor | [`docs/mcp/cursor.md`](docs/mcp/cursor.md) |
 | DeepSeek Harness (`dsh`) | [`docs/mcp/deepseek.md`](docs/mcp/deepseek.md) |
 | Devin Desktop | [`docs/mcp/windsurf.md`](docs/mcp/windsurf.md) |
+| OpenCode | [`docs/mcp/opencode.md`](docs/mcp/opencode.md) |
+| Qoder | [`docs/mcp/qoder.md`](docs/mcp/qoder.md) |
+| Reasonix | [`docs/mcp/reasonix.md`](docs/mcp/reasonix.md) |
 
 ## Quick start
 
