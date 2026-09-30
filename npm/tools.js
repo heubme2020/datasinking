@@ -128,11 +128,12 @@ export const TOOLS = [
         section: {
           type: "string",
           description:
-            "Heading keyword, matched as a substring against the report's OWN headings, so pass it " +
-            "in the report's language. A-share reports have Chinese headings (e.g. 第三节管理层讨论与分析) — " +
-            "use 管理层讨论与分析 / 财务报告 there. For English-language filings, \"MD&A\" / " +
-            "\"financial statements\" / \"notes\" work. If nothing matches, the API returns 404 " +
-            "with the real headings — retry with one of those, or call list_sections first.",
+            "Heading keyword. Matches the report's own headings, and also understands cross-market " +
+            "concepts — MD&A / financial statements / notes / audit report / risk / governance " +
+            "(or their Chinese/Japanese/Korean equivalents) resolve to the right section in any market. " +
+            "Otherwise pass a heading in the report's language (A-share: 管理层讨论与分析 / 财务报告; " +
+            "English filings: \"MD&A\" / \"financial statements\" / \"notes\"). If nothing matches, " +
+            "the API returns 404 with the real headings — retry with one of those, or call list_sections first.",
         },
       },
       required: ["document_id", "section"],
