@@ -29,6 +29,7 @@ URL ends up in logs and screen shares.
 | **OpenCode** | `~/.config/opencode/opencode.json` — top-level `mcp` key (**not** `mcpServers`), `"type": "remote"`, and set `"oauth": false` |
 | **Qoder** | CLI: `~/.qoder/settings.json` → `mcpServers`, `"type": "http"`. The **IDE** is configured in Settings → MCP instead — the two don't share a file |
 | **Reasonix** | `[[plugins]]` in `reasonix.toml` with `type = "http"`, or `reasonix mcp install io.github.heubme2020/datasinking` from the official registry |
+| **Mobile (Kelivo / Joey / Systemprompt)** | In-app — `Settings → MCP → Add`, URL `https://api.datasink.ing/mcp`, header `Authorization: Bearer YOUR_KEY` (or `?apikey=` in the URL). Any streamable-HTTP MCP client works |
 
 Each of these has a full guide — exact file, both scopes, verification, and the errors that client
 actually produces: [`docs/mcp/`](docs/mcp/).
