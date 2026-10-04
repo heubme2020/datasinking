@@ -1,88 +1,149 @@
 # -*- coding: utf-8 -*-
-"""RAG 接入示例：财报分章节拉取 → 切块 → 输出 JSONL（喂向量库）。
+"""把 DataSinking 财报全文切成 RAG chunk，喂进向量库。
 
-DataSinking 服务 RAG 的正确姿势：
-  1. list_sections 看章节
-  2. get_section 只拉需要的章节（MD&A / 财务报告），省 token
-  3. 切块（带标题 + overlap，标题作为 chunk 元数据便于溯源）
-  4. 输出 JSONL，直接喂给任何 embedding / 向量库
+演示「卖基底给 RAG」的三个关键点：
 
-用法:
-    python examples/rag_ingest.py YOUR_API_KEY [document_id]
+1. **章节级访问** —— `get_section` 只取 MD&A 等单个章节，不用拉整份 300 页报告（省 token）。
+2. **块级锚点** —— 正文里的 `<!-- ds:block:N -->` 就是天然的 chunk 边界，不用自己猜怎么切。
+3. **source 溯源** —— 每个 chunk 的 metadata 都带 `source`（SEC EDGAR / cninfo / DART / EDINET / MOPS）
+   和 `block` 号，AI 引用时能精确指回「哪份报告、哪一章、哪一段/哪张表」。
 
-依赖: 无（复用 datasinking SDK 的零依赖；切块只用标准库）
+依赖：
+    pip install datasinking chromadb             # chromadb 可选，不装则只打印 chunk
+
+用法：
+    export DATASINK_API_KEY=xxx
+    python rag_ingest.py AAPL                          # 苹果最近一份年报，按块切好、打印
+    python rag_ingest.py AAPL --section "MD&A"         # 只切 MD&A 一章
+    python rag_ingest.py 600519.SS --doc-type annual --limit 3
+    python rag_ingest.py AAPL --collection apple       # 指定 chroma collection 名（会真的入库）
 """
-
-import json
+import argparse
 import os
+import re
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 from datasinking import DataSinking
 
+# 块级锚点：`<!-- ds:block:N -->`，N 是该块在章节/全文里的序号（从 1 开始）
+_BLOCK_RE = re.compile(r"<!-- ds:block:(\d+) -->")
 
-def chunk_text(title, text, chunk_size=800, overlap=100):
-    """把一段文本按 chunk_size 切块，相邻块 overlap 个字符重叠。
 
-    每块返回 {"title": 章节标题, "text": 块文本}，标题作为 chunk 的元数据，
-    检索时能追溯到「这段来自哪份报告的哪一章」。
+def chunk_markdown(content: str) -> list[dict]:
+    """按 `<!-- ds:block:N -->` 锚点把正文切成块。
+
+    返回 [{block: int, text: str}]。锚点前的 frontmatter（若有）直接跳过 ——
+    那些字段 API 已经作为独立字段返回了，不需要再解析一遍。
     """
-    text = text.strip()
-    if not text:
-        return []
+    parts = _BLOCK_RE.split(content)
     chunks = []
-    start = 0
-    while start < len(text):
-        end = min(start + chunk_size, len(text))
-        # 尽量在句号/换行处断开，避免切坏句子
-        if end < len(text):
-            for sep in ["\n\n", "\n", "。", ".", "；", ";"]:
-                idx = text.rfind(sep, start + chunk_size // 2, end)
-                if idx > 0:
-                    end = idx + len(sep)
-                    break
-        chunks.append({"title": title, "text": text[start:end].strip()})
-        start = end - overlap
+    # parts = [锚点前的内容, "1", 块1, "2", 块2, ...]
+    for i in range(1, len(parts), 2):
+        block_num = parts[i]
+        block_text = parts[i + 1].strip() if i + 1 < len(parts) else ""
+        if block_text:
+            chunks.append({"block": int(block_num), "text": block_text})
     return chunks
 
 
+def _meta(doc: dict, section: str | None, block: int) -> dict:
+    """构造 chunk 的 metadata（chromadb 要求值必须是 str/int/float/bool，None 归零成空串）。"""
+    m = {
+        "symbol": doc.get("symbol", ""),
+        "source": doc.get("source") or "",
+        "report_period": doc.get("report_period") or "",
+        "doc_type": doc.get("doc_type") or "",
+        "title": doc.get("title", "") or "",
+        "section": section or "full",
+        "block": block,
+    }
+    return m
+
+
+def build_chunks(doc: dict, content: str, section: str | None) -> list[dict]:
+    """把一个报告的正文切成带元数据的 chunk。
+
+    chunk 的 id 是稳定且可复现的：`{document_id}-{section}-{block}`。
+    """
+    out = []
+    for c in chunk_markdown(content):
+        out.append(
+            {
+                "id": f"{doc['id']}-{section or 'full'}-{c['block']}",
+                "text": c["text"],
+                "metadata": _meta(doc, section, c["block"]),
+            }
+        )
+    return out
+
+
+def to_chroma(chunks: list[dict], collection_name: str):
+    """把 chunk 写入 chromadb（可选依赖）。"""
+    import chromadb  # 延迟导入，不装也不影响 chunk 逻辑
+
+    client = chromadb.Client()
+    collection = client.get_or_create_collection(collection_name)
+    collection.upsert(
+        ids=[c["id"] for c in chunks],
+        documents=[c["text"] for c in chunks],
+        metadatas=[c["metadata"] for c in chunks],
+    )
+    return collection
+
+
 def main():
-    api_key = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("DATASINK_API_KEY", "")
-    if not api_key:
-        print("用法: python examples/rag_ingest.py YOUR_API_KEY [document_id]")
-        return
+    ap = argparse.ArgumentParser(description="把 DataSinking 财报全文切成 RAG chunk")
+    ap.add_argument("symbol", help="FMP 风格代码，如 AAPL / 600519.SS / 7203.T")
+    ap.add_argument("--doc-type", default="annual", help="annual / semiannual / q1 / q3")
+    ap.add_argument("--section", default=None, help="只切某一章（如 MD&A）；不填则切整份")
+    ap.add_argument("--limit", type=int, default=1, help="处理最近 N 份报告")
+    ap.add_argument("--collection", default=None, help="chroma collection 名；给了就真入库")
+    args = ap.parse_args()
 
-    ds = DataSinking(api_key)
+    key = os.environ.get("DATASINK_API_KEY")
+    if not key:
+        sys.exit("先 export DATASINK_API_KEY=xxx（免费 key 在 https://datasink.ing 申请）")
 
-    # 1. 拿一个文档。默认茅台 2025 年报(id=3)；也可传 document_id。
-    doc_id = int(sys.argv[2]) if len(sys.argv) > 2 else 3
-    doc = ds.get_report(doc_id)
-    print(f"报告: {doc['title']} ({doc['symbol']})")
-    print(f"全文: {doc['word_count']} 字\n")
+    ds = DataSinking(key)
+    reports = ds.list_reports(args.symbol, doc_type=args.doc_type)[: args.limit]
+    if not reports:
+        sys.exit(f"{args.symbol} 没有 {args.doc_type} 报告")
 
-    # 2. 看章节
-    sections = ds.list_sections(doc_id)
-    print(f"章节({len(sections)} 个): {sections[:5]}{'...' if len(sections) > 5 else ''}\n")
+    all_chunks = []
+    for doc in reports:
+        if args.section:
+            # 章节级访问：只取一章，省 token
+            got = ds.get_section(doc["id"], args.section)
+            content = got.get("content", "")
+            sec = got.get("section") or args.section
+        else:
+            got = ds.get_report(doc["id"])
+            content = got.get("content", "")
+            sec = None
+        chunks = build_chunks(doc, content, sec)
+        all_chunks.extend(chunks)
+        print(f"{doc['symbol']} {doc['report_period']} [{sec or '全文'}]：{len(chunks)} 个 chunk")
 
-    # 3. 只拉需要的章节（省 token，RAG 的关键）
-    target = "管理层讨论与分析"  # 换成你需要的：财务报告 / 重要事项 / MD&A
-    sec = ds.get_section(doc_id, target)
-    saved = 100 - 100 * len(sec["content"]) // max(doc["word_count"], 1)
-    print(f"拉取章节「{sec['section']}」: {len(sec['content'])} 字（全文 {doc['word_count']} 字，省 ~{saved}%）\n")
+    # 展示前 3 个 chunk（text 截断，别刷屏）
+    for c in all_chunks[:3]:
+        preview = c["text"][:160].replace("\n", " ")
+        print(f"\n  chunk {c['id']}  source={c['metadata']['source']}")
+        print(f"    {preview}…")
 
-    # 4. 切块
-    chunks = chunk_text(sec["section"], sec["content"])
-    print(f"切出 {len(chunks)} 个 chunk（chunk_size=800, overlap=100）")
-
-    # 5. 输出 JSONL，喂向量库（chromadb / faiss / pinecone / 任何 embedding 工具）
-    out_path = f"rag_chunks_{doc_id}.jsonl"
-    with open(out_path, "w", encoding="utf-8") as f:
-        for c in chunks:
-            c["doc_id"] = doc_id
-            c["symbol"] = doc["symbol"]
-            c["section"] = sec["section"]
-            f.write(json.dumps(c, ensure_ascii=False) + "\n")
-    print(f"已输出 {out_path}，每行一个 chunk，可直接喂 embedding")
+    if args.collection:
+        collection = to_chroma(all_chunks, args.collection)
+        print(f"\n已写入 chroma collection `{args.collection}`，共 {len(all_chunks)} 个 chunk")
+        # 演示带溯源检索：问一句，看命中的 chunk 能不能指回来源
+        res = collection.query(query_texts=["revenue"], n_results=2)
+        for doc_id, src in zip(res["ids"][0], [c for c in all_chunks if c["id"] in res["ids"][0]]):
+            print(f"  命中 {doc_id}  来源 {src['metadata']['source']}  block {src['metadata']['block']}")
+    else:
+        print(f"\n共 {len(all_chunks)} 个 chunk（加 --collection xxx 可写入 chromadb 真入库）")
 
 
 if __name__ == "__main__":

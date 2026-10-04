@@ -165,6 +165,7 @@ coverage, list a company's reports, and extract a figure with correct units.
 | `01_quickstart.py` | The 5 core functions: list exchanges / stocks / reports / fetch a report / fetch a stock's reports |
 | `02_download_company.py` | Download a company's full reports to local Markdown files |
 | `03_download_exchange.py` | Download an entire exchange's reports (all stocks) to local Markdown files |
+| `rag_ingest.py` | Slice reports into RAG chunks (on the `<!-- ds:block:N -->` anchors, with `source` traceability) and ingest into a vector store |
 
 Every example pulls from the live API and runs as-is.
 
