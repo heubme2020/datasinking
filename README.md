@@ -11,7 +11,7 @@
 and quarterly — from **the US, China, Japan, Korea and Taiwan** as clean **Markdown**, ready for LLM reading
 and RAG. Query by FMP-style symbol (`AAPL`, `600519.SS`, `7203.T`, `005930.KS`, `2330.TW`) or filter by
 exchange, report period, or **section** — pull just the MD&A / risk section instead of the whole
-filing, spending a fraction of the tokens. Every figure is traceable to its source disclosure and
+filing, saving tokens. Every figure is traceable to its source disclosure and
 block. Reports are sourced from official disclosure platforms and parsed into structured Markdown
 with YAML frontmatter, preserved headings, paragraphs and tables.
 
