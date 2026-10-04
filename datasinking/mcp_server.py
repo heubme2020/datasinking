@@ -162,6 +162,8 @@ def get_report(
 
     The `source` field names the official disclosure platform; keep that attribution
     when you cite it. Expensive in tokens — prefer get_section when you only need one chapter.
+    Content is annotated with block markers (`<!-- ds:block:N -->`) so you can cite a
+    specific paragraph or table.
     """
     return _get(f"/documents/{document_id}")
 
@@ -201,7 +203,11 @@ def get_section(
         ),
     ],
 ) -> dict:
-    """Fetch only one section of a report by keyword — much cheaper than get_report, best for RAG."""
+    """Fetch only one section of a report by keyword — much cheaper than get_report, best for RAG.
+
+    Content is annotated with block markers (`<!-- ds:block:N -->`) so you can cite a
+    specific paragraph or table.
+    """
     return _get(f"/documents/{document_id}", {"section": section})
 
 

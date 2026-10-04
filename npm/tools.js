@@ -100,7 +100,7 @@ export const TOOLS = [
   {
     name: "get_report",
     description:
-      "Fetch one report's full text (metadata + Markdown body). The `source` field names the official disclosure platform; keep that attribution when you cite it. Expensive in tokens — prefer get_section when you only need one chapter.",
+      "Fetch one report's full text (metadata + Markdown body). The `source` field names the official disclosure platform; keep that attribution when you cite it. Expensive in tokens — prefer get_section when you only need one chapter. Content is annotated with block markers (`<!-- ds:block:N -->`) so you can cite a specific paragraph or table.",
     inputSchema: {
       type: "object",
       properties: { document_id: { type: "integer", description: DOCUMENT_ID_DESC } },
@@ -120,7 +120,7 @@ export const TOOLS = [
   {
     name: "get_section",
     description:
-      "Fetch only one section of a report by keyword — much cheaper than get_report, best for RAG.",
+      "Fetch only one section of a report by keyword — much cheaper than get_report, best for RAG. Content is annotated with block markers (`<!-- ds:block:N -->`) so you can cite a specific paragraph or table.",
     inputSchema: {
       type: "object",
       properties: {
