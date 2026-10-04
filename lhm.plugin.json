@@ -70,7 +70,7 @@
     },
     {
       "name": "get_report",
-      "description": "Fetch one report's full text (metadata + Markdown body).\n\nThe `source` field names the official disclosure platform; keep that attribution\nwhen you cite it. Expensive in tokens — prefer get_section when you only need one chapter.\n",
+      "description": "Fetch one report's full text (metadata + Markdown body).\n\nThe `source` field names the official disclosure platform; keep that attribution\nwhen you cite it. Expensive in tokens — prefer get_section when you only need one chapter.\nContent is annotated with block markers (`<!-- ds:block:N -->`) so you can cite a\nspecific paragraph or table.\n",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -106,7 +106,7 @@
     },
     {
       "name": "get_section",
-      "description": "Fetch only one section of a report by keyword — much cheaper than get_report, best for RAG.",
+      "description": "Fetch only one section of a report by keyword — much cheaper than get_report, best for RAG. Content is annotated with block markers (`<!-- ds:block:N -->`) so you can cite a specific paragraph or table.",
       "inputSchema": {
         "type": "object",
         "properties": {
