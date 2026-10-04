@@ -75,7 +75,7 @@ Precedence is **local > project > user**; within a scope, the first path listed 
       "type": "http",
       "url": "https://api.datasink.ing/mcp",
       "headers": { "Authorization": "Bearer ${DATASINK_API_KEY}" },
-      "description": "Full-text Asian financial reports"
+      "description": "Full-text financial reports"
     }
   }
 }
@@ -143,6 +143,6 @@ What does TSMC's latest annual report say in the management discussion and analy
 
 ## Keep the attribution
 
-Keep the `source` field on every response — it names the official platform (cninfo.com.cn, EDINET, DART, MOPS) the data came from.
+Keep the `source` field on every response — it names the official platform (SEC EDGAR, cninfo.com.cn, EDINET, DART, MOPS) the data came from.
 
 → All clients: [`mcp-server.md`](../../mcp-server.md)

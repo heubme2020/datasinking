@@ -1,13 +1,13 @@
 {
-  "description": "Full-text Asian financial reports (China, Korea, Japan, Taiwan) as clean Markdown via API, with chapter-level access for RAG and AI agents.",
+  "description": "Full-text financial reports (US, China, Japan, Korea, Taiwan) as clean Markdown via API, with chapter-level access for RAG and AI agents.",
   "identifier": "heubme2020-datasinking",
-  "name": "DataSinking — Full-text Asian Financial Reports",
+  "name": "DataSinking — Full-text Financial Reports",
   "prompts": [],
   "resources": [],
   "tools": [
     {
       "name": "list_exchanges",
-      "description": "List the exchanges DataSinking covers.\n\nReturns exchange codes (sse / szse / bj / ksc / koe / knx / jpx / twse / tpex) with\nthe number of reports available per exchange. Call this first to discover coverage.\nSources: A-shares = cninfo.com.cn, Korea = DART, Japan = EDINET, Taiwan = MOPS.\n",
+      "description": "List the exchanges DataSinking covers.\n\nReturns exchange codes (nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex) with\nthe number of reports available per exchange. Call this first to discover coverage.\nSources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS.\n",
       "inputSchema": {
         "type": "object",
         "properties": {},
@@ -21,7 +21,7 @@
         "type": "object",
         "properties": {
           "exchange": {
-            "description": "Exchange code, e.g. sse / szse / bj / ksc / koe / knx / jpx / twse / tpex",
+            "description": "Exchange code, e.g. nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex",
             "title": "Exchange",
             "type": "string"
           },
@@ -45,7 +45,7 @@
         "type": "object",
         "properties": {
           "symbol": {
-            "description": "FMP-style symbol, e.g. 600519.SS / 005930.KS / 7203.T / 2330.TW",
+            "description": "FMP-style symbol, e.g. AAPL / 600519.SS / 7203.T / 005930.KS / 2330.TW",
             "title": "Symbol",
             "type": "string"
           },
@@ -129,7 +129,7 @@
       }
     }
   ],
-  "version": "0.2.12",
+  "version": "0.2.14",
   "author": "heubme2020",
   "authorUrl": "https://github.com/heubme2020",
   "homepage": "https://github.com/heubme2020/datasinking"

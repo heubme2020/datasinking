@@ -1,6 +1,6 @@
 # DataSinking MCP Server
 
-Expose the [DataSinking](https://datasink.ing) Asian financial-report API to AI agents over
+Expose the [DataSinking](https://datasink.ing) financial-report API (US, China, Japan, Korea, Taiwan) to AI agents over
 [Model Context Protocol (MCP)](https://modelcontextprotocol.io) — no code required.
 
 ## The endpoint
@@ -45,7 +45,7 @@ actually produces: [`docs/mcp/`](docs/mcp/).
 | `list_sections(document_id)` | List a report's section headings | `/documents/{id}/sections` |
 | `get_section(document_id, section)` | Get one section only | `/documents/{id}?section=` |
 
-Symbols are FMP-style: `600519.SS` (Moutai), `005930.KS` (Samsung), `7203.T` (Toyota).
+Symbols are FMP-style: `AAPL` (Apple), `600519.SS` (Moutai), `7203.T` (Toyota), `005930.KS` (Samsung).
 
 **To save tokens**, use `get_section` for one chapter — e.g. "management discussion and analysis" —
 instead of `get_report` for the whole document.
@@ -120,5 +120,5 @@ This one command separates "my client is misconfigured" from "my key is wrong".
 
 ## Keep the attribution
 
-Every response carries a `source` field naming the official platform (cninfo.com.cn, EDINET, DART,
-MOPS). Keep it when you cite or redistribute the data.
+Every response carries a `source` field naming the official platform (SEC EDGAR, cninfo.com.cn, EDINET,
+DART, MOPS). Keep it when you cite or redistribute the data.

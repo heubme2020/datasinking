@@ -111,7 +111,7 @@ Without `-s`, the default scope is `local`, which writes to `.devin/mcp_config.l
 
 ## Keep the attribution
 
-Keep the `source` field on every response — it names the official platform (cninfo.com.cn, EDINET,
+Keep the `source` field on every response — it names the official platform (SEC EDGAR, cninfo.com.cn, EDINET,
 DART, MOPS) the data came from.
 
 → All clients: [`mcp-server.md`](../../mcp-server.md)

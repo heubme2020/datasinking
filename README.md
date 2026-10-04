@@ -5,11 +5,11 @@
 [![PyPI version](https://img.shields.io/pypi/v/datasinking.svg)](https://pypi.org/project/datasinking/)
 [![MCP server](https://img.shields.io/badge/MCP-server-blue)](https://github.com/heubme2020/datasinking#mcp-server)
 
-**Full-text financial reports across Asia, as clean Markdown.**
+**Full-text financial reports across the US and Asia, as clean Markdown.**
 
 [DataSinking](https://datasink.ing) serves **full-text financial reports** — annual, semi-annual
-and quarterly — from **China, Korea, Japan and Taiwan** as clean **Markdown**, ready for LLM reading
-and RAG. Query by FMP-style symbol (`600519.SS`, `005930.KS`, `7203.T`, `2330.TW`) or filter by
+and quarterly — from **the US, China, Japan, Korea and Taiwan** as clean **Markdown**, ready for LLM reading
+and RAG. Query by FMP-style symbol (`AAPL`, `600519.SS`, `7203.T`, `005930.KS`, `2330.TW`) or filter by
 exchange, report period, or **section** — pull just the MD&A / risk section instead of the whole
 report. Reports are sourced from official disclosure platforms and parsed into structured Markdown
 with YAML frontmatter, preserved headings, paragraphs and tables.
@@ -183,12 +183,12 @@ Start from [`research/TEMPLATE.md`](research/TEMPLATE.md).
 
 | | |
 |---|---|
-| Coverage | China (SSE / SZSE / BSE) · Korea (KOSPI / KOSDAQ / KONEX) · Japan (TSE) · Taiwan (TWSE / TPEx) |
+| Coverage | US (NYSE / NASDAQ / CBOE) · China (SSE / SZSE / BSE) · Japan (TSE) · Korea (KOSPI / KOSDAQ / KONEX) · Taiwan (TWSE / TPEx) |
 | Document types | annual / semiannual / q1 / q3 / amendment |
-| Update frequency | Daily — Korea/Japan via official DART/EDINET APIs (new filings within ~24h of publication) |
+| Update frequency | Daily — US/Korea/Japan via official SEC EDGAR / DART / EDINET APIs (new filings within ~24h of publication) |
 | Format | Full-text Markdown (with YAML frontmatter) |
 | API | REST — `GET /documents`, batch download, `with_content=1` for full text, `?section=` + `/sections` for chapter-level access |
-| Symbols | FMP style: `600519.SS` / `005930.KS` / `7203.T` |
+| Symbols | FMP style: `AAPL` / `600519.SS` / `7203.T` / `005930.KS` |
 | Auth | `?apikey=` query parameter (FMP style) |
 
 ## Data source
@@ -197,6 +197,7 @@ Reports are sourced from the official regulatory disclosure platform of each mar
 
 | Market | Source | Platform |
 |---|---|---|
+| US (bare ticker, e.g. `AAPL`) | SEC EDGAR | US Securities and Exchange Commission — sec.gov/edgar |
 | China A-shares (`.SS` `.SZ` `.BJ`) | 巨潮资讯网 cninfo | CSRC-designated disclosure platform |
 | Korea (`.KS` `.KQ` `.KN`) | DART | Financial Supervisory Service — opendart.fss.or.kr |
 | Japan (`.T`) | EDINET | Financial Services Agency — disclosure2.edinet-fsa.go.jp |

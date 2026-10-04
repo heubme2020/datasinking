@@ -97,6 +97,6 @@ This returns an unauthenticated `401` if the key is the problem and a tool list 
 
 ## Keep the attribution
 
-Keep the `source` field on every response — it names the official platform (cninfo.com.cn, EDINET, DART, MOPS) the data came from.
+Keep the `source` field on every response — it names the official platform (SEC EDGAR, cninfo.com.cn, EDINET, DART, MOPS) the data came from.
 
 → All clients: [`mcp-server.md`](../../mcp-server.md)

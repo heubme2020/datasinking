@@ -1,7 +1,7 @@
 # datasinking-mcp
 
 MCP server for **[DataSinking](https://datasink.ing)** — full-text financial reports from
-**China A-shares, Korea, Japan and Taiwan** (annual / semi-annual / quarterly) as clean Markdown,
+**the US, China A-shares, Japan, Korea and Taiwan** (annual / semi-annual / quarterly) as clean Markdown,
 ready for LLM reading and RAG.
 
 Turns *"what were Toyota's FY2025 results?"* into a real answer: the agent finds the filing on
@@ -43,7 +43,7 @@ MCP over stdio.
 
 | Tool | What it does |
 |---|---|
-| `list_exchanges` | Coverage per exchange (`sse` / `szse` / `bj` / `ksc` / `koe` / `knx` / `jpx` / `twse` / `tpex`) with report counts |
+| `list_exchanges` | Coverage per exchange (`nyse` / `nasdaq` / `cboe` / `sse` / `szse` / `bj` / `jpx` / `ksc` / `koe` / `knx` / `twse` / `tpex`) with report counts |
 | `list_stocks` | Companies on an exchange, with report count each |
 | `list_reports` | A company's reports — metadata only (id, title, period, `source`) |
 | `list_sections` | Every section of one report, with `chars` / `estimated_tokens` / `has_tables` |
@@ -52,7 +52,7 @@ MCP over stdio.
 
 ### Symbols are FMP-style
 
-`600519.SS` (Kweichow Moutai) · `005930.KS` (Samsung Electronics) · `7203.T` (Toyota) ·
+`AAPL` (Apple) · `600519.SS` (Kweichow Moutai) · `7203.T` (Toyota) · `005930.KS` (Samsung Electronics) ·
 `2330.TW` (TSMC)
 
 ### Chapter-level access is the point
@@ -77,6 +77,7 @@ attribution when you cite a report.
 
 | Market | Source | Coverage |
 |---|---|---|
+| US | [SEC EDGAR](https://www.sec.gov/edgar) | NYSE / NASDAQ / CBOE |
 | China A-shares | [cninfo.com.cn](http://www.cninfo.com.cn) (巨潮资讯网) | 5,500+ companies |
 | Korea | [DART](https://dart.fss.or.kr) (전자공시시스템) | KOSPI / KOSDAQ / KONEX |
 | Japan | [EDINET](https://disclosure2.edinet-fsa.go.jp) (金融庁) | from 2016 — annual, semi-annual and quarterly *securities reports* (有価証券報告書). Note: 決算短信 are filed on TDnet and are not in EDINET, so they are not here either. |

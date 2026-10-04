@@ -29,15 +29,15 @@ const pkg = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), 
 export const VERSION = pkg.version;
 
 export const SERVER_NAME = "DataSinking";
-export const SERVER_TITLE = "DataSinking — Full-text Asian Financial Reports";
+export const SERVER_TITLE = "DataSinking — Full-text Financial Reports";
 export const WEBSITE_URL = "https://datasink.ing";
 
 /** initialize 时下发给客户端的 instructions（会进模型上下文，别写废话） */
 export const INSTRUCTIONS =
   "DataSinking serves full-text financial reports (annual / semi-annual / quarterly) from " +
-  "China, Korea, Japan and Taiwan as clean Markdown, ready for LLM reading and RAG. " +
-  "Use FMP-style symbols: 600519.SS (Kweichow Moutai), 005930.KS (Samsung Electronics), " +
-  "7203.T (Toyota), 2330.TW (TSMC). To save tokens, prefer get_section to pull one chapter " +
+  "the US, China, Japan, Korea and Taiwan as clean Markdown, ready for LLM reading and RAG. " +
+  "Use FMP-style symbols: AAPL (Apple), 600519.SS (Kweichow Moutai), 7203.T (Toyota), " +
+  "005930.KS (Samsung Electronics), 2330.TW (TSMC). To save tokens, prefer get_section to pull one chapter " +
   "(e.g. MD&A) instead of get_report for the whole document.";
 
 const API_URL = (process.env.DATASINK_API_URL || "https://api.datasink.ing").replace(/\/+$/, "");
@@ -49,7 +49,7 @@ export const TOOLS = [
   {
     name: "list_exchanges",
     description:
-      "List the exchanges DataSinking covers. Returns exchange codes (sse / szse / bj / ksc / koe / knx / jpx / twse / tpex) with the number of reports available per exchange. Call this first to discover coverage. Sources: A-shares = cninfo.com.cn, Korea = DART, Japan = EDINET, Taiwan = MOPS.",
+      "List the exchanges DataSinking covers. Returns exchange codes (nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex) with the number of reports available per exchange. Call this first to discover coverage. Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS.",
     inputSchema: { type: "object", properties: {} },
   },
   {
@@ -60,7 +60,7 @@ export const TOOLS = [
       properties: {
         exchange: {
           type: "string",
-          description: "Exchange code, e.g. sse / szse / bj / ksc / koe / knx / jpx / twse / tpex",
+          description: "Exchange code, e.g. nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex",
         },
         limit: {
           type: "integer",
@@ -80,7 +80,7 @@ export const TOOLS = [
       properties: {
         symbol: {
           type: "string",
-          description: "FMP-style symbol, e.g. 600519.SS / 005930.KS / 7203.T / 2330.TW",
+          description: "FMP-style symbol, e.g. AAPL / 600519.SS / 7203.T / 005930.KS / 2330.TW",
         },
         doc_type: {
           type: "string",
