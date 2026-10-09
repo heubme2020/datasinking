@@ -1,5 +1,5 @@
 {
-  "description": "Full-text financial reports (US, China, Japan, Korea, Taiwan) as clean Markdown via API, with chapter-level access for RAG and AI agents.",
+  "description": "Full-text financial reports (US, UK, China, Japan, Korea, Taiwan) as clean Markdown via API, with chapter-level access for RAG and AI agents.",
   "identifier": "heubme2020-datasinking",
   "name": "DataSinking — Full-text Financial Reports",
   "prompts": [],

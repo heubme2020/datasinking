@@ -1,6 +1,6 @@
 # DataSinking MCP Server
 
-Expose the [DataSinking](https://datasink.ing) financial-report API (US, China, Japan, Korea, Taiwan) to AI agents over
+Expose the [DataSinking](https://datasink.ing) financial-report API (US, UK, China, Japan, Korea, Taiwan) to AI agents over
 [Model Context Protocol (MCP)](https://modelcontextprotocol.io) — no code required.
 
 ## The endpoint
@@ -30,6 +30,7 @@ URL ends up in logs and screen shares.
 | **Qoder** | CLI: `~/.qoder/settings.json` → `mcpServers`, `"type": "http"`. The **IDE** is configured in Settings → MCP instead — the two don't share a file |
 | **Reasonix** | `[[plugins]]` in `reasonix.toml` with `type = "http"`, or `reasonix mcp install io.github.heubme2020/datasinking` from the official registry |
 | **Mobile (Kelivo / Joey / Systemprompt)** | In-app — `Settings → MCP → Add`, URL `https://api.datasink.ing/mcp`, header `Authorization: Bearer YOUR_KEY` (or `?apikey=` in the URL). Any streamable-HTTP MCP client works |
+| **n8n** | `MCP Client` node (in an AI Agent workflow) → add a remote MCP server, URL `https://api.datasink.ing/mcp`, header `Authorization: Bearer YOUR_KEY` |
 
 Each of these has a full guide — exact file, both scopes, verification, and the errors that client
 actually produces: [`docs/mcp/`](docs/mcp/).

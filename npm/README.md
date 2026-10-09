@@ -103,6 +103,10 @@ The smoke test drives this server with a **real MCP client over stdio** rather t
 functions directly — tool descriptions and parameter schemas only matter if they actually reach
 the client, and that has silently broken here before.
 
+## Affiliate
+
+Earn **$7** for every customer who buys the yearly plan — one-time, PayPal, $31 minimum withdrawal: https://datasink.ing/affiliate
+
 ## License
 
 MIT. See [LICENSE](../LICENSE).

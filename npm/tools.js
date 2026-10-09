@@ -49,7 +49,7 @@ export const TOOLS = [
   {
     name: "list_exchanges",
     description:
-      "List the exchanges DataSinking covers. Returns exchange codes (nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex) with the number of reports available per exchange. Call this first to discover coverage. Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS.",
+      "List the exchanges DataSinking covers. Returns exchange codes (nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex / lse) with the number of reports available per exchange. Call this first to discover coverage. Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS, UK = FCA NSM.",
     inputSchema: { type: "object", properties: {} },
   },
   {
@@ -60,7 +60,7 @@ export const TOOLS = [
       properties: {
         exchange: {
           type: "string",
-          description: "Exchange code, e.g. nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex",
+          description: "Exchange code, e.g. nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex / lse",
         },
         limit: {
           type: "integer",

@@ -8,7 +8,7 @@
 **Full-text financial reports across the US and Asia, as clean Markdown.**
 
 [DataSinking](https://datasink.ing) serves **full-text financial reports** — annual, semi-annual
-and quarterly — from **the US, China, Japan, Korea and Taiwan** as clean **Markdown**, ready for LLM reading
+and quarterly — from **the US, the UK, China, Japan, Korea and Taiwan** as clean **Markdown**, ready for LLM reading
 and RAG. Query by FMP-style symbol (`AAPL`, `600519.SS`, `7203.T`, `005930.KS`, `2330.TW`) or filter by
 exchange, report period, or **section** — pull just the MD&A / risk section instead of the whole
 filing, saving tokens. Every figure is traceable to its source disclosure and
@@ -19,7 +19,7 @@ with YAML frontmatter, preserved headings, paragraphs and tables.
 
 ## MCP server
 
-Ship DataSinking to any AI agent (Claude / Cursor / Codex / Devin Desktop) as an
+Ship DataSinking to any AI agent (Claude / Cursor / Codex / Devin Desktop / n8n) as an
 [MCP](https://modelcontextprotocol.io) server — 6 tools: list exchanges, list stocks,
 list reports, fetch a report, list sections, fetch one section (token-friendly for RAG).
 
@@ -206,6 +206,10 @@ Reports are sourced from the official regulatory disclosure platform of each mar
 | Taiwan (`.TW` `.TWO`) | 公開資訊觀測站 MOPS | Taiwan Stock Exchange — mops.twse.com.tw |
 
 Every document also carries a `source` field in the API response, so the attribution travels with the data. **Please keep it when you redistribute.**
+
+## Affiliate
+
+Earn **$7** for every customer who buys the yearly plan — one-time, PayPal, $31 minimum withdrawal: [datasink.ing/affiliate](https://datasink.ing/affiliate)
 
 ## License
 

@@ -2,7 +2,7 @@
 """DataSinking MCP server (Model Context Protocol).
 
 Expose the DataSinking API — full-text financial reports across the US and Asia
-(the US, China, Japan, Korea, Taiwan) as clean Markdown — to AI agents (Claude, Cursor,
+(the US, the UK, China, Japan, Korea, Taiwan) as clean Markdown — to AI agents (Claude, Cursor,
 Codex, DeepSeek, Devin Desktop, …).
 
 Install the MCP extra::
@@ -63,11 +63,11 @@ API_KEY = os.environ.get("DATASINK_API_KEY", "")
 mcp = FastMCP(
     "DataSinking",
     title="DataSinking — Full-text Financial Reports",
-    description="Full-text financial reports (US, China, Japan, Korea, Taiwan) as clean Markdown via API, with chapter-level access for RAG and AI agents.",
+    description="Full-text financial reports (US, UK, China, Japan, Korea, Taiwan) as clean Markdown via API, with chapter-level access for RAG and AI agents.",
     version=__version__,
     instructions=(
         "DataSinking serves full-text financial reports (annual / semi-annual / quarterly) "
-        "from the US, China, Japan, Korea and Taiwan as clean Markdown, ready for LLM reading and RAG. "
+        "from the US, the UK, China, Japan, Korea and Taiwan as clean Markdown, ready for LLM reading and RAG. "
         "Use FMP-style symbols: AAPL (Apple), 600519.SS (Kweichow Moutai), 7203.T (Toyota), "
         "005930.KS (Samsung Electronics), 2330.TW (TSMC). To save tokens, prefer get_section to pull one chapter "
         "(e.g. MD&A) instead of get_report for the whole document."
@@ -115,9 +115,9 @@ def _get(path: str, params: Optional[dict] = None) -> dict:
 def list_exchanges() -> list:
     """List the exchanges DataSinking covers.
 
-    Returns exchange codes (nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex) with
+    Returns exchange codes (nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex / lse) with
     the number of reports available per exchange. Call this first to discover coverage.
-    Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS.
+    Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS, UK = FCA NSM.
     """
     return _get("/exchanges").get("exchanges", [])
 
@@ -125,7 +125,7 @@ def list_exchanges() -> list:
 @mcp.tool()
 def list_stocks(
     exchange: Annotated[
-        str, Field(description="Exchange code, e.g. nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex")
+        str, Field(description="Exchange code, e.g. nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex / lse")
     ],
     limit: Annotated[
         int, Field(description="Return only the first N companies (default 20) to keep the response short.")
