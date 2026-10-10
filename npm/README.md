@@ -105,7 +105,7 @@ the client, and that has silently broken here before.
 
 ## Affiliate
 
-Earn **$7** for every customer who buys the yearly plan — one-time, PayPal, $31 minimum withdrawal: https://datasink.ing/affiliate
+Earn **$7 every year** for every customer you refer — recurring (incl. renewals), PayPal, $31 minimum withdrawal: https://datasink.ing/affiliate
 
 ## License
 

@@ -2,7 +2,7 @@
   "name": "datasinking-mcp",
   "mcpName": "io.github.heubme2020/datasinking",
   "version": "0.2.15",
-  "description": "MCP server for DataSinking — full-text financial reports (US, UK, China, Japan, Korea, Taiwan) as clean Markdown, for Claude, Cursor and other AI agents. Earn $7 per yearly referral: https://datasink.ing/affiliate",
+  "description": "MCP server for DataSinking — full-text financial reports (US, UK, China, Japan, Korea, Taiwan) as clean Markdown, for Claude, Cursor and other AI agents. Earn $7 per year per referral (recurring): https://datasink.ing/affiliate",
   "type": "module",
   "bin": {
     "datasinking-mcp": "index.js"
