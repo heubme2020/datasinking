@@ -209,7 +209,7 @@ Every document also carries a `source` field in the API response, so the attribu
 
 ## Affiliate
 
-Earn **$7 every year** for every customer you refer — recurring (incl. renewals), PayPal, $31 minimum withdrawal: [datasink.ing/affiliate](https://datasink.ing/affiliate)
+Earn **$7 every purchase** for every customer you refer — recurring, PayPal, $31 minimum withdrawal: [datasink.ing/affiliate](https://datasink.ing/affiliate)
 
 ## License
 
