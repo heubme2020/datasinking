@@ -115,9 +115,9 @@ def _get(path: str, params: Optional[dict] = None) -> dict:
 def list_exchanges() -> list:
     """List the exchanges DataSinking covers.
 
-    Returns exchange codes (nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex / lse) with
+    Returns exchange codes (bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / sse / szse / tpex / twse) with
     the number of reports available per exchange. Call this first to discover coverage.
-    Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS, UK = FCA NSM.
+    Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS, UK = FCA NSM, Nepal = NEPSE, Brazil = CVM, Belarus = ЕПФР, Sri Lanka = CSE.
     """
     return _get("/exchanges").get("exchanges", [])
 
@@ -125,7 +125,7 @@ def list_exchanges() -> list:
 @mcp.tool()
 def list_stocks(
     exchange: Annotated[
-        str, Field(description="Exchange code, e.g. nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex / lse")
+        str, Field(description="Exchange code, e.g. bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / sse / szse / tpex / twse")
     ],
     limit: Annotated[
         int, Field(description="Return only the first N companies (default 20) to keep the response short.")
@@ -139,8 +139,14 @@ def list_stocks(
 @mcp.tool()
 def list_reports(
     symbol: Annotated[
-        str, Field(description="FMP-style symbol, e.g. AAPL / 600519.SS / 7203.T / 005930.KS / 2330.TW")
-    ],
+        str, Field(description="FMP-style symbol, e.g. AAPL / 600519.SS / 7203.T / 005930.KS / 2330.TW / NABIL.NP")
+    ] = "",
+    exchange: Annotated[
+        str, Field(description="Exchange code (from list_exchanges). Use with stock_code when the code isn't ticker-shaped.")
+    ] = "",
+    stock_code: Annotated[
+        str, Field(description="Exact stock_code from list_stocks. Use with exchange.")
+    ] = "",
     doc_type: Annotated[
         str, Field(description="Report type to filter on. Defaults to annual.")
     ] = "annual",
@@ -150,8 +156,17 @@ def list_reports(
 
     Each item carries a `source` field naming the official disclosure platform;
     keep that attribution when you cite it.
+    Look up by `symbol` (FMP-style, e.g. AAPL / 600519.SS / NABIL.NP) or by
+    `exchange` + `stock_code` (from list_stocks) for markets whose codes aren't
+    ticker-shaped (e.g. Brazil CNPJ, Sri Lanka 'AAA.N0000').
     """
-    return _get("/documents", {"symbol": symbol, "doc_type": doc_type, "size": size})
+    params = {"doc_type": doc_type, "size": size}
+    if symbol:
+        params["symbol"] = symbol
+    elif exchange and stock_code:
+        params["exchange"] = exchange
+        params["stock_code"] = stock_code
+    return _get("/documents", params)
 
 
 @mcp.tool()

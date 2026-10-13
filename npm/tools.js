@@ -49,7 +49,7 @@ export const TOOLS = [
   {
     name: "list_exchanges",
     description:
-      "List the exchanges DataSinking covers. Returns exchange codes (nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex / lse) with the number of reports available per exchange. Call this first to discover coverage. Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS, UK = FCA NSM.",
+      "List the exchanges DataSinking covers. Returns exchange codes (bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / sse / szse / tpex / twse) with the number of reports available per exchange. Call this first to discover coverage. Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS, UK = FCA NSM, Nepal = NEPSE, Brazil = CVM, Belarus = ЕПФР, Sri Lanka = CSE.",
     inputSchema: { type: "object", properties: {} },
   },
   {
@@ -60,7 +60,7 @@ export const TOOLS = [
       properties: {
         exchange: {
           type: "string",
-          description: "Exchange code, e.g. nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex / lse",
+          description: "Exchange code, e.g. bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / sse / szse / tpex / twse",
         },
         limit: {
           type: "integer",
@@ -74,13 +74,21 @@ export const TOOLS = [
   {
     name: "list_reports",
     description:
-      "List a company's reports — metadata only (id, title, period), no body text. Each item carries a `source` field naming the official disclosure platform; keep that attribution when you cite it.",
+      "List a company's reports — metadata only (id, title, period), no body text. Each item carries a `source` field naming the official disclosure platform; keep that attribution when you cite it. Look up by `symbol` (FMP-style, e.g. AAPL / 600519.SS / NABIL.NP) or by `exchange` + `stock_code` (from list_stocks) for markets whose codes aren't ticker-shaped (e.g. Brazil CNPJ, Sri Lanka 'AAA.N0000').",
     inputSchema: {
       type: "object",
       properties: {
         symbol: {
           type: "string",
-          description: "FMP-style symbol, e.g. AAPL / 600519.SS / 7203.T / 005930.KS / 2330.TW",
+          description: "FMP-style symbol, e.g. AAPL / 600519.SS / 7203.T / 005930.KS / 2330.TW / NABIL.NP",
+        },
+        exchange: {
+          type: "string",
+          description: "Exchange code (from list_exchanges). Use with stock_code when the code isn't ticker-shaped.",
+        },
+        stock_code: {
+          type: "string",
+          description: "Exact stock_code from list_stocks. Use with exchange.",
         },
         doc_type: {
           type: "string",
@@ -94,7 +102,6 @@ export const TOOLS = [
           default: 10,
         },
       },
-      required: ["symbol"],
     },
   },
   {
@@ -211,12 +218,18 @@ export async function callTool(name, args = {}) {
       };
     }
 
-    case "list_reports":
-      return get("/documents", {
-        symbol: args.symbol,
+    case "list_reports": {
+      const params = {
         doc_type: args.doc_type ?? "annual",
         size: Number.isInteger(args.size) ? args.size : 10,
-      });
+      };
+      if (args.symbol) params.symbol = args.symbol;
+      else if (args.exchange && args.stock_code) {
+        params.exchange = args.exchange;
+        params.stock_code = args.stock_code;
+      }
+      return get("/documents", params);
+    }
 
     case "get_report":
       return get(`/documents/${args.document_id}`);
