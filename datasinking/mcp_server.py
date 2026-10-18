@@ -115,9 +115,9 @@ def _get(path: str, params: Optional[dict] = None) -> dict:
 def list_exchanges() -> list:
     """List the exchanges DataSinking covers.
 
-    Returns exchange codes (bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / sse / szse / tpex / twse) with
+    Returns exchange codes (bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / pk / rs / sse / szse / tpex / twse) with
     the number of reports available per exchange. Call this first to discover coverage.
-    Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS, UK = FCA NSM, Nepal = NEPSE, Brazil = CVM, Belarus = ЕПФР, Sri Lanka = CSE.
+    Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS, UK = FCA NSM, Nepal = NEPSE, Brazil = CVM, Belarus = ЕПФР, Sri Lanka = CSE, Pakistan = PSX, Serbia = SEC register.
     """
     return _get("/exchanges").get("exchanges", [])
 
@@ -125,7 +125,7 @@ def list_exchanges() -> list:
 @mcp.tool()
 def list_stocks(
     exchange: Annotated[
-        str, Field(description="Exchange code, e.g. bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / sse / szse / tpex / twse")
+        str, Field(description="Exchange code, e.g. bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / pk / rs / sse / szse / tpex / twse")
     ],
     limit: Annotated[
         int, Field(description="Return only the first N companies (default 20) to keep the response short.")
@@ -148,7 +148,14 @@ def list_reports(
         str, Field(description="Exact stock_code from list_stocks. Use with exchange.")
     ] = "",
     doc_type: Annotated[
-        str, Field(description="Report type to filter on. Defaults to annual.")
+        str,
+        Field(
+            description=(
+                "Report type to filter on: annual / semiannual / q1 / q3. "
+                "Defaults to annual. Pass semiannual for half-year reports, "
+                "q1 / q3 for the quarterly reports."
+            )
+        ),
     ] = "annual",
     size: Annotated[int, Field(description="Number of reports to return (default 10).")] = 10,
 ) -> dict:

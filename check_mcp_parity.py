@@ -199,7 +199,7 @@ def lhm_staleness() -> list:
     py_src = PY_SERVER.read_text(encoding="utf-8")
     py_tools = {t["name"]: t for t in python_tools_for_compare(py_src)}
     canonical = py_tools.get("list_exchanges", {}).get("description", "")
-    codes = re.findall(r"\b(sse|szse|bj|ksc|koe|knx|jpx|twse|tpex|cboe|nasdaq|nyse)\b", canonical)
+    codes = re.findall(r"\b(bj|br|by|jpx|koe|ksc|lk|lse|nasdaq|np|nyse|otc|pk|rs|sse|szse|tpex|twse)\b", canonical)
     lhm_exch = next((t.get("description", "") for t in data.get("tools", [])
                      if t.get("name") == "list_exchanges"), "")
     missing = [c for c in dict.fromkeys(codes) if c not in lhm_exch]

@@ -185,7 +185,7 @@ Start from [`research/TEMPLATE.md`](research/TEMPLATE.md).
 
 | | |
 |---|---|
-| Coverage | US (NYSE / NASDAQ / CBOE) · China (SSE / SZSE / BSE) · Japan (TSE) · Korea (KOSPI / KOSDAQ / KONEX) · Taiwan (TWSE / TPEx) |
+| Coverage | US (NYSE / NASDAQ / OTC) · China (SSE / SZSE / BSE) · UK (LSE) · Japan (TSE) · Korea (KOSPI / KOSDAQ) · Taiwan (TWSE / TPEx) |
 | Document types | annual / semiannual / q1 / q3 / amendment |
 | Update frequency | Daily — US/Korea/Japan via official SEC EDGAR / DART / EDINET APIs (new filings within ~24h of publication) |
 | Format | Full-text Markdown (with YAML frontmatter) |

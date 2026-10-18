@@ -22,7 +22,7 @@ model makes**, the **key part of the response**, and the **answer you get back**
 
 ```bash
 curl "https://api.datasink.ing/exchanges?apikey=YOUR_KEY"
-# → {"exchanges":["bj","jpx","knx","koe","ksc","sse","szse"]}
+# → {"exchanges":["bj","br","by","jpx","koe","ksc","lk","lse","nasdaq","np","nyse","otc","pk","rs","sse","szse","tpex","twse"]}
 
 curl "https://api.datasink.ing/stocks?exchange=sse&apikey=YOUR_KEY"
 # → {"exchange":"sse","total":2306,
@@ -31,8 +31,7 @@ curl "https://api.datasink.ing/stocks?exchange=sse&apikey=YOUR_KEY"
 
 **The answer you get:**
 
-> It covers China (SSE / SZSE / BSE), Korea (KOSPI / KOSDAQ / KONEX) and
-> Japan (TSE) — 7 exchanges, 9,700+ listed companies in total. Each has
+> It covers the US (NYSE / NASDAQ / OTC), China (SSE / SZSE / BSE), the UK (LSE), Japan (TSE), Korea (KOSPI / KOSDAQ) and Taiwan (TWSE / TPEx) — 12 exchanges, 23,000+ listed companies in total. Each has
 > full-text reports as Markdown.
 
 ---
@@ -293,7 +292,7 @@ curl -s -X POST "https://api.datasink.ing/mcp?apikey=YOUR_KEY" \
 curl -s -X POST "https://api.datasink.ing/mcp?apikey=YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"list_exchanges","arguments":{}}}'
-# → {"content":[{"type":"text","text":"[\"bj\",\"jpx\",\"knx\",\"koe\",\"ksc\",\"sse\",\"szse\",\"twse\"]"}]}
+# → {"content":[{"type":"text","text":"[\"bj\",\"br\",\"by\",\"jpx\",\"koe\",\"ksc\",\"lk\",\"lse\",\"nasdaq\",\"np\",\"nyse\",\"otc\",\"pk\",\"rs\",\"sse\",\"szse\",\"tpex\",\"twse\"]"}]}
 ```
 
 Or configure an MCP client directly (Claude Desktop, etc.):

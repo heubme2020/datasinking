@@ -14,7 +14,7 @@ pip install datasinking   # for the Python examples
 **curl**
 ```bash
 curl "https://api.datasink.ing/exchanges?apikey=YOUR_KEY"
-# → {"exchanges": ["bj", "jpx", "knx", "koe", "ksc", "sse", "szse"]}
+# → {"exchanges": ["bj", "br", "by", "jpx", "koe", "ksc", "lk", "lse", "nasdaq", "np", "nyse", "otc", "pk", "rs", "sse", "szse", "tpex", "twse"]}
 ```
 
 **Python**
@@ -22,7 +22,7 @@ curl "https://api.datasink.ing/exchanges?apikey=YOUR_KEY"
 from datasinking import DataSinking
 ds = DataSinking("YOUR_API_KEY")
 
-ds.list_exchanges()          # → ['bj','cboe','jpx','knx','koe','ksc','nasdaq','nyse','sse','szse','tpex','twse']
+ds.list_exchanges()          # → ['bj','br','by','jpx','koe','ksc','lk','lse','nasdaq','np','nyse','otc','pk','rs','sse','szse','tpex','twse']
 ```
 
 **LLM** — point it at https://datasink.ing and ask:

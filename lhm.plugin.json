@@ -7,7 +7,7 @@
   "tools": [
     {
       "name": "list_exchanges",
-      "description": "List the exchanges DataSinking covers.\n\nReturns exchange codes (nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex) with\nthe number of reports available per exchange. Call this first to discover coverage.\nSources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS.\n",
+      "description": "List the exchanges DataSinking covers.\n\nReturns exchange codes (bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / pk / rs / sse / szse / tpex / twse) with\nthe number of reports available per exchange. Call this first to discover coverage.\nSources: US = SEC EDGAR, A-shares = cninfo.com.cn, UK = filings.xbrl.org (FCA), Japan = EDINET, Korea = DART, Taiwan = MOPS.\n",
       "inputSchema": {
         "type": "object",
         "properties": {},
@@ -21,7 +21,7 @@
         "type": "object",
         "properties": {
           "exchange": {
-            "description": "Exchange code, e.g. nyse / nasdaq / cboe / sse / szse / bj / jpx / ksc / koe / knx / twse / tpex",
+            "description": "Exchange code, e.g. bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / pk / rs / sse / szse / tpex / twse",
             "title": "Exchange",
             "type": "string"
           },
