@@ -1,0 +1,14 @@
+{
+  "name": "datasinking",
+  "description": "DataSinking plugins",
+  "owner": {
+    "name": "DataSinking"
+  },
+  "plugins": [
+    {
+      "name": "datasinking",
+      "source": "./claude-plugin/",
+      "description": "Query full-text financial reports as clean Markdown, by symbol and section."
+    }
+  ]
+}

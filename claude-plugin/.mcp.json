@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "datasinking": {
+      "type": "http",
+      "url": "https://api.datasink.ing/mcp"
+    }
+  }
+}

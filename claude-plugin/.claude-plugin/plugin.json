@@ -1,0 +1,14 @@
+{
+  "name": "datasinking",
+  "displayName": "DataSinking",
+  "version": "1.0.0",
+  "description": "Query full-text financial reports (US, China, Japan, Korea, Taiwan, UK) as clean Markdown, by FMP-style symbol and section.",
+  "author": {
+    "name": "DataSinking",
+    "url": "https://datasink.ing"
+  },
+  "homepage": "https://datasink.ing",
+  "repository": "https://github.com/heubme2020/datasinking",
+  "license": "MIT",
+  "keywords": ["finance", "financial-reports", "sec", "edgar", "mcp", "markdown"]
+}
