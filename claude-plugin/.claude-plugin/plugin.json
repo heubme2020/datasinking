@@ -9,6 +9,7 @@
   },
   "homepage": "https://datasink.ing",
   "repository": "https://github.com/heubme2020/datasinking",
+  "privacyPolicyUrl": "https://datasink.ing/privacy",
   "license": "MIT",
   "keywords": ["finance", "financial-reports", "sec", "edgar", "mcp", "markdown"]
 }
