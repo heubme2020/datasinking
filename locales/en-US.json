@@ -1,0 +1,14 @@
+{
+  "interface": {
+    "displayName": "DataSinking",
+    "shortDescription": "Financial reports",
+    "longDescription": "Full-text financial reports from the US, China, UK, Japan, Korea and Taiwan as clean Markdown, retrievable by section (MD&A, risk factors, notes) for AI analysis, RAG and quant research.",
+    "tryPrompts": ["Show me the MD&A section of Apple's latest 10-K"],
+    "mcpOverrides": {
+      "datasinking": {
+        "displayName": "DataSinking Reports",
+        "description": "Look up full-text financial reports by exchange, symbol, period or section"
+      }
+    }
+  }
+}

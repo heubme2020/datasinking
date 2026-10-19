@@ -1,0 +1,24 @@
+{
+  "name": "datasinking",
+  "version": "1.0.0",
+  "interface": {
+    "displayName": "DataSinking",
+    "shortDescription": "财报全文 Markdown",
+    "longDescription": "覆盖美股、A股、英国、日本、韩国、台湾的上市公司财报全文，转成干净的 Markdown，可按章节取用（MD&A、风险因素、附注等），供 AI 分析、RAG 和量化研究使用。",
+    "developerName": "DataSinking",
+    "tryPrompts": ["查一下苹果最新 10-K 的 MD&A 章节"],
+    "defaultLocale": "zh-CN",
+    "locales": "./locales/",
+    "mcpOverrides": {
+      "datasinking": {
+        "displayName": "DataSinking 财报查询",
+        "description": "按交易所、股票代码、报告期或章节查询上市公司财报全文 Markdown"
+      }
+    }
+  },
+  "mcpServers": {
+    "datasinking": {
+      "url": "https://api.datasink.ing/mcp"
+    }
+  }
+}
