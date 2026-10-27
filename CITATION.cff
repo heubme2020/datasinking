@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use DataSinking in your research, please cite it as below."
+title: "DataSinking: Full-text financial reports as Markdown"
+authors:
+  - name: "DataSinking"
+type: software
+url: "https://datasink.ing"
+repository-code: "https://github.com/heubme2020/datasinking"
+keywords:
+  - financial reports
+  - markdown
+  - full-text filings
+  - SEC EDGAR
+  - cninfo
+license: MIT
+year: 2026

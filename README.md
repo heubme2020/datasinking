@@ -207,6 +207,32 @@ Reports are sourced from the official regulatory disclosure platform of each mar
 
 Every document also carries a `source` field in the API response, so the attribution travels with the data. **Please keep it when you redistribute.**
 
+## How to cite
+
+If you use DataSinking in a paper, add a data-availability note (and, optionally, an acknowledgment).
+
+**Data availability (English):**
+
+> Full-text financial reports (annual, semi-annual, and quarterly filings across the US, China, Japan, Korea, and Taiwan) were obtained from DataSinking (https://datasink.ing) in Markdown format.
+
+**数据来源声明（中文）：**
+
+> 本文使用的上市公司定期报告全文文本来自 DataSinking（https://datasink.ing），覆盖美股、A股、日本、韩国、台湾等市场，以 Markdown 格式提供。
+
+**BibTeX:**
+
+```bibtex
+@misc{datasinking2026,
+  author       = {{DataSinking}},
+  title        = {{DataSinking: Full-text financial reports as Markdown}},
+  year         = {2026},
+  howpublished = {https://datasink.ing},
+  note         = {Accessed: 2026-10-27}
+}
+```
+
+DataSinking provides report text, not investment advice.
+
 ## Affiliate
 
 Earn **$7 every purchase** for every customer you refer — recurring, PayPal, $31 minimum withdrawal: [datasink.ing/affiliate](https://datasink.ing/affiliate)
