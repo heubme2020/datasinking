@@ -102,6 +102,7 @@ datasinking/
 ├── research/     # Research notes / blog posts (reproducing paper-style presentation)
 ├── datasinking/  # Python client + MCP server — pip install "datasinking[mcp]"
 ├── npm/          # The same MCP server on npm — npx -y datasinking-mcp (Node 18+)
+├── r-datasinking/  # R client for the same API
 ├── docs/mcp/     # Per-client MCP setup — Claude Code, Desktop, Cursor, Codex, WorkBuddy, Devin…
 ├── mcp-server.md # MCP server overview — endpoint, per-client table, tools, troubleshooting
 ├── llm-examples.md  # Ask an LLM — no code needed (8 end-to-end examples)
@@ -149,7 +150,15 @@ for r in ds.get_stock_reports("600519.SS", limit=3):
     print(r["report_period"], r["title"], len(r["content"]), "chars")
 ```
 
-All five functions (curl / Python / LLM): [`api-examples.md`](api-examples.md).
+Or in R:
+
+```r
+library(datasinking)
+ds_set_key("YOUR_KEY")
+head(ds_documents(symbol = "600519.SS", doc_type = "annual"))
+```
+
+All five functions (curl / Python / LLM): [`api-examples.md`](api-examples.md). The R client lives in [`r-datasinking/`](r-datasinking/).
 
 ## Ask an LLM (no code)
 

@@ -1,0 +1,25 @@
+Package: datasinking
+Type: Package
+Title: Access Full-Text Financial Reports as Markdown
+Version: 0.1.0
+Authors@R: person("DataSinking", "Team", email = "support@datasink.ing",
+    role = c("aut", "cre"))
+Description: A client for the DataSinking API (<https://datasink.ing>), which
+    turns full-text financial reports (annual, semi-annual and quarterly
+    filings across the US, UK, China, Japan, Korea, Taiwan and more) into
+    clean, section-addressable Markdown. Provides functions to list exchanges
+    and stocks, search documents, and retrieve full report text or individual
+    sections such as MD&A, risk factors and footnotes.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Imports:
+    httr
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+URL: https://datasink.ing, https://github.com/heubme2020/datasinking
+BugReports: https://github.com/heubme2020/datasinking/issues
+Config/roxygen2/version: 8.1.1
+Config/testthat/edition: 3
