@@ -1,6 +1,6 @@
 ---
-name: financial-reports
-description: Query full-text financial reports (annual, semi-annual, quarterly — 10-K, 年报, 有価証券報告書, 사업보고서, 年報) from US, China, Japan, Korea, Taiwan and UK companies as clean Markdown, via the DataSinking REST API. Use when the user asks about a company's filings, financial statements, MD&A, risk factors, notes, or report text.
+name: datasinking-reports
+description: DataSinking 财报全文查询 — full-text financial reports (annual / semi-annual / quarterly: 10-K, 年报, 有価証券報告書, 사업보고서, 年報) from US, China, Japan, Korea, Taiwan and UK companies as clean Markdown, via the DataSinking REST API. Use for MD&A, risk factors, financial statements, notes and filings.
 ---
 
 # DataSinking Financial Reports
