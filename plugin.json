@@ -1,0 +1,19 @@
+{
+  "name": "datasinking",
+  "version": "1.0.0",
+  "description": "Full-text financial reports (US, China, UK, Japan, Korea, Taiwan) as clean Markdown, queryable by FMP-style symbol and section.",
+  "author": {
+    "name": "DataSinking"
+  },
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json",
+  "interface": {
+    "displayName": "DataSinking",
+    "shortDescription": "Full-text financial reports as Markdown",
+    "longDescription": "Query full-text financial reports from the US, China, UK, Japan, Korea and Taiwan as clean Markdown. Pull a whole filing or just one section (MD&A, risk factors, notes) to save tokens in RAG and analysis.",
+    "developerName": "DataSinking",
+    "category": "Finance",
+    "capabilities": ["Read"],
+    "defaultPrompt": ["@DataSinking What's in Apple's latest 10-K? Just the MD&A."]
+  }
+}

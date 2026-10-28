@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "datasinking": {
+      "type": "streamable-http",
+      "url": "https://api.datasink.ing/mcp"
+    }
+  }
+}
