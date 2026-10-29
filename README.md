@@ -161,6 +161,25 @@ give it your API key, and ask in plain language. See
 [`llm-examples.md`](llm-examples.md) for ten end-to-end examples — explore
 coverage, list a company's reports, and extract a figure with correct units.
 
+## RAG frameworks
+
+Official integrations load reports straight into **LlamaIndex**, **LangChain**, or **Haystack** — one import, one call:
+
+```python
+from datasinking.llama_index import DataSinkingReader
+docs = DataSinkingReader(api_key="YOUR_KEY").load_data("AAPL", doc_type="annual")
+
+from datasinking.langchain import DataSinkingLoader
+docs = DataSinkingLoader(api_key="YOUR_KEY", symbol="AAPL").load()
+
+from datasinking.haystack import DataSinkingFetcher
+docs = DataSinkingFetcher(api_key="YOUR_KEY", symbol="AAPL").run()["documents"]
+```
+
+Pass `split_by_section=True` to load one Document per section (token-friendly for RAG). Each Document's
+metadata keeps the official disclosure source. Install the client with `pip install -U datasinking`; each
+framework is an optional dependency you install separately.
+
 ## Examples (`examples/`)
 
 | File | What it does |
