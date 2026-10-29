@@ -81,7 +81,7 @@ attribution when you cite a report.
 |---|---|---|
 | US | [SEC EDGAR](https://www.sec.gov/edgar) | NYSE / NASDAQ / OTC |
 | China A-shares | [cninfo.com.cn](http://www.cninfo.com.cn) (巨潮资讯网) | 5,500+ companies |
-| Europe | [filings.xbrl.org](https://filings.xbrl.org) (FCA) | Europe (ESEF) |
+| Europe | [filings.xbrl.org](https://filings.xbrl.org) (ESEF) | Europe (ESEF) |
 | Korea | [DART](https://dart.fss.or.kr) (전자공시시스템) | KOSPI / KOSDAQ |
 | Japan | [EDINET](https://disclosure2.edinet-fsa.go.jp) (金融庁) | from 2016 — annual, semi-annual and quarterly *securities reports* (有価証券報告書). Note: 決算短信 are filed on TDnet and are not in EDINET, so they are not here either. |
 | Taiwan | [MOPS](https://mops.twse.com.tw) (公開資訊觀測站) | TWSE / TPEx |
