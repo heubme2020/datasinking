@@ -8,7 +8,7 @@
 **Full-text financial reports across the US, Europe and Asia, as clean Markdown.**
 
 [DataSinking](https://datasink.ing) serves **full-text financial reports** — annual, semi-annual
-and quarterly — from **the US, Europe, China, Japan, Korea and Taiwan** as clean **Markdown**, ready for LLM reading
+and quarterly — from **the US, China, Europe, Japan, Korea and Taiwan** as clean **Markdown**, ready for LLM reading
 and RAG. Query by FMP-style symbol (`AAPL`, `600519.SS`, `7203.T`, `005930.KS`, `2330.TW`) or filter by
 exchange, report period, or **section** — pull just the MD&A / risk section instead of the whole
 filing, saving tokens. Every figure is traceable to its source disclosure and
@@ -216,7 +216,7 @@ If you use DataSinking in a paper, add a data-availability note (and, optionally
 
 **Data availability:**
 
-> Full-text financial reports (annual, semi-annual, and quarterly filings across the US, Europe, China, Japan, Korea, and Taiwan) were obtained from DataSinking (https://datasink.ing) in Markdown format.
+> Full-text financial reports (annual, semi-annual, and quarterly filings across the US, China, Europe, Japan, Korea, and Taiwan) were obtained from DataSinking (https://datasink.ing) in Markdown format.
 
 **BibTeX:**
 

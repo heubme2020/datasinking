@@ -1,7 +1,7 @@
 {
   "name": "datasinking",
   "version": "1.0.0",
-  "description": "Full-text financial reports (US, China, Japan, Korea, Taiwan, UK) as clean Markdown for RAG agents.",
+  "description": "Full-text financial reports (US, China, Europe, Japan, Korea, Taiwan) as clean Markdown for RAG agents.",
   "mcpServers": {
     "datasinking": {
       "httpUrl": "https://api.datasink.ing/mcp"

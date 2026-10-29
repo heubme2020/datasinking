@@ -31,7 +31,7 @@ curl "https://api.datasink.ing/stocks?exchange=sse&apikey=YOUR_KEY"
 
 **The answer you get:**
 
-> It covers the US (NYSE / NASDAQ / OTC), China (SSE / SZSE / BSE), the UK (LSE), Japan (TSE), Korea (KOSPI / KOSDAQ) and Taiwan (TWSE / TPEx) — 12 exchanges, 23,000+ listed companies in total. Each has
+> It covers the US (NYSE / NASDAQ / OTC), China (SSE / SZSE / BSE), Europe (ESEF), Japan (TSE), Korea (KOSPI / KOSDAQ) and Taiwan (TWSE / TPEx) — 12 exchanges, 23,000+ listed companies in total. Each has
 > full-text reports as Markdown.
 
 ---

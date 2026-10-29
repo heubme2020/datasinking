@@ -49,7 +49,7 @@ export const TOOLS = [
   {
     name: "list_exchanges",
     description:
-      "List the exchanges DataSinking covers. Returns exchange codes (bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / pk / rs / sse / szse / tpex / twse) with the number of reports available per exchange. Call this first to discover coverage. Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS, UK = FCA NSM, Nepal = NEPSE, Brazil = CVM, Belarus = ЕПФР, Sri Lanka = CSE, Pakistan = PSX, Serbia = SEC register.",
+      "List the exchanges DataSinking covers. Returns exchange codes (bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / pk / rs / sse / szse / tpex / twse) with the number of reports available per exchange. Call this first to discover coverage. Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS, Europe = filings.xbrl.org (ESEF), Nepal = NEPSE, Brazil = CVM, Belarus = ЕПФР, Sri Lanka = CSE, Pakistan = PSX, Serbia = SEC register.",
     inputSchema: { type: "object", properties: {} },
   },
   {

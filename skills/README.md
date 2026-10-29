@@ -6,7 +6,7 @@ Unlike the MCP connectors elsewhere in this repo, these skills call the DataSink
 
 ## Skills
 
-- [`financial-reports`](financial-reports/SKILL.md) — query full-text financial reports (annual / semi-annual / quarterly) from the US, China, UK, Japan, Korea and Taiwan as clean Markdown, by symbol and section.
+- [`financial-reports`](financial-reports/SKILL.md) — query full-text financial reports (annual / semi-annual / quarterly) from the US, China, Europe, Japan, Korea and Taiwan as clean Markdown, by symbol and section.
 
 ## Get a free API key
 

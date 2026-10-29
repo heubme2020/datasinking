@@ -2,7 +2,7 @@
   "name": "datasinking",
   "displayName": "DataSinking",
   "version": "1.0.0",
-  "description": "Query full-text financial reports (US, China, Japan, Korea, Taiwan, UK) as clean Markdown, by FMP-style symbol and section.",
+  "description": "Query full-text financial reports (US, China, Europe, Japan, Korea, Taiwan) as clean Markdown, by FMP-style symbol and section.",
   "author": {
     "name": "DataSinking",
     "url": "https://datasink.ing"

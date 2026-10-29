@@ -1,6 +1,6 @@
 ---
 name: financial-reports
-description: Query full-text financial reports from the US, China, Japan, Korea, Taiwan and UK as clean Markdown, by FMP-style symbol and section.
+description: Query full-text financial reports from the US, China, Europe, Japan, Korea and Taiwan as clean Markdown, by FMP-style symbol and section.
 ---
 
 # DataSinking Financial Reports

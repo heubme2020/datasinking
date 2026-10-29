@@ -1,6 +1,6 @@
 # DataSinking MCP Server
 
-Expose the [DataSinking](https://datasink.ing) financial-report API (US, UK, China, Japan, Korea, Taiwan) to AI agents over
+Expose the [DataSinking](https://datasink.ing) financial-report API (US, China, Europe, Japan, Korea, Taiwan) to AI agents over
 [Model Context Protocol (MCP)](https://modelcontextprotocol.io) — no code required.
 
 ## The endpoint

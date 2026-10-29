@@ -1,6 +1,6 @@
 ---
 name: datasinking-reports
-description: Query full-text financial reports (annual, semi-annual, quarterly) from US, China, Japan, Korea, Taiwan and UK companies as clean Markdown via the DataSinking REST API. Use for MD&A, risk factors, financial statements, notes and filings.
+description: Query full-text financial reports (annual, semi-annual, quarterly) from US, China, Europe, Japan, Korea and Taiwan companies as clean Markdown via the DataSinking REST API. Use for MD&A, risk factors, financial statements, notes and filings.
 ---
 
 # DataSinking Financial Reports

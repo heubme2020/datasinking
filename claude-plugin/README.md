@@ -1,6 +1,6 @@
 # DataSinking — Claude plugin
 
-Query full-text financial reports from the US, China, Japan, Korea, Taiwan and UK as clean Markdown, ready for RAG and analysis.
+Query full-text financial reports from the US, China, Europe, Japan, Korea and Taiwan as clean Markdown, ready for RAG and analysis.
 
 ## What it installs
 

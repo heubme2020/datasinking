@@ -1,5 +1,5 @@
 {
-  "description": "Full-text financial reports (US, UK, China, Japan, Korea, Taiwan) as clean Markdown via API, with chapter-level access for RAG and AI agents.",
+  "description": "Full-text financial reports (US, China, Europe, Japan, Korea, Taiwan) as clean Markdown via API, with chapter-level access for RAG and AI agents.",
   "identifier": "heubme2020-datasinking",
   "name": "DataSinking — Full-text Financial Reports",
   "prompts": [],
@@ -7,7 +7,7 @@
   "tools": [
     {
       "name": "list_exchanges",
-      "description": "List the exchanges DataSinking covers.\n\nReturns exchange codes (bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / pk / rs / sse / szse / tpex / twse) with\nthe number of reports available per exchange. Call this first to discover coverage.\nSources: US = SEC EDGAR, A-shares = cninfo.com.cn, UK = filings.xbrl.org (FCA), Japan = EDINET, Korea = DART, Taiwan = MOPS.\n",
+      "description": "List the exchanges DataSinking covers.\n\nReturns exchange codes (bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / pk / rs / sse / szse / tpex / twse) with\nthe number of reports available per exchange. Call this first to discover coverage.\nSources: US = SEC EDGAR, A-shares = cninfo.com.cn, Europe = filings.xbrl.org (ESEF), Japan = EDINET, Korea = DART, Taiwan = MOPS.\n",
       "inputSchema": {
         "type": "object",
         "properties": {},
