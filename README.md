@@ -5,10 +5,10 @@
 [![PyPI version](https://img.shields.io/pypi/v/datasinking.svg)](https://pypi.org/project/datasinking/)
 [![MCP server](https://img.shields.io/badge/MCP-server-blue)](https://github.com/heubme2020/datasinking#mcp-server)
 
-**Full-text financial reports across the US and Asia, as clean Markdown.**
+**Full-text financial reports across the US, Europe and Asia, as clean Markdown.**
 
 [DataSinking](https://datasink.ing) serves **full-text financial reports** — annual, semi-annual
-and quarterly — from **the US, the UK, China, Japan, Korea and Taiwan** as clean **Markdown**, ready for LLM reading
+and quarterly — from **the US, Europe, China, Japan, Korea and Taiwan** as clean **Markdown**, ready for LLM reading
 and RAG. Query by FMP-style symbol (`AAPL`, `600519.SS`, `7203.T`, `005930.KS`, `2330.TW`) or filter by
 exchange, report period, or **section** — pull just the MD&A / risk section instead of the whole
 filing, saving tokens. Every figure is traceable to its source disclosure and
@@ -106,8 +106,8 @@ datasinking/
 ├── npm/          # The same MCP server on npm — npx -y datasinking-mcp (Node 18+)
 ├── docs/mcp/     # Per-client MCP setup — Claude Code, Desktop, Cursor, Codex, WorkBuddy, Devin…
 ├── mcp-server.md # MCP server overview — endpoint, per-client table, tools, troubleshooting
-├── llm-examples.md  # Ask an LLM — no code needed (8 end-to-end examples)
-├── api-examples.md  # 7 examples × 3 interfaces (curl / Python / LLM)
+├── llm-examples.md  # Ask an LLM — no code needed (10 end-to-end examples)
+├── api-examples.md  # 8 examples × 3 interfaces (curl / Python / LLM)
 └── README.md
 ```
 
@@ -151,20 +151,20 @@ for r in ds.get_stock_reports("600519.SS", limit=3):
     print(r["report_period"], r["title"], len(r["content"]), "chars")
 ```
 
-All five functions (curl / Python / LLM): [`api-examples.md`](api-examples.md).
+The full reference (curl / Python / LLM): [`api-examples.md`](api-examples.md).
 
 ## Ask an LLM (no code)
 
 Don't want to write code? Point any LLM at [datasink.ing](https://datasink.ing),
 give it your API key, and ask in plain language. See
-[`llm-examples.md`](llm-examples.md) for eight end-to-end examples — explore
+[`llm-examples.md`](llm-examples.md) for ten end-to-end examples — explore
 coverage, list a company's reports, and extract a figure with correct units.
 
 ## Examples (`examples/`)
 
 | File | What it does |
 |---|---|
-| `01_quickstart.py` | The 5 core functions: list exchanges / stocks / reports / fetch a report / fetch a stock's reports |
+| `01_quickstart.py` | The core functions: list exchanges / stocks / reports / fetch a report / fetch a stock's reports |
 | `02_download_company.py` | Download a company's full reports to local Markdown files |
 | `03_download_exchange.py` | Download an entire exchange's reports (all stocks) to local Markdown files |
 | `rag_ingest.py` | Slice reports into RAG chunks (on the `<!-- ds:block:N -->` anchors, with `source` traceability) and ingest into a vector store |
@@ -187,7 +187,7 @@ Start from [`research/TEMPLATE.md`](research/TEMPLATE.md).
 
 | | |
 |---|---|
-| Coverage | US (NYSE / NASDAQ / OTC) · China (SSE / SZSE / BSE) · UK (LSE) · Japan (TSE) · Korea (KOSPI / KOSDAQ) · Taiwan (TWSE / TPEx) |
+| Coverage | US (NYSE / NASDAQ / OTC) · China (SSE / SZSE / BSE) · Europe (ESEF) · Japan (TSE) · Korea (KOSPI / KOSDAQ) · Taiwan (TWSE / TPEx) |
 | Document types | annual / semiannual / q1 / q3 / amendment |
 | Update frequency | Daily — US/Korea/Japan via official SEC EDGAR / DART / EDINET APIs (new filings within ~24h of publication) |
 | Format | Full-text Markdown (with YAML frontmatter) |
@@ -203,6 +203,7 @@ Reports are sourced from the official regulatory disclosure platform of each mar
 |---|---|---|
 | US (bare ticker, e.g. `AAPL`) | SEC EDGAR | US Securities and Exchange Commission — sec.gov/edgar |
 | China A-shares (`.SS` `.SZ` `.BJ`) | 巨潮资讯网 cninfo | CSRC-designated disclosure platform |
+| Europe | ESEF | European Single Electronic Format — filings.xbrl.org |
 | Korea (`.KS` `.KQ` `.KN`) | DART | Financial Supervisory Service — opendart.fss.or.kr |
 | Japan (`.T`) | EDINET | Financial Services Agency — disclosure2.edinet-fsa.go.jp |
 | Taiwan (`.TW` `.TWO`) | 公開資訊觀測站 MOPS | Taiwan Stock Exchange — mops.twse.com.tw |
@@ -215,7 +216,7 @@ If you use DataSinking in a paper, add a data-availability note (and, optionally
 
 **Data availability:**
 
-> Full-text financial reports (annual, semi-annual, and quarterly filings across the US, China, Japan, Korea, and Taiwan) were obtained from DataSinking (https://datasink.ing) in Markdown format.
+> Full-text financial reports (annual, semi-annual, and quarterly filings across the US, Europe, China, Japan, Korea, and Taiwan) were obtained from DataSinking (https://datasink.ing) in Markdown format.
 
 **BibTeX:**
 
