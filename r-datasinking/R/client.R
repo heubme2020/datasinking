@@ -1,10 +1,11 @@
 # DataSinking R client ---------------------------------------------------
 #
-# 一个薄的 R 客户端，封装 DataSinking API（https://datasink.ing）。
-# 返回全文财报（年报/半年报/季报）的 Markdown，可按下标/章节取用。
+# A thin R client for the DataSinking API (https://datasink.ing).
+# Serves full-text financial reports (annual / semi-annual / quarterly)
+# as clean Markdown, addressable by document or section.
 #
-# 用法：
-#   ds <- datasinking("你的_api_key")
+# Usage:
+#   ds <- datasinking("YOUR_API_KEY")
 #   ds$list_exchanges()
 #   ds$list_stocks("szse")
 #   ds$list_reports("000006.SZ")
@@ -101,7 +102,7 @@ datasinking <- function(api_key, base_url = "https://api.datasink.ing") {
                        error = function(e) e)
       if (inherits(resp, "error")) {
         if (grepl("429", conditionMessage(resp))) stop(resp)
-        # 400/403 → 免费档 batch 超限，缩块重试
+        # 400/403 → free-tier batch too large, shrink and retry
         size <- if (size > 6L) size %/% 3L else size - 1L
         if (size < 1L) size <- 1L
         next
