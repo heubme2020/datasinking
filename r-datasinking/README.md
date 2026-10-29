@@ -1,54 +1,55 @@
 # datasinking (R client)
 
-R 语言的 DataSinking API 客户端 —— 把上市公司的年报 / 半年报 / 季报全文，转成干净、可按章节取用的 Markdown，给阅读和 RAG 管道用。
+An R client for the DataSinking API — full-text financial reports (annual, semi-annual
+and quarterly filings) as clean, section-addressable Markdown, for reading and RAG pipelines.
 
-## 安装（不经过 CRAN，直接装 GitHub）
+## Install (GitHub, no CRAN)
 
 ```r
-install.packages("remotes")                 # 第一次先装 remotes
+install.packages("remotes")                 # first time only
 remotes::install_github("heubme2020/datasinking", subdir = "r-datasinking")
 ```
 
-> 装完 `library(datasinking)` 即可。不经过 CRAN，直接装 GitHub 上的源码。
+Then `library(datasinking)`.
 
-## 快速上手
+## Quick start
 
 ```r
 library(datasinking)
 
-ds <- datasinking("你的_api_key")            # 免费 key 在 https://datasink.ing 领取
+ds <- datasinking("YOUR_API_KEY")            # free key at https://datasink.ing
 
-ds$list_exchanges()                           # 列出交易所代码，如 "szse"
-ds$list_stocks("szse")                        # 某交易所的股票清单
+ds$list_exchanges()                          # exchange codes, e.g. "szse"
+ds$list_stocks("szse")                       # stocks on one exchange
 
-ds$list_reports("000006.SZ")                  # 某股票的报告元数据（无全文）
-r <- ds$get_report(12345)                     # 单篇报告全文（含 Markdown）
+ds$list_reports("000006.SZ")                 # report metadata for a symbol (no full text)
+r <- ds$get_report(12345)                    # one report's full record (incl. Markdown body)
 
-ds$list_sections(12345)                       # 报告的章节标题
-s <- ds$get_section(12345, "MD&A")            # 只取某一章（省 token，适合 RAG）
+ds$list_sections(12345)                      # section headings of a report
+s <- ds$get_section(12345, "MD&A")           # one section only (cheap, RAG-friendly)
 
-ds$get_stock_reports("000006.SZ", limit = 3)  # 最近 3 篇全文
+ds$get_stock_reports("000006.SZ", limit = 3) # latest 3 full reports
 ```
 
-## 主要函数
+## Functions
 
-| 函数 | 说明 |
+| Function | Description |
 |---|---|
-| `list_exchanges()` | 交易所代码 |
-| `list_stocks(exchange)` | 某交易所股票 |
-| `list_reports(symbol, doc_type)` | 报告元数据（分页拉全） |
-| `get_report(doc_id)` | 单篇全文 |
-| `get_stock_reports(symbol, period_from, period_to, limit, doc_type)` | 某股票最近 N 篇全文（`limit=-1` 拉全部）|
-| `list_sections(doc_id)` | 报告章节标题 |
-| `get_section(doc_id, section)` | 某一章（RAG 友好）|
-| `submit_feedback(exchange, stock_code)` | 反馈重转个股 |
-| `get_feedback_status(feedback_id)` | 查反馈进度 |
+| `list_exchanges()` | Exchange codes |
+| `list_stocks(exchange)` | Stocks on one exchange |
+| `list_reports(symbol, doc_type)` | Report metadata (paginated) |
+| `get_report(doc_id)` | One report's full record |
+| `get_stock_reports(symbol, period_from, period_to, limit, doc_type)` | Latest N full reports (`limit = -1` = all) |
+| `list_sections(doc_id)` | Section headings |
+| `get_section(doc_id, section)` | One section (RAG-friendly) |
+| `submit_feedback(exchange, stock_code)` | Queue a re-parse |
+| `get_feedback_status(feedback_id)` | Poll a feedback job |
 
-## 依赖
+## Dependencies
 
 - R >= 3.6
-- `httr`、`jsonlite`
+- `httr`, `jsonlite`
 
-## 许可证
+## License
 
 MIT
