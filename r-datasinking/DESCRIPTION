@@ -1,0 +1,17 @@
+Package: datasinking
+Type: Package
+Title: R Client for the DataSinking Full-Text Financial Reports API
+Version: 0.1.0
+Authors@R: person("DataSinking", "Team", email = "support@datasink.ing", role = c("aut", "cre"))
+Description: A thin R client for the DataSinking API (<https://datasink.ing>), which
+    serves full-text financial reports (annual, semi-annual and quarterly filings) as
+    clean, section-addressable Markdown across the US, China, Japan, Korea, Taiwan and
+    the UK. Built for reading and RAG pipelines that need the MD&A, risk factors and
+    footnotes that line-item APIs do not provide. Requires a (free) API key.
+License: MIT + file LICENSE
+Encoding: UTF-8
+URL: https://datasink.ing
+Imports:
+    httr,
+    jsonlite
+RoxygenNote: 7.3.2

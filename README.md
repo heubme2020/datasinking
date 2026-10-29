@@ -104,6 +104,7 @@ datasinking/
 ├── research/     # Research notes / blog posts (reproducing paper-style presentation)
 ├── datasinking/  # Python client + MCP server — pip install "datasinking[mcp]"
 ├── npm/          # The same MCP server on npm — npx -y datasinking-mcp (Node 18+)
+├── r-datasinking/  # R client — remotes::install_github("heubme2020/datasinking", subdir="r-datasinking")
 ├── docs/mcp/     # Per-client MCP setup — Claude Code, Desktop, Cursor, Codex, WorkBuddy, Devin…
 ├── mcp-server.md # MCP server overview — endpoint, per-client table, tools, troubleshooting
 ├── llm-examples.md  # Ask an LLM — no code needed (10 end-to-end examples)
