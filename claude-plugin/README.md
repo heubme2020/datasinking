@@ -5,7 +5,7 @@ Query full-text financial reports from the US, China, Japan, Korea, Taiwan and U
 ## What it installs
 
 - **Skill** `financial-reports` — teaches Claude to map companies to FMP-style symbols and prefer section-level reads over full filings.
-- **MCP server** `datasinking` — 6 read-only tools (`list_exchanges`, `list_stocks`, `list_reports`, `get_report`, `list_sections`, `get_section`) at `https://api.datasink.ing/mcp`.
+- **MCP server** `datasinking` — 8 tools (`list_exchanges`, `list_stocks`, `list_reports`, `get_report`, `list_sections`, `get_section`, `submit_feedback`, `get_feedback_status`) at `https://api.datasink.ing/mcp`.
 
 ## Install (Claude Code)
 

@@ -202,3 +202,22 @@ class DataSinking:
         section: 章节标题关键词，如 "管理层讨论与分析" / "财务报告" / "MD&A"
         """
         return self._get(f"/documents/{doc_id}", {"section": section})
+
+    def submit_feedback(self, exchange, stock_code):
+        """反馈个股（幂等：已反馈过就返回现有状态，否则排队）-> dict，含 id/status/queued
+
+        exchange: 交易所代码（如 "szse"）；stock_code: 股票代码（如 "002050"）。
+        幂等逻辑：在**全局**最近 127 条反馈里查同一只股票（跨 key，因为反馈是全局操作、
+        重转写进共享内容库）；命中就直接返回它现有的 id+status（queued=False，不重复排队），
+        否则排队重转（queued=True，status=pending）。
+        排队后拿返回的 id 调 get_feedback_status(feedback_id) 轮询进度。
+        限额（反馈有**独立于阅读配额**的 7 天滚动预算）：
+          频率：free 3 秒 1 次、yearly 1 秒 3 次；
+          7 天：yearly 8191 只、free 每 key 31 只（所有 free 用户另共享 8191 只）。
+        """
+        return self._post("/feedback", {"exchange": exchange, "stock_code": stock_code})
+
+    def get_feedback_status(self, feedback_id):
+        """按 id 查反馈进度 -> dict，含 status: pending/processing/done/failed
+        """
+        return self._get(f"/feedback/{feedback_id}")

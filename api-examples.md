@@ -143,3 +143,43 @@ ds.get_stock_reports("600519.SS", limit=-1)   # → all reports, full content
 
 **LLM**
 > "All of Moutai's reports, full text."
+
+---
+
+## 8. Feedback a stock (full backfill)
+
+If a stock's reports look missing or broken, ask the backend to re-fetch and
+re-convert every filing from the IPO prospectus onward. The call is
+**idempotent**: if the stock was already submitted recently (within the last
+127 feedback records, across all keys), it returns that existing status
+(`queued: false`) instead of queueing a duplicate; otherwise it queues a
+backfill and returns `queued: true` + `status: "pending"` + the new id. Poll
+the returned id for progress.
+
+Feedback quota is **separate** from the document-reading quota: free keys get
+once per 3 seconds / 31 stocks per 7 days per key (plus a shared pool of 8,191
+per 7 days across all free users); yearly keys get 3 per second / 8,191 stocks
+per 7 days per key.
+
+**curl**
+```bash
+# Submit (idempotent — returns existing status if already queued):
+curl -X POST "https://api.datasink.ing/feedback?apikey=YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"exchange":"szse","stock_code":"002050"}'
+# → {"id":123,"status":"pending","queued":true,"exchange":"szse","stock_code":"002050",…}
+
+# Poll by id (pending / processing / done / failed):
+curl "https://api.datasink.ing/feedback/123?apikey=YOUR_KEY"
+```
+
+**Python**
+```python
+r = ds.submit_feedback("szse", "002050")
+# → {"id": 123, "status": "pending", "queued": True, …}
+print(r["queued"])                            # True = just queued
+print(ds.get_feedback_status(r["id"]))        # → {"status": "processing", …}
+```
+
+**LLM**
+> "Some of Moutai's reports are missing — ask the backend to backfill it."

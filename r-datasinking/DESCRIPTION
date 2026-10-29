@@ -1,7 +1,7 @@
 Package: datasinking
 Type: Package
 Title: Access Full-Text Financial Reports as Markdown
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: person("DataSinking", "Team", email = "support@datasink.ing",
     role = c("aut", "cre"))
 Description: A client for the DataSinking API (<https://datasink.ing>), which

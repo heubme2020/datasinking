@@ -194,3 +194,34 @@ ds_batch <- function(ids) {
   }
   .ds_post("/documents/batch", list(doc_ids = ids))
 }
+
+#' Submit feedback to backfill a stock's reports
+#'
+#' Requests a full backfill of a stock whose reports look missing or broken,
+#' and returns its current status. Idempotent: if the stock was already
+#' submitted recently (within the last 127 feedback records, across all keys),
+#' it returns that existing status instead of queueing a duplicate; otherwise it
+#' queues a re-fetch from the IPO prospectus onward (this takes a while) and
+#' returns `status = "pending"`. Poll [ds_feedback_status()] for progress.
+#' Limits are separate from the reading quota: free keys once per 3 seconds,
+#' 31 stocks per 7 days per key; yearly keys 3 per second, 8,191 stocks per 7
+#' days.
+#'
+#' @param exchange Character. Exchange code, e.g. `"szse"`.
+#' @param stock_code Character. Stock code from the exchange, e.g. `"002050"`.
+#' @return A list with `id`, `status`, `queued` (`TRUE` = just queued) and other
+#'   fields.
+#' @export
+ds_feedback <- function(exchange, stock_code) {
+  .ds_post("/feedback", list(exchange = exchange, stock_code = stock_code))
+}
+
+#' Check the progress of a submitted feedback request
+#'
+#' @param feedback_id Integer. The feedback id returned by [ds_feedback()].
+#' @return A list with `status` (pending / processing / done / failed) and other
+#'   fields.
+#' @export
+ds_feedback_status <- function(feedback_id) {
+  .ds_get(sprintf("/feedback/%d", as.integer(feedback_id)))
+}

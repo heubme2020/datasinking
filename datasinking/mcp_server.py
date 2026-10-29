@@ -111,6 +111,27 @@ def _get(path: str, params: Optional[dict] = None) -> dict:
     return r.json()
 
 
+def _post(path: str, body: Optional[dict] = None) -> dict:
+    """POST JSON 到 DataSinking API（feedback 提交）。
+
+    错误处理与 ``_get`` 同源：把服务端 body 原文带出去（``detail`` 是一句人话）。
+    """
+    if not API_KEY:
+        raise ToolError(
+            "Missing DATASINK_API_KEY environment variable (get a free key at https://datasink.ing)"
+        )
+    r = requests.post(f"{BASE_URL}{path}", params={"apikey": API_KEY}, json=body or {}, timeout=90)
+    if not r.ok:
+        try:
+            resp_body = r.json()
+        except ValueError:
+            resp_body = None
+        if not isinstance(resp_body, dict):
+            resp_body = {}
+        raise ToolError(f"HTTP {r.status_code}: {resp_body.get('detail') or r.text[:2000]}")
+    return r.json()
+
+
 @mcp.tool()
 def list_exchanges() -> list:
     """List the exchanges DataSinking covers.
@@ -231,6 +252,33 @@ def get_section(
     specific paragraph or table.
     """
     return _get(f"/documents/{document_id}", {"section": section})
+
+
+@mcp.tool()
+def submit_feedback(
+    exchange: Annotated[str, Field(description="Exchange code from list_exchanges.")],
+    stock_code: Annotated[str, Field(description="Stock code from list_stocks.")],
+) -> dict:
+    """Request a full backfill of a stock whose reports look missing or broken, and return its current status.
+
+    Idempotent — if the stock was already submitted recently (within the last 127 feedback records),
+    it returns that existing status instead of queueing a duplicate; otherwise it queues a re-fetch
+    from the IPO prospectus onward and returns status 'pending' plus the new id (poll get_feedback_status).
+    Free keys: once per 3 seconds, 31 stocks per 7 days per key.
+    Yearly keys: 3 per second, 8,191 stocks per 7 days per key.
+    """
+    return _post("/feedback", {"exchange": exchange, "stock_code": stock_code})
+
+
+@mcp.tool()
+def get_feedback_status(
+    feedback_id: Annotated[int, Field(description="Feedback id returned by submit_feedback.")],
+) -> dict:
+    """Check the progress of a submitted feedback request.
+
+    status is one of pending / processing / done / failed.
+    """
+    return _get(f"/feedback/{feedback_id}")
 
 
 def main() -> None:

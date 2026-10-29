@@ -146,6 +146,35 @@ export const TOOLS = [
       required: ["document_id", "section"],
     },
   },
+  {
+    name: "submit_feedback",
+    description:
+      "Request a full backfill of a stock whose reports look missing or broken, and return its current status. " +
+      "Idempotent — if the stock was already submitted recently (within the last 127 feedback records), " +
+      "it returns that existing status instead of queueing a duplicate; otherwise it queues a re-fetch from the IPO " +
+      "prospectus onward and returns status 'pending' plus the new id (poll get_feedback_status). " +
+      "Free keys: once per 3 seconds, 31 stocks per 7 days per key. Yearly keys: 3 per second, 8,191 stocks per 7 days per key.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        exchange: { type: "string", description: "Exchange code from list_exchanges." },
+        stock_code: { type: "string", description: "Stock code from list_stocks." },
+      },
+      required: ["exchange", "stock_code"],
+    },
+  },
+  {
+    name: "get_feedback_status",
+    description:
+      "Check the progress of a submitted feedback request. status is one of pending / processing / done / failed.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        feedback_id: { type: "integer", description: "Feedback id returned by submit_feedback." },
+      },
+      required: ["feedback_id"],
+    },
+  },
 ];
 
 class DataSinkingError extends Error {}
@@ -202,6 +231,50 @@ async function get(path, params) {
   }
 }
 
+/** POST JSON 到 REST 端点（feedback 提交）。错误处理与 get 同源，只是没有 available 分支。 */
+async function post(path, body) {
+  if (!API_KEY) {
+    throw new DataSinkingError(
+      "Missing DATASINK_API_KEY environment variable. " +
+        "Get a free key at https://datasink.ing and set it in your MCP client config's `env` block."
+    );
+  }
+  const url = new URL(API_URL + path);
+
+  let res;
+  try {
+    res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${API_KEY}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body ?? {}),
+      signal: AbortSignal.timeout(90_000),
+    });
+  } catch (err) {
+    throw new DataSinkingError(`Could not reach ${API_URL} (${err.name}: ${err.message})`);
+  }
+
+  const text = await res.text();
+  if (!res.ok) {
+    let b = null;
+    try {
+      b = JSON.parse(text);
+    } catch {
+      /* 不是 JSON 就原样用 */
+    }
+    const detail = b?.detail ?? text;
+    throw new DataSinkingError(`HTTP ${res.status}: ${String(detail).slice(0, 2000)}`);
+  }
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new DataSinkingError(`Expected JSON from ${API_URL}${path}, got: ${text.slice(0, 200)}`);
+  }
+}
+
 /** 执行一次工具调用，返回给客户端的结果对象（已按工具裁剪）。 */
 export async function callTool(name, args = {}) {
   switch (name) {
@@ -239,6 +312,12 @@ export async function callTool(name, args = {}) {
 
     case "get_section":
       return get(`/documents/${args.document_id}`, { section: args.section });
+
+    case "submit_feedback":
+      return post("/feedback", { exchange: args.exchange, stock_code: args.stock_code });
+
+    case "get_feedback_status":
+      return get(`/feedback/${args.feedback_id}`);
 
     default:
       throw new DataSinkingError(`Unknown tool: ${name}`);

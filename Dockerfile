@@ -12,7 +12,7 @@
 #
 # 本地验证方式（不需要装 Python 依赖，也不需要 key）：
 #   docker build -t datasinking-mcp .
-#   # 然后对着容器走一遍 initialize → tools/list，应看到 6 个工具的列表
+#   # 然后对着容器走一遍 initialize → tools/list，应看到 8 个工具的列表
 
 FROM python:3.12-slim
 

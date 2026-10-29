@@ -19,6 +19,8 @@ const EXPECTED_TOOLS = [
   "get_report",
   "list_sections",
   "get_section",
+  "submit_feedback",
+  "get_feedback_status",
 ];
 
 let failures = 0;
@@ -63,7 +65,7 @@ try {
 
   const { tools } = await client.listTools();
   const names = tools.map((t) => t.name);
-  check(`tools/list 返回 6 个工具`, tools.length === 6, names.join(", "));
+  check(`tools/list 返回 ${EXPECTED_TOOLS.length} 个工具`, tools.length === EXPECTED_TOOLS.length, names.join(", "));
   check("工具名与另两份实现一致", EXPECTED_TOOLS.every((n) => names.includes(n)));
 
   const byName = Object.fromEntries(tools.map((t) => [t.name, t]));

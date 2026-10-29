@@ -7,6 +7,8 @@ export(ds_documents)
 export(ds_report)
 export(ds_sections)
 export(ds_batch)
+export(ds_feedback)
+export(ds_feedback_status)
 
 importFrom(httr,GET)
 importFrom(httr,POST)

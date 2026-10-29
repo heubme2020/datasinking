@@ -36,7 +36,7 @@ Works with Claude Desktop, Claude Code, Cursor, Devin Desktop, Codex, and anythi
 MCP over stdio.
 
 > Prefer the remote endpoint? DataSinking also serves MCP over streamable HTTP at
-> `https://api.datasink.ing/mcp` — no local process, same six tools.
+> `https://api.datasink.ing/mcp` — no local process, same eight tools.
 > Prefer Python? `pip install "datasinking[mcp]"` gives you the identical server.
 
 ## Tools
@@ -49,6 +49,8 @@ MCP over stdio.
 | `list_sections` | Every section of one report, with `chars` / `estimated_tokens` / `has_tables` |
 | `get_section` | **One chapter, by heading keyword** — the token-cheap path for RAG |
 | `get_report` | A whole report (metadata + Markdown body) — expensive, use sparingly |
+| `submit_feedback` | Request a full backfill of a stock (idempotent — returns existing status if already queued) |
+| `get_feedback_status` | Check a submitted backfill's progress — `pending` / `processing` / `done` / `failed` |
 
 ### Symbols are FMP-style
 

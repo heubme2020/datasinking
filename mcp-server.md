@@ -45,6 +45,8 @@ actually produces: [`docs/mcp/`](docs/mcp/).
 | `get_report(document_id)` | Get a report's full text | `/documents/{id}` |
 | `list_sections(document_id)` | List a report's section headings | `/documents/{id}/sections` |
 | `get_section(document_id, section)` | Get one section only | `/documents/{id}?section=` |
+| `submit_feedback(exchange, stock_code)` | Request a backfill — idempotent, returns existing status if already queued | `/feedback` |
+| `get_feedback_status(feedback_id)` | Check a backfill's progress | `/feedback/{id}` |
 
 Symbols are FMP-style: `AAPL` (Apple), `600519.SS` (Moutai), `7203.T` (Toyota), `005930.KS` (Samsung).
 
@@ -53,7 +55,7 @@ instead of `get_report` for the whole document.
 
 ## Running it locally instead
 
-The same six tools, on your own machine, if you'd rather not send the key to a hosted endpoint:
+The same eight tools, on your own machine, if you'd rather not send the key to a hosted endpoint:
 
 ```bash
 npx -y datasinking-mcp                    # Node 18+

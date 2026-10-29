@@ -7,10 +7,11 @@ Markdown.
 
 ## Installation
 
-The package is on CRAN:
+Install from GitHub (not yet on CRAN):
 
 ```r
-install.packages("datasinking")
+# install.packages("remotes")  # if you don't have it
+remotes::install_github("heubme2020/datasinking", subdir = "r-datasinking")
 ```
 
 ## Setup
@@ -46,6 +47,11 @@ ds_sections(123456)
 
 # Batch-fetch up to 31 documents
 ds_batch(c(123456, 123457, 123458))
+
+# Request a full backfill of a stock whose reports look missing/broken
+# (idempotent — returns the existing status if already queued)
+fb <- ds_feedback("szse", "002050")   # → list(id, status, queued, ...)
+ds_feedback_status(fb$id)             # → pending / processing / done / failed
 ```
 
 ## Return shapes
@@ -54,6 +60,7 @@ ds_batch(c(123456, 123457, 123458))
 - `ds_stocks()`, `ds_documents()` → data.frame
 - `ds_report(id)` → list (metadata + `content`); `ds_report(id, section = "…")` → character
 - `ds_batch()` → list (`count`, `missing`, `items`)
+- `ds_feedback()` → list (`id`, `status`, `queued`, …); `ds_feedback_status()` → list (incl. `status`)
 
 ## Rate limits
 

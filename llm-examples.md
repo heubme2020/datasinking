@@ -286,7 +286,7 @@ hosted endpoint — no REST calls, no SDK, the agent calls the tools itself:
 curl -s -X POST "https://api.datasink.ing/mcp?apikey=YOUR_KEY" \
   -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
-# → 6 tools: list_exchanges, list_stocks, list_reports, get_report, list_sections, get_section
+# → 8 tools: list_exchanges, list_stocks, list_reports, get_report, list_sections, get_section, submit_feedback, get_feedback_status
 
 # Call one tool — list covered exchanges
 curl -s -X POST "https://api.datasink.ing/mcp?apikey=YOUR_KEY" \

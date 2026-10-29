@@ -91,6 +91,6 @@ curl -X POST "https://api.datasink.ing/free-key" -H "Content-Type: application/j
 
 ## 验收标准
 
-- [ ] Claude/Cursor 里成功配好 MCP，能看到 `datasinking` 的 6 个工具
+- [ ] Claude/Cursor 里成功配好 MCP，能看到 `datasinking` 的 8 个工具
 - [ ] 问那句话后，AI 能调 `list_reports` → `get_section` 并返回茅台 MD&A 的 Markdown
 - [ ] 截好图，放进 README 顶部 + 提交 push

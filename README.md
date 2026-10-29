@@ -20,8 +20,10 @@ with YAML frontmatter, preserved headings, paragraphs and tables.
 ## MCP server
 
 Ship DataSinking to any AI agent (Claude / Cursor / Codex / Devin Desktop / n8n) as an
-[MCP](https://modelcontextprotocol.io) server — 6 tools: list exchanges, list stocks,
-list reports, fetch a report, list sections, fetch one section (token-friendly for RAG).
+[MCP](https://modelcontextprotocol.io) server — 8 tools: list exchanges, list stocks,
+list reports, fetch a report, list sections, fetch one section (token-friendly for RAG),
+request a full backfill of a stock (idempotent — returns the current status if already queued),
+check a backfill's progress.
 
 ### Hosted — nothing to install
 
@@ -81,7 +83,7 @@ datasinking-mcp          # requires DATASINK_API_KEY (free at https://datasink.i
 
 Then use `command: datasinking-mcp` in your client.
 
-Both run the same six tools with the same schemas — `npm/` and `datasinking/mcp_server.py` are
+Both run the same eight tools with the same schemas — `npm/` and `datasinking/mcp_server.py` are
 kept in lockstep by [`check_mcp_parity.py`](check_mcp_parity.py).
 
 Full per-client setup: [`mcp-server.md`](mcp-server.md) (overview) ·
@@ -198,7 +200,7 @@ Start from [`research/TEMPLATE.md`](research/TEMPLATE.md).
 | Document types | annual / semiannual / q1 / q3 / amendment |
 | Update frequency | Daily — US/Korea/Japan via official SEC EDGAR / DART / EDINET APIs (new filings within ~24h of publication) |
 | Format | Full-text Markdown (with YAML frontmatter) |
-| API | REST — `GET /documents`, batch download, `with_content=1` for full text, `?section=` + `/sections` for chapter-level access |
+| API | REST — `GET /documents`, batch download, `with_content=1` for full text, `?section=` + `/sections` for chapter-level access, `POST /feedback` for full backfill of a stock's filings |
 | Symbols | FMP style: `AAPL` / `600519.SS` / `7203.T` / `005930.KS` |
 | Auth | `?apikey=` query parameter (FMP style) |
 

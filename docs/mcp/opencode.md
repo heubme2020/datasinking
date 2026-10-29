@@ -94,7 +94,7 @@ and is deliberately expensive in tokens. Prefer `list_sections` + `get_section` 
 
 ## Local — stdio
 
-If you'd rather not send the key to a hosted endpoint, the same six tools run on your machine.
+If you'd rather not send the key to a hosted endpoint, the same eight tools run on your machine.
 Note the local shape is **not** the remote shape: `command` is an array and the env block is
 `environment`, not `env`.
 

@@ -14,7 +14,7 @@
 **要加的条目：**
 
 ```markdown
-- [heubme2020/datasinking](https://github.com/heubme2020/datasinking) - Full-text financial reports (China A-share, Korea, Japan) as Markdown via MCP: 6 tools for listings, reports, and chapter-level access (MD&A, notes) for RAG.
+- [heubme2020/datasinking](https://github.com/heubme2020/datasinking) - Full-text financial reports (China A-share, Korea, Japan) as Markdown via MCP: 8 tools for listings, reports, chapter-level access (MD&A, notes), and report backfill for RAG.
 ```
 
 ---
