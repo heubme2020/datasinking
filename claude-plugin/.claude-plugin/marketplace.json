@@ -1,0 +1,20 @@
+{
+  "name": "datasinking",
+  "owner": {
+    "name": "DataSinking",
+    "email": "heubme2023@gmail.com",
+    "url": "https://datasink.ing"
+  },
+  "description": "Full-text financial reports (US, China, Europe, Japan, Korea, Taiwan) as clean Markdown, for RAG and analysis.",
+  "version": "1.0.0",
+  "plugins": [
+    {
+      "name": "datasinking",
+      "source": "./",
+      "description": "Query full-text financial reports (US, China, Europe, Japan, Korea, Taiwan) as clean Markdown, by FMP-style symbol and section.",
+      "version": "1.0.0",
+      "category": "Finance",
+      "tags": ["finance", "financial-reports", "sec", "edgar", "mcp", "markdown"]
+    }
+  ]
+}
