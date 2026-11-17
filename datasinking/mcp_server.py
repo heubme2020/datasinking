@@ -136,9 +136,9 @@ def _post(path: str, body: Optional[dict] = None) -> dict:
 def list_exchanges() -> list:
     """List the exchanges DataSinking covers.
 
-    Returns exchange codes (bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / pk / rs / sse / szse / tpex / twse) with
+    Returns exchange codes (bj / br / by / jpx / koe / ksc / lk / lse / nasdaq / np / nyse / otc / pk / rs / sse / szse / tpex / tr / twse) with
     the number of reports available per exchange. Call this first to discover coverage.
-    Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS, Europe = filings.xbrl.org (ESEF), Nepal = NEPSE, Brazil = CVM, Belarus = ЕПФР, Sri Lanka = CSE, Pakistan = PSX, Serbia = SEC register.
+    Sources: US = SEC EDGAR, A-shares = cninfo.com.cn, Japan = EDINET, Korea = DART, Taiwan = MOPS, Europe = filings.xbrl.org (ESEF), Nepal = NEPSE, Brazil = CVM, Belarus = ЕПФР, Sri Lanka = CSE, Pakistan = PSX, Serbia = SEC register, Turkey = KAP (kap.org.tr).
     """
     return _get("/exchanges").get("exchanges", [])
 
@@ -172,9 +172,9 @@ def list_reports(
         str,
         Field(
             description=(
-                "Report type to filter on: annual / semiannual / q1 / q3. "
+                "Report type to filter on: annual / semiannual / q1 / q3 / activity_report. "
                 "Defaults to annual. Pass semiannual for half-year reports, "
-                "q1 / q3 for the quarterly reports."
+                "q1 / q3 for the quarterly reports, activity_report for activity reports (Turkey Faaliyet Raporu, no financial statements)."
             )
         ),
     ] = "annual",
