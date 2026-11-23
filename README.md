@@ -131,14 +131,31 @@ errors that client actually produces:
 
 ## Quick start
 
-1. Get an API key at [datasink.ing](https://datasink.ing)
-2. One line (FMP-style `?apikey=`):
+1. Get a free API key at [datasink.ing](https://datasink.ing)
+2. Full text in **one call** — clean Markdown, no download-URL hop:
+
+```python
+import requests
+
+r = requests.get("https://api.datasink.ing/documents",
+                 params={"symbol": "600519.SS", "doc_type": "annual",
+                         "apikey": "YOUR_KEY"}).json()
+for d in r["items"][:3]:
+    print(d["stock_name"], d["report_period"])
+
+# Full text in one call — clean Markdown
+full = requests.get(f"https://api.datasink.ing/documents/{r['items'][0]['id']}",
+                    params={"apikey": "YOUR_KEY"}).json()
+print(full["content"][:300])
+```
+
+One-liner (curl):
 
 ```bash
 curl "https://api.datasink.ing/documents?symbol=600519.SS&with_content=1&apikey=YOUR_KEY"
 ```
 
-Or in Python:
+Or use the Python client:
 
 ```bash
 pip install datasinking
