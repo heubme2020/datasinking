@@ -170,6 +170,19 @@ class DataSinking:
             params["doc_type"] = doc_type
         return self._fetch_all_meta(params)
 
+    def search(self, query, doc_type=None, limit=20):
+        """按关键词搜报告（元数据：标题/公司名/代码，**不搜正文**）-> list[dict]
+
+        query: 关键词，如 "回购" / "芯片" / "supply chain"
+        doc_type: 可选，annual / semiannual / q1 / q3 / amendment
+        返回匹配的报告元数据（最多 limit 条，按报告期倒序）。
+        要搜正文用「标准章节」导航（list_section_details + get_section）。
+        """
+        params = {"q": query, "size": limit, "order": "desc"}
+        if doc_type:
+            params["doc_type"] = doc_type
+        return self._get("/documents", params)["items"]
+
     def get_report(self, doc_id):
         """拉指定报告(全文) -> dict, 含 content"""
         return self._get(f"/documents/{doc_id}")

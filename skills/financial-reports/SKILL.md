@@ -74,6 +74,7 @@ Methods (all on `DataSinking`):
 | List exchanges | `list_exchanges()` |
 | List stocks on an exchange | `list_stocks(exchange)` |
 | List a stock's reports (metadata) | `list_reports(symbol, doc_type=None)` |
+| Search reports by keyword (title/name/code) | `search(query, doc_type=None)` |
 | Get one report (full text) | `get_report(doc_id)` |
 | Get recent reports (full text) | `get_stock_reports(symbol, limit=7, doc_type=None)` |
 | List a report's sections | `list_sections(doc_id)` |
