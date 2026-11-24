@@ -196,10 +196,21 @@ class DataSinking:
         """列出报告的章节标题 -> list[str]（供 get_section 用）"""
         return self._get(f"/documents/{doc_id}/sections")["sections"]
 
+    def list_section_details(self, doc_id):
+        """列出报告的章节 + 标准概念映射 -> list[dict]
+
+        每项: {title(原章节名), concept(标准概念 id), concept_name(标准英文名),
+               has_tables, chars, estimated_tokens}。
+        跨市场统一：A股「管理层讨论与分析」和美股「Item 7」都映射到 concept_name="MD&A"。
+        配合 get_section(doc_id, concept_name) 按标准名取章。
+        """
+        return self._get(f"/documents/{doc_id}/sections").get("section_details", [])
+
     def get_section(self, doc_id, section):
         """只取报告的某一章（省 token，适合 RAG）-> dict，含 content 和 section
 
-        section: 章节标题关键词，如 "管理层讨论与分析" / "财务报告" / "MD&A"
+        section: 章节标题关键词（如 "管理层讨论与分析" / "财务报告"），
+        或标准概念名（如 "MD&A" / "Risk Factors" / "Financial Statements" / "Notes"）。
         """
         return self._get(f"/documents/{doc_id}", {"section": section})
 

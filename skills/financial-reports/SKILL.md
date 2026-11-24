@@ -53,10 +53,10 @@ Don't write `600519` (bare) — it won't match. If unsure, call `list_exchanges(
 
 Full reports are 300+ pages / hundreds of KB. **Always** prefer section-level reads:
 
-1. `list_sections(doc_id)` → get the report's real section headings.
-2. `get_section(doc_id, "关键词")` → pull only that chapter.
+1. `list_section_details(doc_id)` → get each section's **standard concept** (`concept_name`): MD&A / Risk Factors / Financial Statements / Notes / Audit Report / Corporate Governance… mapped across all markets.
+2. `get_section(doc_id, "MD&A")` → pull that chapter by **standard name** (or the report's own heading).
 
-Section names are matched by keyword (substring). Chinese reports use Chinese headings (「管理层讨论与分析」), English reports use "MD&A" / "risk factors" / "notes". The bundled client URL-encodes the section name for you; when hand-writing HTTP, encode `&` → `%26` and spaces → `%20` (e.g. `section=MD%26A`).
+Standard names are cross-market: A股「管理层讨论与分析」、美股「Item 7」、韩「II. 사업의 내용」all map to `MD&A`. Section matching is keyword-based (substring); if a standard name doesn't hit, fall back to `list_sections(doc_id)` for the report's real headings and retry with one of those. The bundled client URL-encodes the section name for you; when hand-writing HTTP, encode `&` → `%26` and spaces → `%20` (e.g. `section=MD%26A`).
 
 ## Client
 
@@ -77,6 +77,7 @@ Methods (all on `DataSinking`):
 | Get one report (full text) | `get_report(doc_id)` |
 | Get recent reports (full text) | `get_stock_reports(symbol, limit=7, doc_type=None)` |
 | List a report's sections | `list_sections(doc_id)` |
+| List sections + standard concepts | `list_section_details(doc_id)` |
 | Get one section only | `get_section(doc_id, "MD&A")` |
 | Request a backfill (补全) | `submit_feedback(exchange, stock_code)` |
 | Check backfill status | `get_feedback_status(feedback_id)` |
